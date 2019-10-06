@@ -1,36 +1,41 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import * as path from 'path';
 
-// For .env file to work
-dotenv.config();
+class Server {
 
-export default class Server {
-
-    constructor() {
+    /**
+     * @required port
+     * @option createStaticFolder
+     * @option staticFolderLocation
+     * @option onInit (callback function)
+     */
+    constructor(options) {
         this.app = express();
 
-        this.setDefaultConfiguration();
-    }
+        this.app.set('port', options.port);
 
-    // Set default configurations from .env file
-    setDefaultConfiguration()
-    {
-        this.app.set('port', process.env.SERVER_PORT || 3000);
+        if (options.createStaticFolder) {
+            this.createStaticFolder(options.staticFolderLocation);
+        }
+
+        if (options.onInit) {
+            this.onInit = options.onInit;
+        }
+
+        this.initServer();
     }
 
     // Set static folder
-    createStaticFolder()
-    {
-        this.app.use(express.static(path.join('../public')));
+    createStaticFolder(location) {
+        this.app.use(express.static(location));
     }
 
     initServer() {
+        const port = this.app.get('port');
 
-        this.createStaticFolder();
-
-        this.app.listen(this.app.get('port'), () => {
-            console.log("Red Tetris is running on http://localhost:" + this.app.get('port'));
+        this.app.listen(port, () => {
+            this.onInit(port);
         });
     }
 }
+
+export default Server;
