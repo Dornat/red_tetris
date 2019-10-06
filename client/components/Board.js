@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {connect} from 'react-redux'
 import {setUser} from '../actions/userActions'
 
-const Board = () => {
+const Board = (props) => {
 
     const [form, setValues] = useState({
             user: ''
@@ -17,7 +17,7 @@ const Board = () => {
     const onSubmit = (e) => {
         e.preventDefault();
         console.log("HERE");
-        setUser(form.user);
+        props.setUser(form.user);
     };
 
     return (

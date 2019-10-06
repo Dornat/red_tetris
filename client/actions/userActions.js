@@ -1,9 +1,11 @@
-const SET_USER = "SET_USER";
+import {
+    SET_USER
+} from './types'
 
 export function setUser(user)
 {
-    dispatch({
+    return {
         type: SET_USER,
         user
-    })
+    }
 }

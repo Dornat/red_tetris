@@ -8,13 +8,19 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
 
-    console.log("TYPE", action.type);
+    console.log("USER REDUCER");
+    console.log(action.user);
+    console.log(action.type);
     switch(action.type) {
         case SET_USER:
-            return {
-                user: action.user
-            };
-        default: return state;
+        {
+            console.log("HELLO");
+            return action.user;
+        }
+        default: {
+            console.log("DEF CASE");
+            return state;
+        }
     }
 }
 
