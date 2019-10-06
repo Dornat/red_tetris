@@ -1,4 +1,6 @@
-import {SET_USER} from '../actions/types'
+import {
+    SET_USER
+} from './types'
 
 export function setUser(user) {
     return {

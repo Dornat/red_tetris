@@ -110,11 +110,11 @@ var SET_USER = "SET_USER";
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setUser", function() { return setUser; });
-/* harmony import */ var _actions_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/types */ "./actions/types.js");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function setUser(user) {
   return {
-    type: _actions_types__WEBPACK_IMPORTED_MODULE_0__["SET_USER"],
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_USER"],
     user: user
   };
 }
@@ -217,7 +217,7 @@ var mapStateToProps = function mapStateToProps(state) {
   };
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
   return {
     setUser: function setUser(user) {
       dispatch(Object(_actions_userActions__WEBPACK_IMPORTED_MODULE_2__["setUser"])(user));
