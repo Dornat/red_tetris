@@ -1,6 +1,7 @@
 import * as path from 'path'
 
 module.exports = {
+    devtool: 'source-map',
     mode: 'development',
     entry: './index.js',
     output: {
