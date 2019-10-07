@@ -152,10 +152,10 @@ function App() {
 
 /***/ }),
 
-/***/ "./components/Board.js":
-/*!*****************************!*\
-  !*** ./components/Board.js ***!
-  \*****************************/
+/***/ "./components/DashBoard.js":
+/*!*********************************!*\
+  !*** ./components/DashBoard.js ***!
+  \*********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -242,15 +242,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var _Board__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Board */ "./components/Board.js");
+/* harmony import */ var _DashBoard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DashBoard */ "./components/DashBoard.js");
 
 
 
 function Router() {
+  // localhost:3000/room/1xx12dadasda
+  // localhost:3000/room?player_name=ymarchys
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Switch"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
     path: "/",
-    component: _Board__WEBPACK_IMPORTED_MODULE_2__["default"]
+    component: _DashBoard__WEBPACK_IMPORTED_MODULE_2__["default"]
   }));
 }
 
@@ -39412,12 +39414,14 @@ var initialState = {
 
   switch (action.type) {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["SET_USER"]:
-      return {
-        user: action.user
-      };
+      {
+        return action.user;
+      }
 
     default:
-      return state;
+      {
+        return state;
+      }
   }
 });
 

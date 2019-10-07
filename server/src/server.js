@@ -1,4 +1,5 @@
 import express from 'express';
+import routes from './routes';
 
 class Server {
 
@@ -32,9 +33,12 @@ class Server {
     initServer() {
         const port = this.app.get('port');
 
+        this.app.use('/', routes);
+
         this.app.listen(port, () => {
             this.onInit(port);
         });
+
     }
 }
 
