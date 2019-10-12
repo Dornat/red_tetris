@@ -1,5 +1,5 @@
 import express from 'express';
-import routes from './routes';
+import router from './router';
 
 class Server {
 
@@ -33,7 +33,7 @@ class Server {
     initServer() {
         const port = this.app.get('port');
 
-        this.app.use('/', routes);
+        this.app.use('/api', router);
 
         this.app.listen(port, () => {
             this.onInit(port);

@@ -1,5 +1,0 @@
-class Pile {
-    constructor(props) {
-
-    }
-}
