@@ -19,7 +19,7 @@ class Game {
         this.player.push(player);
     }
 
-    playerLeave(player) {
+    removePlayer(player) {
         // Удаление пользователя из массива пользователей
     }
 
