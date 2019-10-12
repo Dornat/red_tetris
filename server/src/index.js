@@ -1,5 +1,5 @@
-import Server from './server';
-import Database from './database';
+import Server from './Server';
+import Database from './Database';
 import dotenv from 'dotenv';
 import * as path from 'path';
 
