@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux'
 import {setUser} from '../actions/userActions'
+import io from 'socket.io-client';
 
-const Board = props => {
+const Dashboard = props => {
     const [form, setValues] = useState({
         user: ''
     });
@@ -16,6 +17,12 @@ const Board = props => {
     const onSubmit = (e) => {
         e.preventDefault();
         props.setUser(form.user);
+
+        const socket = io.connect('http://localhost:3001');
+        socket.on('news', (data) => {
+            console.log("DATA", data);
+            socket.emit('my other event', { my: 'data' });
+        });
     };
 
     return (
@@ -40,4 +47,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Board);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
