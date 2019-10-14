@@ -1,53 +1,60 @@
 import React, {useState} from 'react';
-import {connect} from 'react-redux'
-import {setUser} from '../actions/userActions'
-import io from 'socket.io-client';
+import FormNickname from "./Form/FormNickname";
+import {createRoom} from "../actions/gameActions";
+import {connect} from "react-redux";
 
-const Dashboard = props => {
-    const [form, setValues] = useState({
-        user: ''
-    });
+const Dashboard = (props) => {
 
-    const onChange = (e) => {
-        setValues({
-            [e.target.name]: e.target.value,
-        });
-    };
+    const [isError, setError] = useState(false);
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        props.setUser(form.user);
+    const createRoom = (e) => {
+        if (!props.user.length) {
+            setError(true)
+        }
 
-        const socket = io.connect('http://localhost:3001');
-        socket.emit('createGame', form.user, function (data) {
-            console.log(data);
-        });
+        const socket = props.socket;
 
-        socket.on('createdGame', function (data) {
-            console.log(data);
-        });
+        if (socket) {
+
+            console.log(props.user);
+            socket.emit("create room", props.user);
+        }
     };
 
     return (
-        <form onSubmit={event => onSubmit(event)}>
-            <input type="text" name="user" onChange={event => onChange(event)}/>
-            <input type="submit"/>
-        </form>
-    );
+        <main>
+            <div className="flex_centered">
+                <div className="row">
+                    <div className="col">
+                        <FormNickname user={props.user} isError={isError} setError={setError}/>
+                    </div>
+                </div>
+                <div className="row dashboard__menu">
+                    <div className="col-6">
+                        <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}>Create a room</button>
+                    </div>
+                    <div className="col-6">
+                        <button type="button" className="nes-btn dashboard__btn">Score</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    )
 };
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user.nickname
     }
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        setUser: (user) => {
-            dispatch(setUser(user))
+        createRoom: (user) => {
+            dispatch(createRoom(user))
         }
     }
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
