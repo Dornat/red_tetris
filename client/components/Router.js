@@ -1,15 +1,13 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom';
-import DashBoard from './DashBoard'
+import InitSockets from './hoc/InitSockets';
+import Dashboard from './Dashboard';
 
-export default function Router()
+export default function Router(props)
 {
-    // localhost:3000/room/1xx12dadasda
-
-    // localhost:3000/room?player_name=ymarchys
     return (
         <Switch>
-            <Route exact path="/" component={DashBoard}/>
+            <Route exact path="/" component={InitSockets(props, Dashboard)}/>}/>
             {/*<Route exact path="/room" component={Room}/>*/}
         </Switch>
     );

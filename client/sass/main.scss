@@ -1,1 +1,41 @@
 @import "variables";
+@import "global";
+
+body
+{
+  font-family: "Courier New";
+}
+
+.form__nickname
+{
+  width: 400px;
+}
+
+.dashboard__btn
+{
+  width: 250px;
+  margin: 15px;
+}
+
+.nickname__input
+{
+  width: 300px;
+}
+
+.dasboard__menu
+{
+  padding-top: 50px;
+}
+
+.input__label
+{
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .dashboard__btn
+  {
+    width: auto;
+  }
+}
