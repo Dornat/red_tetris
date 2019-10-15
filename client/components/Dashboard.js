@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import FormNickname from "./Form/FormNickname";
 import {createRoom} from "../actions/gameActions";
 import {connect} from "react-redux";
-import io from "socket.io-client";
 
 const Dashboard = (props) => {
 
@@ -13,9 +12,9 @@ const Dashboard = (props) => {
             setError(true)
         }
 
-        props.socket.emit('create game', props.user);
+        props.socket.emit('createGame', props.user);
 
-        props.socket.on('game created', (data) => {
+        props.socket.on('createdGame', (data) => {
             console.log("DATA", data);
         });
     };
