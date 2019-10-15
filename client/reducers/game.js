@@ -1,18 +1,22 @@
 import {
-    SET_USER
+    CREATE_GAME,
 } from '../actions/types'
 
 const initialState = {
-    nickname: null
+    game: {
+        id: null
+    }
 };
 
 export default (state = initialState, action = {}) => {
 
     switch(action.type) {
-        case SET_USER:
+        case CREATE_GAME:
             return {
                 ...state,
-                nickname: action.user
+                game: {
+                    id: action.id
+                }
             };
         default: {
             return state;
