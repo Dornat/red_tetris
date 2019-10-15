@@ -26,7 +26,6 @@ describe('Field Tests', function () {
         let coords = [[-1, 0], [0, 1], [0, 2], [0, 3]];
         let prefilledMatrixWithCoords = [1, 1, 1, 1];
         field.fillCoordinates(coords);
-
         assert.notDeepEqual(field.matrix[0].slice(0, 4), prefilledMatrixWithCoords, 'check for not fillable out of bound coords');
 
         let coords2 = [[0, 0], [0, 1], [0, 2], [0, 3]];
@@ -37,8 +36,12 @@ describe('Field Tests', function () {
         let coords3 = [[1, 1], [1, 1], [1, 2], [1, 3]];
         let prefilledMatrixWithCoords3 = [1, 1, 1, 1];
         field.fillCoordinates(coords3);
+        assert.notDeepEqual(field.matrix[1].slice(0, 4), prefilledMatrixWithCoords3, 'check for duplicate coords');
 
-        assert.notDeepEqual(field.matrix[1].slice(0, 4), prefilledMatrixWithCoords3, 'check for duplicates');
+        let coords4 = [[0, 3], [0, 4], [0, 5], [0, 6]];
+        let prefilledMatrixWithCoords4 = [0, 0, 0, 0];
+        field.fillCoordinates(coords4);
+        assert.notDeepEqual(field.matrix[0].slice(4, 9), prefilledMatrixWithCoords4, 'check for duplicate coords');
     });
 
     it('should destroy rows successfully and properly', function () {
