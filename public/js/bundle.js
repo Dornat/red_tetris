@@ -198,13 +198,11 @@ var Dashboard = function Dashboard(props) {
     e.preventDefault();
     props.setUser(form.user);
     var socket = socket_io_client__WEBPACK_IMPORTED_MODULE_3___default.a.connect('http://localhost:3001');
-    socket.on('connect', function () {
-      socket.emit('createGame', form.user, function (data) {
-        console.log(data);
-      });
-      socket.on('createdGame', function (data) {
-        console.log(data);
-      });
+    socket.emit('createGame', form.user, function (data) {
+      console.log(data);
+    });
+    socket.on('createdGame', function (data) {
+      console.log(data);
     });
   };
 
