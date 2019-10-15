@@ -19,9 +19,12 @@ const Dashboard = props => {
         props.setUser(form.user);
 
         const socket = io.connect('http://localhost:3001');
-        socket.on('news', (data) => {
-            console.log("DATA", data);
-            socket.emit('my other event', { my: 'data' });
+        socket.emit('createGame', form.user, function (data) {
+            console.log(data);
+        });
+
+        socket.on('createdGame', function (data) {
+            console.log(data);
         });
     };
 

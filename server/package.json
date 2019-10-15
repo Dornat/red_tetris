@@ -6,11 +6,13 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "dev": "nodemon --exec babel-node src/index.js",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "mocha --require @babel/register"
   },
   "author": "ymarchys & dpolosuk",
   "license": "ISC",
   "dependencies": {
+    "crypto": "^1.0.1",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.3",
@@ -25,6 +27,8 @@
     "@babel/preset-env": "^7.6.2",
     "@types/node": "^12.7.11",
     "babel-loader": "^8.0.6",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1",
     "nodemon": "^1.19.3"
   }
 }
