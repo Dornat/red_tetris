@@ -8,6 +8,7 @@ export default function Router(props)
     return (
         <Switch>
             <Route exact path="/" component={InitSockets(props, Dashboard)}/>}/>
+            {/*<Route exact path="/room" component={InitSockets(props, Room)}/>*/}
             {/*<Route exact path="/room" component={Room}/>*/}
         </Switch>
     );
