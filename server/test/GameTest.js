@@ -103,4 +103,13 @@ describe('Game Tests', function () {
         assert.lengthOf(game.players, 1, 'there is only one player');
         assert.equal(game.players[0].isLeader, true, 'the last player is a leader');
     });
+
+    it('should generate random array of pieces', function () {
+        let player1 = new Player('testName1');
+        let game = new Game(player1);
+
+        let pieces = game.generatePieces(3);
+
+        assert.isArray(pieces, 'lets assume that this array is perfectly random');
+    });
 });

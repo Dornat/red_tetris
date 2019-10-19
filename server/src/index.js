@@ -75,6 +75,12 @@ io.on('connection', (socket) => {
 
         socket.emit('leftGame', leftGame);
     });
+
+    socket.on('getNextPieces', function (gameId) {
+        let game = games[gameId];
+        let pieces = game.generatePieces(5);
+        socket.emit('getNextPieces', pieces);
+    })
 });
 
 

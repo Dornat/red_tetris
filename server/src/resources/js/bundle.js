@@ -185,6 +185,29 @@ function App() {
 
 /***/ }),
 
+/***/ "./components/Cell.js":
+/*!****************************!*\
+  !*** ./components/Cell.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var Cell = function Cell(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "cell"
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Cell);
+
+/***/ }),
+
 /***/ "./components/Context/SocketContext.js":
 /*!*********************************************!*\
   !*** ./components/Context/SocketContext.js ***!
@@ -407,17 +430,71 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Cell__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Cell */ "./components/Cell.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
+/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
 
 
 var GameField = function GameField(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      dropTime = _useState2[0],
+      setDropTime = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      gameOver = _useState4[0],
+      setGameOver = _useState4[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    props.socket.emit('getNextPieces', props.game_id);
+    props.socket.on('getNextPieces', function (data) {
+      console.log(data);
+    }); // props.socket.on('gameStarted', (data) => {
+    //     props.socket.emit('getNextPieces');
+    // });
+    // props.socket.on('getNextPieces', (data) => {
+    //
+    // });
+  });
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "flex_centered"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "game__field"
-  }));
+    className: "field"
+  }, props.field.map(function (row) {
+    return row.map(function (cell, x) {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Cell__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        key: x,
+        type: cell[0]
+      });
+    });
+  })));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (GameField);
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    game_id: state.game.id
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, null)(GameField));
 
 /***/ }),
 
@@ -434,16 +511,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _RoomManagement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomManagement */ "./components/RoomManagement.js");
 /* harmony import */ var _GameField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GameField */ "./components/GameField.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
 
 
 
 
-var Room = function Room() {
+
+var Room = function Room(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game__container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
+    socket: props.socket
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "room-management__container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], null)));
 };
@@ -538,6 +620,135 @@ var InitSockets = function InitSockets(props, Component) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (InitSockets);
+
+/***/ }),
+
+/***/ "./hooks/useField.js":
+/*!***************************!*\
+  !*** ./hooks/useField.js ***!
+  \***************************/
+/*! exports provided: useField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useField", function() { return useField; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+var useField = function useField(piece, resetPiece) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_1__["createField"])()),
+      _useState2 = _slicedToArray(_useState, 2),
+      field = _useState2[0],
+      setField = _useState2[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var updateField = function updateField(prevField) {
+      // flush the field
+      var newField = prevField.map(function (row) {
+        return row.map(function (cell) {
+          return cell[1] === '0' ? [0, '0'] : cell;
+        });
+      }); // draw the tetromino
+
+      piece.tetromino.forEach(function (row, y) {
+        row.forEach(function (value, x) {
+          if (value !== 0) {
+            newField[y + piece.position.y][x + piece.position.x] = [value //todo merge clear
+            ];
+          }
+        });
+      });
+      return newField;
+    };
+
+    setField(function (prev) {
+      return updateField(prev);
+    });
+  }, [piece.position.x, piece.position.y, piece.tetromino]);
+  return [field, setField];
+};
+
+/***/ }),
+
+/***/ "./hooks/usePiece.js":
+/*!***************************!*\
+  !*** ./hooks/usePiece.js ***!
+  \***************************/
+/*! exports provided: usePiece */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "usePiece", function() { return usePiece; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+var usePiece = function usePiece(tetromino) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
+    position: {
+      x: 0,
+      y: 0
+    },
+    tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape
+  }),
+      _useState2 = _slicedToArray(_useState, 2),
+      piece = _useState2[0],
+      setPiece = _useState2[1];
+
+  var updatePiecePosition = function updatePiecePosition(_ref) {
+    var x = _ref.x,
+        y = _ref.y;
+    setPiece(function (prev) {
+      return _objectSpread({}, prev, {
+        position: {
+          x: prev.position.x += x,
+          y: prev.position.y += y
+        }
+      });
+    });
+  };
+
+  var resetPiece = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (tetromino) {
+    setPiece({
+      position: {
+        x: _utils_createField__WEBPACK_IMPORTED_MODULE_2__["COLUMN_AMOUNT"] / 2 - 2,
+        // to position the piece in the middle of game field
+        y: 0
+      },
+      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape
+    });
+  }, []);
+  return [piece, updatePiecePosition, resetPiece];
+};
 
 /***/ }),
 
@@ -3070,7 +3281,7 @@ module.exports = function(a, b){
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
 
 
 /***/ }),
@@ -50512,6 +50723,66 @@ store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);
+
+/***/ }),
+
+/***/ "./utils/TetrominoesScheme.js":
+/*!************************************!*\
+  !*** ./utils/TetrominoesScheme.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var tetrominoes = {
+  'I': {
+    shape: [['I', 'I', 'I', 'I'], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+  },
+  'O': {
+    shape: [['O', 'O'], ['O', 'O']]
+  },
+  'T': {
+    shape: [[0, 0, 0], ['T', 'T', 'T'], [0, 'T', 0]]
+  },
+  'J': {
+    shape: [['J', 'J', 'J'], [0, 0, 'J'], [0, 0, 0]]
+  },
+  'L': {
+    shape: [['L', 'L', 'L'], ['L', 0, 0], [0, 0, 0]]
+  },
+  'S': {
+    shape: [[0, 'S', 'S'], ['S', 'S', 0], [0, 0, 0]]
+  },
+  'Z': {
+    shape: [['Z', 'Z', 0], [0, 'Z', 'Z'], [0, 0, 0]]
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (tetrominoes);
+
+/***/ }),
+
+/***/ "./utils/createField.js":
+/*!******************************!*\
+  !*** ./utils/createField.js ***!
+  \******************************/
+/*! exports provided: COLUMN_AMOUNT, ROWS_AMOUNT, MINIMUM_ROWS_AMOUNT, createField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "COLUMN_AMOUNT", function() { return COLUMN_AMOUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ROWS_AMOUNT", function() { return ROWS_AMOUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MINIMUM_ROWS_AMOUNT", function() { return MINIMUM_ROWS_AMOUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createField", function() { return createField; });
+var COLUMN_AMOUNT = 10;
+var ROWS_AMOUNT = 20;
+var MINIMUM_ROWS_AMOUNT = 5;
+var createField = function createField() {
+  return Array.from(Array(ROWS_AMOUNT), function () {
+    return new Array(COLUMN_AMOUNT).fill([0, '0']);
+  });
+};
 
 /***/ }),
 
