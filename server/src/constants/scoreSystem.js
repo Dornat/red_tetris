@@ -1,5 +1,4 @@
 const scoreSystem = {
-
     1: {
         1: 40,
         2: 100,
