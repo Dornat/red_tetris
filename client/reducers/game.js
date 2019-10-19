@@ -3,9 +3,7 @@ import {
 } from '../actions/types'
 
 const initialState = {
-    game: {
-        id: null
-    }
+    id: null
 };
 
 export default (state = initialState, action = {}) => {
@@ -14,9 +12,7 @@ export default (state = initialState, action = {}) => {
         case CREATE_GAME:
             return {
                 ...state,
-                game: {
-                    id: action.id
-                }
+                id: action.id
             };
         default: {
             return state;

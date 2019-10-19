@@ -22,7 +22,6 @@ dotenv.config();
 const server = new Server({
     port: process.env.SERVER_PORT || 3000,
     createStaticFolder: true,
-    staticFolderLocation: path.join('../public'),
     onInit: (port) => {
         console.log("Red Tetris is running on http://localhost:" + port);
     }
@@ -45,7 +44,7 @@ io.on('connection', (socket) => {
 
         games[game.id] = game;
 
-        socket.emit('createdGame', game.id);
+        socket.emit('gameCreated', game.id);
     });
 
     /**
