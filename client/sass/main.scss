@@ -50,6 +50,7 @@ body
 
 .room__management
 {
+  padding: 15px 43px;
   width: 250px;
   height: 100%;
   background: #eceded;
@@ -63,7 +64,22 @@ body
 
 .game__field
 {
+  min-width: 400px;
+  min-height: 800px;
   width: 400px;
   height: 800px;
   border: 2px solid black;
+}
+
+.game__link
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    background: #fff;
+    border: 3px solid black;
+    font-weight: 900;
+    padding: 12px 15px;
+  }
 }
