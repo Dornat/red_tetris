@@ -39,3 +39,30 @@ body
     width: auto;
   }
 }
+
+.room-management__container
+{
+  height: 100%;
+  position: fixed;
+  right: 0;
+}
+
+.room__management
+{
+  width: 250px;
+  height: 100%;
+  background: #eceded;
+}
+
+.game__container
+{
+  height: 100vh;
+  flex: 0 1 calc(100% - 250px);
+}
+
+.game__field
+{
+  width: 400px;
+  height: 800px;
+  border: 2px solid black;
+}
