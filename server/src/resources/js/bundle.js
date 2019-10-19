@@ -216,8 +216,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Form_FormNickname__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Form/FormNickname */ "./components/Form/FormNickname.js");
 /* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
-/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -238,14 +237,21 @@ var Dashboard = function Dashboard(props) {
       isError = _useState2[0],
       setError = _useState2[1];
 
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isCreateRoomBtnDisabled = _useState4[0],
+      setBtnDisability = _useState4[1];
+
   var createRoom = function createRoom(e) {
     if (!props.user.length) {
       setError(true);
     }
 
     props.socket.emit('createGame', props.user);
-    props.socket.on('createdGame', function (data) {
-      console.log("DATA", data);
+    setBtnDisability(true);
+    props.socket.on('gameCreated', function (game_id) {
+      props.createRoom(game_id);
+      props.history.push('/room');
     });
   };
 
@@ -266,7 +272,8 @@ var Dashboard = function Dashboard(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn",
-    onClick: createRoom
+    onClick: createRoom,
+    disabled: isCreateRoomBtnDisabled
   }, "Create a room")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-6"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -289,7 +296,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps)(Dashboard));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["withRouter"])(Dashboard)));
 
 /***/ }),
 
@@ -389,6 +396,85 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 
 /***/ }),
 
+/***/ "./components/GameField.js":
+/*!*********************************!*\
+  !*** ./components/GameField.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var GameField = function GameField(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "flex_centered"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "game__field"
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (GameField);
+
+/***/ }),
+
+/***/ "./components/Room.js":
+/*!****************************!*\
+  !*** ./components/Room.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _RoomManagement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomManagement */ "./components/RoomManagement.js");
+/* harmony import */ var _GameField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GameField */ "./components/GameField.js");
+
+
+
+
+var Room = function Room() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "game__container"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "room-management__container"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], null)));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Room);
+
+/***/ }),
+
+/***/ "./components/RoomManagement.js":
+/*!**************************************!*\
+  !*** ./components/RoomManagement.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var RoomManagement = function RoomManagement(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "room__management"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Link"));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (RoomManagement);
+
+/***/ }),
+
 /***/ "./components/Router.js":
 /*!******************************!*\
   !*** ./components/Router.js ***!
@@ -404,6 +490,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hoc/InitSockets */ "./components/hoc/InitSockets.js");
 /* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
+/* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
+
 
 
 
@@ -413,7 +501,11 @@ function Router(props) {
     exact: true,
     path: "/",
     component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Dashboard__WEBPACK_IMPORTED_MODULE_3__["default"])
-  }), "}/>");
+  }), "}/>", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+    exact: true,
+    path: "/room",
+    component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Room__WEBPACK_IMPORTED_MODULE_4__["default"])
+  }));
 }
 
 /***/ }),
@@ -2978,7 +3070,7 @@ module.exports = function(a, b){
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
 
 
 /***/ }),
@@ -50222,9 +50314,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var initialState = {
-  game: {
-    id: null
-  }
+  id: null
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -50233,9 +50323,7 @@ var initialState = {
   switch (action.type) {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["CREATE_GAME"]:
       return _objectSpread({}, state, {
-        game: {
-          id: action.id
-        }
+        id: action.id
       });
 
     default:
@@ -50368,14 +50456,7 @@ var initSocketConnection = function initSocketConnection() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "socketEvents", function() { return socketEvents; });
-var socketEvents = function socketEvents(socket) {
-  socket.on("connect", function (data) {
-    console.log(data);
-  });
-  socket.on('create game', function (data) {
-    console.log("HELLO");
-  });
-};
+var socketEvents = function socketEvents(socket) {};
 
 /***/ }),
 
@@ -50396,9 +50477,14 @@ __webpack_require__.r(__webpack_exports__);
 
 var middleware = [redux_thunk__WEBPACK_IMPORTED_MODULE_1__["default"]];
 
-var saveToLocalStorage = function saveToLocalStorage(state) {
+var saveNicknameToLocalStorage = function saveNicknameToLocalStorage(state) {
   try {
-    var serializedState = JSON.stringify(state);
+    var lsState = {
+      user: {
+        nickname: state.user.nickname
+      }
+    };
+    var serializedState = JSON.stringify(lsState);
     localStorage.setItem('state', serializedState);
   } catch (e) {
     console.log(e);
@@ -50423,7 +50509,7 @@ var loadFormLocalStorage = function loadFormLocalStorage() {
 var persistedState = loadFormLocalStorage();
 var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
 store.subscribe(function () {
-  saveToLocalStorage(store.getState());
+  saveNicknameToLocalStorage(store.getState());
 });
 /* harmony default export */ __webpack_exports__["default"] = (store);
 
