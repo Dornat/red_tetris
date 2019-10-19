@@ -4,9 +4,15 @@ import rootReducer from '../reducers';
 
 const middleware = [thunk];
 
-const saveToLocalStorage = state => {
+const saveNicknameToLocalStorage = state => {
     try {
-        const serializedState = JSON.stringify(state);
+        const lsState = {
+            user: {
+                nickname: state.user.nickname
+            }
+        };
+
+        const serializedState = JSON.stringify(lsState);
         localStorage.setItem('state', serializedState);
     }
     catch(e) {
@@ -41,7 +47,7 @@ const store = createStore(
 );
 
 store.subscribe(() => {
-    saveToLocalStorage(store.getState());
+    saveNicknameToLocalStorage(store.getState());
 });
 
 

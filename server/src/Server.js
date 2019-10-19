@@ -15,7 +15,7 @@ class Server {
         this.app.set('port', options.port);
 
         if (options.createStaticFolder) {
-            this.createStaticFolder(options.staticFolderLocation);
+            this.createStaticFolder();
         }
 
         if (options.onInit) {
@@ -26,12 +26,17 @@ class Server {
     }
 
     // Set static folder
-    createStaticFolder(location) {
-        this.app.use(express.static(location));
+    createStaticFolder() {
+        this.app.use(express.static(__dirname + '/resources'));
     }
 
     initServer() {
         const port = this.app.get('port');
+
+        // Non-API Routes
+        this.app.get(/^(?!\/api)/, function(req, res, next) {
+            res.sendFile(__dirname + '/resources/index.html');
+        });
 
         this.app.use('/api', router);
 

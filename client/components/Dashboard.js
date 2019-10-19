@@ -2,10 +2,12 @@ import React, {useState} from 'react';
 import FormNickname from "./Form/FormNickname";
 import {createRoom} from "../actions/gameActions";
 import {connect} from "react-redux";
+import {withRouter} from 'react-router-dom';
 
 const Dashboard = (props) => {
 
     const [isError, setError] = useState(false);
+    const [isCreateRoomBtnDisabled, setBtnDisability] = useState(false);
 
     const createRoom = (e) => {
         if (!props.user.length) {
@@ -13,9 +15,11 @@ const Dashboard = (props) => {
         }
 
         props.socket.emit('createGame', props.user);
+        setBtnDisability(true);
 
-        props.socket.on('createdGame', (data) => {
-            console.log("DATA", data);
+        props.socket.on('gameCreated', (game_id) => {
+            props.createRoom(game_id);
+            props.history.push('/room');
         });
     };
 
@@ -29,7 +33,7 @@ const Dashboard = (props) => {
                 </div>
                 <div className="row dashboard__menu">
                     <div className="col-6">
-                        <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}>Create a room</button>
+                        <button type="button" className="nes-btn dashboard__btn" onClick={createRoom} disabled={isCreateRoomBtnDisabled}>Create a room</button>
                     </div>
                     <div className="col-6">
                         <button type="button" className="nes-btn dashboard__btn">Score</button>
@@ -55,4 +59,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Dashboard));
