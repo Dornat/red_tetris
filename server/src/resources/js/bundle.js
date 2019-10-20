@@ -198,9 +198,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 
-var Cell = function Cell(props) {
+var Cell = function Cell(_ref) {
+  var type = _ref.type;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "cell"
+    className: type === 0 ? 'cell' : 'cell filled'
   });
 };
 
@@ -323,6 +324,41 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 
 /***/ }),
 
+/***/ "./components/Field.js":
+/*!*****************************!*\
+  !*** ./components/Field.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _Cell__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Cell */ "./components/Cell.js");
+
+
+
+
+var Field = function Field(_ref) {
+  var field = _ref.field;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "field"
+  }, field.map(function (row) {
+    return row.map(function (cell, x) {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Cell__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        key: x,
+        type: cell[0]
+      });
+    });
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Field);
+
+/***/ }),
+
 /***/ "./components/Form/FormNickname.js":
 /*!*****************************************!*\
   !*** ./components/Form/FormNickname.js ***!
@@ -434,8 +470,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
-/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
-/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
+/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -452,39 +490,106 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var GameField = function GameField(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
-      _useState2 = _slicedToArray(_useState, 2),
-      dropTime = _useState2[0],
-      setDropTime = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+
+var GameField = function GameField(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('L'),
+      _useState2 = _slicedToArray(_useState, 2),
+      pieces = _useState2[0],
+      setPieces = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
       _useState4 = _slicedToArray(_useState3, 2),
-      gameOver = _useState4[0],
-      setGameOver = _useState4[1];
+      dropTime = _useState4[0],
+      setDropTime = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      gameOver = _useState6[0],
+      setGameOver = _useState6[1];
+
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])('L'),
+      _usePiece2 = _slicedToArray(_usePiece, 3),
+      piece = _usePiece2[0],
+      updatePiecePosition = _usePiece2[1],
+      resetPiece = _usePiece2[2];
+
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece),
+      _useField2 = _slicedToArray(_useField, 2),
+      field = _useField2[0],
+      setField = _useField2[1];
+
+  console.log('re-render');
+
+  var movePiece = function movePiece(direction) {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
+      x: direction,
+      y: 0
+    })) {
+      updatePiecePosition({
+        x: direction,
+        y: 0
+      });
+    }
+  };
+
+  var startGame = function startGame() {
+    // reset everything
+    setField(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])());
+    resetPiece('T');
+  };
+
+  var drop = function drop() {
+    updatePiecePosition({
+      x: 0,
+      y: 1,
+      collided: false
+    });
+  };
+
+  var dropPiece = function dropPiece() {
+    drop();
+  };
+
+  var move = function move(e) {
+    if (e.keyCode === 72 || e.keyCode === 37) {
+      movePiece(-1);
+    } else if (e.keyCode === 76 || e.keyCode === 39) {
+      movePiece(1);
+    } else if (e.keyCode === 74 || e.keyCode === 40) {
+      dropPiece();
+    }
+  };
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    props.socket.emit('getNextPieces', props.game_id);
-    props.socket.on('getNextPieces', function (data) {
-      console.log(data);
-    }); // props.socket.on('gameStarted', (data) => {
+    startGame(); // props.socket.emit('generatePieces', {id: props.game_id});
+    // props.socket.on('getPieces', (data) => {
+    //     console.log(pieces);
+    //     if (pieces.length === 0 || pieces[0] === '0') {
+    //         console.log(data.pieces);
+    //         setPieces(data.pieces);
+    //         console.log(pieces);
+    //     }
+    //     console.log(pieces[0].shape);
+    //     // usePiece(pieces[0].shape)
+    // });
+    // props.socket.on('gameStarted', (data) => {
     //     props.socket.emit('getNextPieces');
     // });
     // props.socket.on('getNextPieces', (data) => {
     //
     // });
-  });
+  }, []);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "flex_centered"
+    tabIndex: "0",
+    className: "flex_centered",
+    onKeyDown: function onKeyDown(e) {
+      return move(e);
+    }
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "field"
-  }, props.field.map(function (row) {
-    return row.map(function (cell, x) {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Cell__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        key: x,
-        type: cell[0]
-      });
-    });
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    field: field
   })));
 };
 
@@ -654,28 +759,32 @@ var useField = function useField(piece, resetPiece) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     var updateField = function updateField(prevField) {
-      // flush the field
+      // clear field from the previous render
       var newField = prevField.map(function (row) {
         return row.map(function (cell) {
-          return cell[1] === '0' ? [0, '0'] : cell;
+          return cell[1] === 'empty' ? [0, 'empty'] : cell;
         });
       }); // draw the tetromino
 
       piece.tetromino.forEach(function (row, y) {
         row.forEach(function (value, x) {
           if (value !== 0) {
-            newField[y + piece.position.y][x + piece.position.x] = [value //todo merge clear
-            ];
+            newField[y + piece.position.y][x + piece.position.x] = [value, 'empty', "".concat(piece.collided ? 'filled' : 'empty')];
           }
         });
       });
+
+      if (piece.collided) {
+        resetPiece();
+      }
+
       return newField;
     };
 
     setField(function (prev) {
       return updateField(prev);
     });
-  }, [piece.position.x, piece.position.y, piece.tetromino]);
+  }, [piece, resetPiece]);
   return [field, setField];
 };
 
@@ -713,29 +822,44 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var usePiece = function usePiece(tetromino) {
+  // console.log('tetrominoes[' + tetromino + ']', tetrominoes[tetromino]);
+  // console.log('tetrominoes[' + tetromino + '].shape', tetrominoes[tetromino].shape);
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
     position: {
       x: 0,
       y: 0
     },
-    tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape
+    tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape,
+    collided: false
   }),
       _useState2 = _slicedToArray(_useState, 2),
       piece = _useState2[0],
       setPiece = _useState2[1];
+  /**
+   * @param x
+   * @param y
+   */
+
 
   var updatePiecePosition = function updatePiecePosition(_ref) {
     var x = _ref.x,
-        y = _ref.y;
+        y = _ref.y,
+        collided = _ref.collided;
     setPiece(function (prev) {
       return _objectSpread({}, prev, {
         position: {
           x: prev.position.x += x,
           y: prev.position.y += y
-        }
+        },
+        collided: collided
       });
     });
   };
+  /**
+   * Tetromino is a character here
+   * @param tetromino
+   */
+
 
   var resetPiece = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (tetromino) {
     setPiece({
@@ -744,7 +868,8 @@ var usePiece = function usePiece(tetromino) {
         // to position the piece in the middle of game field
         y: 0
       },
-      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape
+      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__["default"][tetromino].shape,
+      collided: false
     });
   }, []);
   return [piece, updatePiecePosition, resetPiece];
@@ -3281,7 +3406,7 @@ module.exports = function(a, b){
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
 
 
 /***/ }),
@@ -50736,6 +50861,9 @@ store.subscribe(function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 var tetrominoes = {
+  '0': {
+    shape: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+  },
   'I': {
     shape: [['I', 'I', 'I', 'I'], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
   },
@@ -50743,7 +50871,7 @@ var tetrominoes = {
     shape: [['O', 'O'], ['O', 'O']]
   },
   'T': {
-    shape: [[0, 0, 0], ['T', 'T', 'T'], [0, 'T', 0]]
+    shape: [['T', 'T', 'T'], [0, 'T', 0], [0, 0, 0]]
   },
   'J': {
     shape: [['J', 'J', 'J'], [0, 0, 'J'], [0, 0, 0]]
@@ -50759,6 +50887,35 @@ var tetrominoes = {
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (tetrominoes);
+
+/***/ }),
+
+/***/ "./utils/checkCollision.js":
+/*!*********************************!*\
+  !*** ./utils/checkCollision.js ***!
+  \*********************************/
+/*! exports provided: checkCollision */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkCollision", function() { return checkCollision; });
+var checkCollision = function checkCollision(piece, field, _ref) {
+  var moveX = _ref.x,
+      moveY = _ref.y;
+
+  for (var y = 0; y < piece.tetromino.length; y++) {
+    for (var x = 0; x < piece.tetromino[y].length; x++) {
+      // check if we are on tetromino cell
+      if (piece.tetromino[y][x] !== 0) {
+        // check if we are in field boundaries
+        if (!field[y + piece.position.y + moveY] || !field[y + piece.position.y + moveY][x + piece.position.x + moveX] || field[y + piece.position.y + moveY][x + piece.position.x + moveX][1] !== 'empty') {
+          return true;
+        }
+      }
+    }
+  }
+};
 
 /***/ }),
 
@@ -50780,7 +50937,7 @@ var ROWS_AMOUNT = 20;
 var MINIMUM_ROWS_AMOUNT = 5;
 var createField = function createField() {
   return Array.from(Array(ROWS_AMOUNT), function () {
-    return new Array(COLUMN_AMOUNT).fill([0, '0']);
+    return new Array(COLUMN_AMOUNT).fill([0, 'empty']);
   });
 };
 

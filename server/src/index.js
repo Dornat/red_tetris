@@ -76,10 +76,12 @@ io.on('connection', (socket) => {
         socket.emit('leftGame', leftGame);
     });
 
-    socket.on('getNextPieces', function (gameId) {
-        let game = games[gameId];
+    socket.on('generatePieces', function (data) {
+        let game = games[data.id];
         let pieces = game.generatePieces(5);
-        socket.emit('getNextPieces', pieces);
+        console.log('pieces', pieces);
+        console.log(games);
+        socket.emit('getPieces', {pieces: pieces});
     })
 });
 
