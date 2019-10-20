@@ -6,11 +6,11 @@ export const useField = (piece, resetPiece) => {
 
     useEffect(() => {
         const updateField = prevField => {
-            // flush the field
+            // clear field from the previous render
             const newField = prevField.map(
                 row => {
                     return row.map(
-                        cell => (cell[1] === '0' ? [0, '0'] : cell)
+                        cell => (cell[1] === 'empty' ? [0, 'empty'] : cell)
                     )
                 }
             );
@@ -21,18 +21,23 @@ export const useField = (piece, resetPiece) => {
                     if (value !== 0) {
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
-                            //todo merge clear
+                            'empty',
+                            `${piece.collided ? 'filled' : 'empty'}`
                         ]
                     }
                 })
-            })
+            });
+
+            if (piece.collided) {
+                resetPiece();
+            }
 
             return newField;
         };
 
         setField(prev => updateField(prev));
 
-    }, [piece.position.x, piece.position.y, piece.tetromino]);
+    }, [piece, resetPiece]);
 
     return [field, setField];
 };
