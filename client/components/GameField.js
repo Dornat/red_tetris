@@ -21,7 +21,7 @@ const GameField = (props) => {
 
     console.log('re-render');
 
-    const movePiece = direction => {
+    const movePieceHorizontally = direction => {
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
             updatePiecePosition({x: direction, y: 0});
         }
@@ -34,7 +34,16 @@ const GameField = (props) => {
     };
 
     const drop = () => {
-        updatePiecePosition({x: 0, y: 1, collided: false});
+        if (!checkCollision(piece, field, {x: 0, y: 1})) {
+            updatePiecePosition({x: 0, y: 1, collided: false});
+        } else {
+            if (piece.position.y < 1) {
+                console.log('game over, nice run');
+                setGameOver(true);
+                setDropTime(null);
+            }
+            updatePiecePosition({x: 0, y: 0, collided: true});
+        }
     };
 
     const dropPiece = () => {
@@ -42,10 +51,11 @@ const GameField = (props) => {
     };
 
     const move = (e) => {
+        // TODO game over check
         if (e.keyCode === 72 || e.keyCode === 37) {
-            movePiece(-1);
+            movePieceHorizontally(-1); // move to the left
         } else if (e.keyCode === 76 || e.keyCode === 39) {
-            movePiece(1);
+            movePieceHorizontally(1); // move to the right
         } else if (e.keyCode === 74 || e.keyCode === 40) {
             dropPiece();
         }
