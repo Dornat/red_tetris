@@ -75,6 +75,14 @@ io.on('connection', (socket) => {
 
         socket.emit('leftGame', leftGame);
     });
+
+    socket.on('generatePieces', function (data) {
+        let game = games[data.id];
+        let pieces = game.generatePieces(5);
+        console.log('pieces', pieces);
+        console.log(games);
+        socket.emit('getPieces', {pieces: pieces});
+    })
 });
 
 

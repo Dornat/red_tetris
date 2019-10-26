@@ -3,8 +3,6 @@ import {connect} from "react-redux";
 import Cell from './Cell';
 
 const Field = ({field}) => {
-
-    console.log(field);
     return (
         <div className="field">
             {field.map(
