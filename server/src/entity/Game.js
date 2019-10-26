@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import Player from './Player';
+import Piece from './Piece';
 
 class Game {
     /**
@@ -81,6 +82,20 @@ class Game {
             }
         }
         return false;
+    }
+
+    /**
+     * Generates array with random pieces
+     * @param {int} numberOfPieces
+     * @returns {array}
+     */
+    generatePieces(numberOfPieces) {
+        let pieces = [];
+        for (let i = 0; i < numberOfPieces; i++) {
+            pieces.push(new Piece());
+        }
+
+        return pieces;
     }
 
 

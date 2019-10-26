@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 
-const Cell = (props) => {
+const Cell = ({type}) => {
 
     return (
-        <div className="cell">
+        <div className={type === 0 ? 'cell' : 'cell filled'}>
         </div>
     );
 };
