@@ -54,6 +54,9 @@ body
   width: 250px;
   height: 100%;
   background: #eceded;
+  justify-content: space-between;
+  flex-direction: column;
+  display: flex;
 }
 
 .game__container
@@ -81,5 +84,20 @@ body
     border: 3px solid black;
     font-weight: 900;
     padding: 12px 15px;
+  }
+}
+
+.enemy__field
+{
+  background: #71b9b7;
+  width: 160px;
+  height: 320px;
+}
+
+.room-management__btns
+{
+  text-align: center;
+  button {
+    margin: 0 0 15px 0;
   }
 }

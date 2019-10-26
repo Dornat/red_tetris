@@ -287,7 +287,7 @@ var Dashboard = function Dashboard(props) {
       setBtnDisability(true);
       props.socket.on('gameCreated', function (game_id) {
         props.createRoom(game_id);
-        props.history.push('/room');
+        props.history.push('/room/' + game_id);
       });
     }
   };
@@ -603,21 +603,22 @@ var mapStateToProps = function mapStateToProps(state) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-copy-to-clipboard */ "./node_modules/react-copy-to-clipboard/lib/index.js");
+/* harmony import */ var react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__);
+
 
 
 var GameLink = function GameLink(props) {
   var buttonLabel = "<>";
-  console.log(window.location.href);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
     className: "label text-uppercase"
   }, "Invite link"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game__link"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.game_id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.game_id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__["CopyToClipboard"], {
+    text: window.location.origin + "/room/" + props.game_id
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "nes-btn is-primary"
-  }, buttonLabel), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "hidden",
-    value: ""
-  })));
+  }, buttonLabel))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (GameLink);
@@ -642,6 +643,27 @@ var Loader = function Loader() {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Loader);
+
+/***/ }),
+
+/***/ "./components/NotFound.js":
+/*!********************************!*\
+  !*** ./components/NotFound.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var NotFound = function NotFound() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Not Found");
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (NotFound);
 
 /***/ }),
 
@@ -685,7 +707,8 @@ var Room = function Room(props) {
       setGameExists = _useState2[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (props.game_id === null) {
+    /* TODO Finish logic */
+    if (props.game_id === null || props.user === '' || props.user === null) {
       props.history.push('/');
     }
 
@@ -703,7 +726,8 @@ var Room = function Room(props) {
     })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "room-management__container"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      game_id: props.game_id
+      game_id: props.game_id,
+      socket: props.socket
     })));
   };
 
@@ -712,6 +736,7 @@ var Room = function Room(props) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    user: state.user.nickname,
     game_id: state.game.id
   };
 };
@@ -732,6 +757,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _GameLink__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameLink */ "./components/GameLink.js");
+/* harmony import */ var _RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RoomManagementBtns */ "./components/RoomManagementBtns.js");
+
 
 
 
@@ -740,10 +767,41 @@ var RoomManagement = function RoomManagement(props) {
     className: "room__management"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_1__["default"], {
     game_id: props.game_id
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "enemy__field"
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    socket: props.socket
   }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (RoomManagement);
+
+/***/ }),
+
+/***/ "./components/RoomManagementBtns.js":
+/*!******************************************!*\
+  !*** ./components/RoomManagementBtns.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var RoomManagementBtns = function RoomManagementBtns(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "room-management__btns"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "nes-btn"
+  }, "Start"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "nes-btn"
+  }, "Dashboard"));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (RoomManagementBtns);
 
 /***/ }),
 
@@ -763,10 +821,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hoc/InitSockets */ "./components/hoc/InitSockets.js");
 /* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
 /* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
+/* harmony import */ var _NotFound__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NotFound */ "./components/NotFound.js");
 
  // Higher Order Components
 
  // Components
+
 
 
 
@@ -777,8 +837,11 @@ function Router(props) {
     component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Dashboard__WEBPACK_IMPORTED_MODULE_3__["default"])
   }), "}/>", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
-    path: "/room",
+    path: "/room/:game_id",
     component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Room__WEBPACK_IMPORTED_MODULE_4__["default"])
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+    path: "*",
+    component: _NotFound__WEBPACK_IMPORTED_MODULE_5__["default"]
   }));
 }
 
@@ -3484,6 +3547,112 @@ module.exports = function(a, b){
 
 /***/ }),
 
+/***/ "./node_modules/copy-to-clipboard/index.js":
+/*!*************************************************!*\
+  !*** ./node_modules/copy-to-clipboard/index.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var deselectCurrent = __webpack_require__(/*! toggle-selection */ "./node_modules/toggle-selection/index.js");
+
+var defaultMessage = "Copy to clipboard: #{key}, Enter";
+
+function format(message) {
+  var copyKey = (/mac os x/i.test(navigator.userAgent) ? "⌘" : "Ctrl") + "+C";
+  return message.replace(/#{\s*key\s*}/g, copyKey);
+}
+
+function copy(text, options) {
+  var debug,
+    message,
+    reselectPrevious,
+    range,
+    selection,
+    mark,
+    success = false;
+  if (!options) {
+    options = {};
+  }
+  debug = options.debug || false;
+  try {
+    reselectPrevious = deselectCurrent();
+
+    range = document.createRange();
+    selection = document.getSelection();
+
+    mark = document.createElement("span");
+    mark.textContent = text;
+    // reset user styles for span element
+    mark.style.all = "unset";
+    // prevents scrolling to the end of the page
+    mark.style.position = "fixed";
+    mark.style.top = 0;
+    mark.style.clip = "rect(0, 0, 0, 0)";
+    // used to preserve spaces and line breaks
+    mark.style.whiteSpace = "pre";
+    // do not inherit user-select (it may be `none`)
+    mark.style.webkitUserSelect = "text";
+    mark.style.MozUserSelect = "text";
+    mark.style.msUserSelect = "text";
+    mark.style.userSelect = "text";
+    mark.addEventListener("copy", function(e) {
+      e.stopPropagation();
+      if (options.format) {
+        e.preventDefault();
+        e.clipboardData.clearData();
+        e.clipboardData.setData(options.format, text);
+      }
+    });
+
+    document.body.appendChild(mark);
+
+    range.selectNodeContents(mark);
+    selection.addRange(range);
+
+    var successful = document.execCommand("copy");
+    if (!successful) {
+      throw new Error("copy command was unsuccessful");
+    }
+    success = true;
+  } catch (err) {
+    debug && console.error("unable to copy using execCommand: ", err);
+    debug && console.warn("trying IE specific stuff");
+    try {
+      window.clipboardData.setData(options.format || "text", text);
+      success = true;
+    } catch (err) {
+      debug && console.error("unable to copy using clipboardData: ", err);
+      debug && console.error("falling back to prompt");
+      message = format("message" in options ? options.message : defaultMessage);
+      window.prompt(message, text);
+    }
+  } finally {
+    if (selection) {
+      if (typeof selection.removeRange == "function") {
+        selection.removeRange(range);
+      } else {
+        selection.removeAllRanges();
+      }
+    }
+
+    if (mark) {
+      document.body.removeChild(mark);
+    }
+    reselectPrevious();
+  }
+
+  return success;
+}
+
+module.exports = copy;
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./sass/main.scss":
 /*!*****************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./sass/main.scss ***!
@@ -3493,7 +3662,7 @@ module.exports = function(a, b){
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\n.enemy__field {\n  background: #71b9b7;\n  width: 160px;\n  height: 320px; }\n\n.room-management__btns {\n  text-align: center; }\n  .room-management__btns button {\n    margin: 0 0 15px 0; }\n", ""]);
 
 
 /***/ }),
@@ -11018,6 +11187,124 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 module.exports = ReactPropTypesSecret;
 
+
+/***/ }),
+
+/***/ "./node_modules/react-copy-to-clipboard/lib/Component.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/react-copy-to-clipboard/lib/Component.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CopyToClipboard = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _copyToClipboard = __webpack_require__(/*! copy-to-clipboard */ "./node_modules/copy-to-clipboard/index.js");
+
+var _copyToClipboard2 = _interopRequireDefault(_copyToClipboard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CopyToClipboard = exports.CopyToClipboard = function (_React$PureComponent) {
+  _inherits(CopyToClipboard, _React$PureComponent);
+
+  function CopyToClipboard() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, CopyToClipboard);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CopyToClipboard.__proto__ || Object.getPrototypeOf(CopyToClipboard)).call.apply(_ref, [this].concat(args))), _this), _this.onClick = function (event) {
+      var _this$props = _this.props,
+          text = _this$props.text,
+          onCopy = _this$props.onCopy,
+          children = _this$props.children,
+          options = _this$props.options;
+
+
+      var elem = _react2.default.Children.only(children);
+
+      var result = (0, _copyToClipboard2.default)(text, options);
+
+      if (onCopy) {
+        onCopy(text, result);
+      }
+
+      // Bypass onClick if it was present
+      if (elem && elem.props && typeof elem.props.onClick === 'function') {
+        elem.props.onClick(event);
+      }
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(CopyToClipboard, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          _text = _props.text,
+          _onCopy = _props.onCopy,
+          _options = _props.options,
+          children = _props.children,
+          props = _objectWithoutProperties(_props, ['text', 'onCopy', 'options', 'children']);
+
+      var elem = _react2.default.Children.only(children);
+
+      return _react2.default.cloneElement(elem, _extends({}, props, { onClick: this.onClick }));
+    }
+  }]);
+
+  return CopyToClipboard;
+}(_react2.default.PureComponent);
+
+CopyToClipboard.defaultProps = {
+  onCopy: undefined,
+  options: undefined
+};
+
+/***/ }),
+
+/***/ "./node_modules/react-copy-to-clipboard/lib/index.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/react-copy-to-clipboard/lib/index.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _require = __webpack_require__(/*! ./Component */ "./node_modules/react-copy-to-clipboard/lib/Component.js"),
+    CopyToClipboard = _require.CopyToClipboard;
+
+CopyToClipboard.CopyToClipboard = CopyToClipboard;
+module.exports = CopyToClipboard;
 
 /***/ }),
 
@@ -40845,7 +41132,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50520,6 +50807,56 @@ function toArray(list, index) {
 
     return array
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/toggle-selection/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/toggle-selection/index.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+module.exports = function () {
+  var selection = document.getSelection();
+  if (!selection.rangeCount) {
+    return function () {};
+  }
+  var active = document.activeElement;
+
+  var ranges = [];
+  for (var i = 0; i < selection.rangeCount; i++) {
+    ranges.push(selection.getRangeAt(i));
+  }
+
+  switch (active.tagName.toUpperCase()) { // .toUpperCase handles XHTML
+    case 'INPUT':
+    case 'TEXTAREA':
+      active.blur();
+      break;
+
+    default:
+      active = null;
+      break;
+  }
+
+  selection.removeAllRanges();
+  return function () {
+    selection.type === 'Caret' &&
+    selection.removeAllRanges();
+
+    if (!selection.rangeCount) {
+      ranges.forEach(function(range) {
+        selection.addRange(range);
+      });
+    }
+
+    active &&
+    active.focus();
+  };
+};
 
 
 /***/ }),

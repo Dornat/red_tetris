@@ -26,7 +26,7 @@ const Dashboard = (props) => {
 
             props.socket.on('gameCreated', (game_id) => {
                 props.createRoom(game_id);
-                props.history.push('/room');
+                props.history.push('/room/' + game_id);
             });
         }
     };
