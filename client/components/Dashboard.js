@@ -9,26 +9,41 @@ const Dashboard = (props) => {
     const [isError, setError] = useState(false);
     const [isCreateRoomBtnDisabled, setBtnDisability] = useState(false);
 
+    const [form, setValues] = useState({
+        user: props.user || ''
+    });
+
     const createRoom = (e) => {
-        if (!props.user.length) {
-            setError(true)
+
+        setValues({user: props.user});
+
+        if (!props.user) {
+            setError(true);
         }
+        else {
+            props.socket.emit('createGame', props.user);
+            setBtnDisability(true);
 
-        props.socket.emit('createGame', props.user);
-        setBtnDisability(true);
+            props.socket.on('gameCreated', (game_id) => {
+                props.createRoom(game_id);
+                props.history.push('/room');
+            });
+        }
+    };
 
-        props.socket.on('gameCreated', (game_id) => {
-            props.createRoom(game_id);
-            props.history.push('/room');
+    const onChange = (e) => {
+        setValues({
+            [e.target.name]: e.target.value,
         });
     };
+
 
     return (
         <main>
             <div className="flex_centered">
                 <div className="row">
                     <div className="col">
-                        <FormNickname user={props.user} isError={isError} setError={setError}/>
+                        <FormNickname form={form} isError={isError} setError={setError} setValues={setValues} onChange={onChange}/>
                     </div>
                 </div>
                 <div className="row dashboard__menu">
