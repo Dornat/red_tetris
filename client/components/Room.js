@@ -11,7 +11,8 @@ const Room = (props) => {
     const [isGameExists, setGameExists] = useState(false);
 
     useEffect(() => {
-        if (props.game_id === null) {
+        /* TODO Finish logic */
+        if (props.game_id === null || props.user === '' || props.user === null) {
             props.history.push('/');
         }
         setGameExists(true);
@@ -25,7 +26,7 @@ const Room = (props) => {
                     <GameField field={createField()} socket={props.socket}/>
                 </div>
                 <div className="room-management__container">
-                    <RoomManagement game_id={props.game_id}/>
+                    <RoomManagement game_id={props.game_id} socket={props.socket}/>
                 </div>
             </div>
         );
@@ -36,6 +37,7 @@ const Room = (props) => {
 
 const mapStateToProps = (state) => {
     return {
+        user: state.user.nickname,
         game_id: state.game.id
     }
 };
