@@ -1,10 +1,11 @@
 import React from 'react';
+import GameLink from './GameLink';
 
 const RoomManagement = (props) => {
 
     return (
       <div className="room__management">
-          <h1>Link</h1>
+          <GameLink game_id={props.game_id}/>
       </div>
     );
 

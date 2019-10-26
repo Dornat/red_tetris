@@ -241,6 +241,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -266,17 +268,32 @@ var Dashboard = function Dashboard(props) {
       isCreateRoomBtnDisabled = _useState4[0],
       setBtnDisability = _useState4[1];
 
-  var createRoom = function createRoom(e) {
-    if (!props.user.length) {
-      setError(true);
-    }
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
+    user: props.user || ''
+  }),
+      _useState6 = _slicedToArray(_useState5, 2),
+      form = _useState6[0],
+      setValues = _useState6[1];
 
-    props.socket.emit('createGame', props.user);
-    setBtnDisability(true);
-    props.socket.on('gameCreated', function (game_id) {
-      props.createRoom(game_id);
-      props.history.push('/room');
+  var createRoom = function createRoom(e) {
+    setValues({
+      user: props.user
     });
+
+    if (!props.user) {
+      setError(true);
+    } else {
+      props.socket.emit('createGame', props.user);
+      setBtnDisability(true);
+      props.socket.on('gameCreated', function (game_id) {
+        props.createRoom(game_id);
+        props.history.push('/room');
+      });
+    }
+  };
+
+  var onChange = function onChange(e) {
+    setValues(_defineProperty({}, e.target.name, e.target.value));
   };
 
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -286,9 +303,11 @@ var Dashboard = function Dashboard(props) {
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Form_FormNickname__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    user: props.user,
+    form: form,
     isError: isError,
-    setError: setError
+    setError: setError,
+    setValues: setValues,
+    onChange: onChange
   }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row dashboard__menu"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -372,53 +391,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _actions_userActions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../actions/userActions */ "./actions/userActions.js");
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 
 
 var FormNickname = function FormNickname(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
-    user: props.user || ''
-  }),
-      _useState2 = _slicedToArray(_useState, 2),
-      form = _useState2[0],
-      setValues = _useState2[1];
-
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])("nes-input nickname__input"),
-      _useState4 = _slicedToArray(_useState3, 2),
-      inputClass = _useState4[0],
-      setClass = _useState4[1];
-
   var _onSubmit = function onSubmit(e) {
     e.preventDefault();
 
-    if (form.user.length) {
+    if (!props.form.user.length) {
+      props.setError(true);
+    } else {
       props.setError(false);
-      setClass("nes-input nickname__input");
     }
 
-    props.setUser(form.user);
+    props.setUser(props.form.user);
   };
 
-  var _onChange = function onChange(e) {
-    setValues(_defineProperty({}, e.target.name, e.target.value));
-  };
-
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (props.isError) {
-      setClass("nes-input is-error nickname__input");
-    }
-  });
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     className: "form__nickname",
     onSubmit: function onSubmit(event) {
@@ -431,11 +420,11 @@ var FormNickname = function FormNickname(props) {
   }, "Enter your nickname"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "text",
     name: "user",
-    className: inputClass,
+    className: props.isError ? "nes-input is-error nickname__input" : "nes-input nickname__input",
     onChange: function onChange(event) {
-      return _onChange(event);
+      return props.onChange(event);
     },
-    value: form.user
+    value: props.form.user
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "submit",
     className: "nes-btn is-primary",
@@ -603,6 +592,59 @@ var mapStateToProps = function mapStateToProps(state) {
 
 /***/ }),
 
+/***/ "./components/GameLink.js":
+/*!********************************!*\
+  !*** ./components/GameLink.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var GameLink = function GameLink(props) {
+  var buttonLabel = "<>";
+  console.log(window.location.href);
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    className: "label text-uppercase"
+  }, "Invite link"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "game__link"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.game_id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "nes-btn is-primary"
+  }, buttonLabel), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "hidden",
+    value: ""
+  })));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (GameLink);
+
+/***/ }),
+
+/***/ "./components/Loader.js":
+/*!******************************!*\
+  !*** ./components/Loader.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var Loader = function Loader() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "LOADER");
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Loader);
+
+/***/ }),
+
 /***/ "./components/Room.js":
 /*!****************************!*\
   !*** ./components/Room.js ***!
@@ -617,25 +659,64 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _RoomManagement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomManagement */ "./components/RoomManagement.js");
 /* harmony import */ var _GameField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GameField */ "./components/GameField.js");
 /* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Loader */ "./components/Loader.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
 
 
 
 
 
 var Room = function Room(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "game__container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
-    socket: props.socket
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "room-management__container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], null)));
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isGameExists = _useState2[0],
+      setGameExists = _useState2[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    if (props.game_id === null) {
+      props.history.push('/');
+    }
+
+    setGameExists(true);
+  });
+
+  var renderOnGame = function renderOnGame() {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "row"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "game__container"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
+      socket: props.socket
+    })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "room-management__container"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      game_id: props.game_id
+    })));
+  };
+
+  return isGameExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_6__["default"], null);
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Room);
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    game_id: state.game.id
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_4__["connect"])(mapStateToProps, null)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["withRouter"])(Room)));
 
 /***/ }),
 
@@ -650,12 +731,16 @@ var Room = function Room(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _GameLink__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameLink */ "./components/GameLink.js");
+
 
 
 var RoomManagement = function RoomManagement(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "room__management"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Link"));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    game_id: props.game_id
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (RoomManagement);
@@ -679,7 +764,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
 /* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
 
+ // Higher Order Components
 
+ // Components
 
 
 
@@ -3406,7 +3493,7 @@ module.exports = function(a, b){
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n", ""]);
 
 
 /***/ }),
@@ -50711,7 +50798,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var initialState = {
-  nickname: null
+  nickname: ''
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
