@@ -510,7 +510,7 @@ var GameField = function GameField(props) {
 
   console.log('re-render');
 
-  var movePiece = function movePiece(direction) {
+  var movePieceHorizontally = function movePieceHorizontally(direction) {
     if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
       x: direction,
       y: 0
@@ -529,11 +529,28 @@ var GameField = function GameField(props) {
   };
 
   var drop = function drop() {
-    updatePiecePosition({
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
       x: 0,
-      y: 1,
-      collided: false
-    });
+      y: 1
+    })) {
+      updatePiecePosition({
+        x: 0,
+        y: 1,
+        collided: false
+      });
+    } else {
+      if (piece.position.y < 1) {
+        console.log('game over, nice run');
+        setGameOver(true);
+        setDropTime(null);
+      }
+
+      updatePiecePosition({
+        x: 0,
+        y: 0,
+        collided: true
+      });
+    }
   };
 
   var dropPiece = function dropPiece() {
@@ -541,10 +558,11 @@ var GameField = function GameField(props) {
   };
 
   var move = function move(e) {
+    // TODO game over check
     if (e.keyCode === 72 || e.keyCode === 37) {
-      movePiece(-1);
+      movePieceHorizontally(-1); // move to the left
     } else if (e.keyCode === 76 || e.keyCode === 39) {
-      movePiece(1);
+      movePieceHorizontally(1); // move to the right
     } else if (e.keyCode === 74 || e.keyCode === 40) {
       dropPiece();
     }
