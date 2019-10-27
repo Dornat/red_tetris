@@ -5,16 +5,8 @@ import * as path from 'path';
 import http from 'http';
 import socket from 'socket.io';
 
-
 import Game from './entity/Game';
 import Player from './entity/Player';
-
-/**
- * Global games object
- * @type {{}}
- */
-let games = {};
-
 
 // For .env file to work
 dotenv.config();
@@ -35,22 +27,51 @@ const database = new Database({
 const socketServer = http.Server(server.app);
 const io = socket(socketServer);
 
+/**
+ * Global games object
+ * @type {{}}
+ */
+const games = {};
+const players = [];
+
 socketServer.listen(process.env.IO_SERVER_PORT);
 
 io.on('connection', (socket) => {
-    socket.on('createGame', function (playerName) {
+    socket.on('createGame', (playerName) => {
         let player = new Player(playerName);
         let game = new Game(player);
 
         games[game.id] = game;
-
+        players.push(player);
         socket.emit('gameCreated', game.id);
+    });
+
+    socket.on("isGameStarted", (game_id) => {
+        if (games[game_id] === undefined) {
+            socket.emit("gameStatus", undefined);
+        }
+
+        if (games[game_id]) {
+            socket.emit("gameStatus", {isGameStarted: games[game_id].isGameStarted})
+        }
+
+    });
+
+    socket.on("startGame", (game_id) => {
+        if (games[game_id] === undefined) {
+            socket.emit("gameStatus", undefined);
+        }
+
+        if (games[game_id]) {
+            games[game_id].startGame();
+            socket.emit("gameStarted", {game_id: game_id});
+        }
     });
 
     /**
      * Only the leader can kick his opponent, so we need to know only gameId
      */
-    socket.on('kickPlayer', function (gameId) {
+    socket.on('kickPlayer', (gameId) => {
         /** @param {Game} game */
         let game = games[gameId];
         let playerWasKicked = game.kickPlayer();
@@ -58,7 +79,7 @@ io.on('connection', (socket) => {
         socket.emit('playerWasKicked', playerWasKicked);
     });
 
-    socket.on('acceptPlayer', function (playerName, gameId) {
+    socket.on('acceptPlayer', (playerName, gameId) => {
         let game = games[gameId];
         let newPlayer = new Player(playerName, false);
         let playerWasAccepted = game.addPlayer(newPlayer);
@@ -66,21 +87,24 @@ io.on('connection', (socket) => {
         socket.emit('playerWasAccepted', playerWasAccepted);
     });
 
-    /**
-     * TODO maybe it's better to use playerId
-     */
-    socket.on('leaveGame', function (playerName, gameId) {
-        let game = games[gameId];
-        let leftGame = game.exitFromGame(playerName);
+    socket.on('leaveGame', (data) => {
+        let game_id = data.game_id;
+        let game = games[game_id];
+        let result = game.exitFromGame(data.nickname);
 
-        socket.emit('leftGame', leftGame);
+        console.log("RESULT", result);
+
+        if (!games[game_id].players.length) {
+            delete games[game_id];
+        }
+
+        socket.emit('leftGame', result);
     });
 
-    socket.on('generatePieces', function (data) {
+    socket.on('generatePieces', (data) => {
         let game = games[data.id];
         let pieces = game.generatePieces(5);
-        console.log('pieces', pieces);
-        console.log(games);
+
         socket.emit('getPieces', {pieces: pieces});
     })
 });

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import FormNickname from "./Form/FormNickname";
-import {createRoom} from "../actions/gameActions";
+import {createRoomAction} from "../actions/gameActions";
 import {connect} from "react-redux";
 import {withRouter} from 'react-router-dom';
 
@@ -25,7 +25,7 @@ const Dashboard = (props) => {
             setBtnDisability(true);
 
             props.socket.on('gameCreated', (game_id) => {
-                props.createRoom(game_id);
+                props.createRoomAction(game_id);
                 props.history.push('/room/' + game_id);
             });
         }
@@ -67,8 +67,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        createRoom: (user) => {
-            dispatch(createRoom(user))
+        createRoomAction: (user) => {
+            dispatch(createRoomAction(user))
         }
     }
 
