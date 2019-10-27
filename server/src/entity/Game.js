@@ -13,6 +13,13 @@ class Game {
         this.leader = player;
 
         // Возможно что-то еще
+        this.isGameStarted = false;
+    }
+
+    startGame() {
+        if (this.isGameStarted === false) {
+            this.isGameStarted = true;
+        }
     }
 
     /**
@@ -38,9 +45,11 @@ class Game {
     removePlayer(player) {
         let playerIndex = this.players.indexOf(player);
         this.players.splice(playerIndex, 1);
-        if (player.isLeader) {
+        if (player.isLeader && this.players.length) {
             this.promoteToLeader(this.players[0]);
         }
+        console.log("RETURNING TRUE");
+        return true;
     }
 
     /**
@@ -75,13 +84,15 @@ class Game {
      * @returns {boolean}
      */
     exitFromGame(playerName) {
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].nickname === playerName) {
-                this.removePlayer(this.players[i]);
-                return true;
+
+        let success = false;
+
+        this.players.forEach((player) => {
+            if (player.nickname === playerName) {
+                success = this.removePlayer(player);
             }
-        }
-        return false;
+        });
+        return success;
     }
 
     /**
@@ -97,6 +108,7 @@ class Game {
 
         return pieces;
     }
+
 
 
     // enableLevelSystem(level) {

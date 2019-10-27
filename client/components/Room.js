@@ -23,7 +23,7 @@ const Room = (props) => {
         return (
             <div className="row">
                 <div className="game__container">
-                    <GameField field={createField()} socket={props.socket}/>
+                    <GameField field={createField()} socket={props.socket} game_id={props.game_id}/>
                 </div>
                 <div className="room-management__container">
                     <RoomManagement game_id={props.game_id} socket={props.socket}/>
@@ -41,6 +41,5 @@ const mapStateToProps = (state) => {
         game_id: state.game.id
     }
 };
-
 
 export default connect(mapStateToProps, null)(withRouter(Room));

@@ -90,18 +90,24 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createRoom */
+/*! exports provided: createRoomAction, startGameAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoom", function() { return createRoom; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
-function createRoom(id) {
+function createRoomAction(id) {
   return {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["CREATE_GAME"],
     id: id
+  };
+}
+function startGameAction() {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["START_GAME"]
   };
 }
 
@@ -111,15 +117,17 @@ function createRoom(id) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_USER", function() { return SET_USER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_GAME", function() { return CREATE_GAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "START_GAME", function() { return START_GAME; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
+var START_GAME = "START_GAME";
 
 /***/ }),
 
@@ -286,7 +294,7 @@ var Dashboard = function Dashboard(props) {
       props.socket.emit('createGame', props.user);
       setBtnDisability(true);
       props.socket.on('gameCreated', function (game_id) {
-        props.createRoom(game_id);
+        props.createRoomAction(game_id);
         props.history.push('/room/' + game_id);
       });
     }
@@ -333,8 +341,8 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
   return {
-    createRoom: function createRoom(user) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_2__["createRoom"])(user));
+    createRoomAction: function createRoomAction(user) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_2__["createRoomAction"])(user));
     }
   };
 };
@@ -463,6 +471,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
 /* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
 /* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -481,23 +490,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 var GameField = function GameField(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('L'),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('T'),
       _useState2 = _slicedToArray(_useState, 2),
       pieces = _useState2[0],
       setPieces = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      dropTime = _useState4[0],
-      setDropTime = _useState4[1];
+      isGameStarted = _useState4[0],
+      setGameStarted = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
       _useState6 = _slicedToArray(_useState5, 2),
-      gameOver = _useState6[0],
-      setGameOver = _useState6[1];
+      dropTime = _useState6[0],
+      setDropTime = _useState6[1];
 
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])('L'),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      gameOver = _useState8[0],
+      setGameOver = _useState8[1];
+
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])('O'),
       _usePiece2 = _slicedToArray(_usePiece, 3),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
@@ -551,7 +566,15 @@ var GameField = function GameField(props) {
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    startGame(); // props.socket.emit('generatePieces', {id: props.game_id});
+    var socket = props.socket;
+    var game_id = props.game_id;
+    socket.on("gameStarted", function (response) {
+      if (response.game_id === game_id) {
+        setGameStarted(true);
+        props.startGameAction();
+      }
+    }); // startGame();
+    // props.socket.emit('generatePieces', {id: props.game_id});
     // props.socket.on('getPieces', (data) => {
     //     console.log(pieces);
     //     if (pieces.length === 0 || pieces[0] === '0') {
@@ -582,13 +605,15 @@ var GameField = function GameField(props) {
   })));
 };
 
-var mapStateToProps = function mapStateToProps(state) {
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    game_id: state.game.id
+    startGameAction: function startGameAction() {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_9__["startGameAction"])());
+    }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, null)(GameField));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(null, mapDispatchToProps)(GameField));
 
 /***/ }),
 
@@ -722,7 +747,8 @@ var Room = function Room(props) {
       className: "game__container"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
       field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
-      socket: props.socket
+      socket: props.socket,
+      game_id: props.game_id
     })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "room-management__container"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -770,7 +796,8 @@ var RoomManagement = function RoomManagement(props) {
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "enemy__field"
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    socket: props.socket
+    socket: props.socket,
+    game_id: props.game_id
   }));
 };
 
@@ -789,19 +816,116 @@ var RoomManagement = function RoomManagement(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
 
 
 var RoomManagementBtns = function RoomManagementBtns(props) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "room-management__btns"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "nes-btn"
-  }, "Start"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "nes-btn"
-  }, "Dashboard"));
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(props.isGameStarted || false),
+      _useState2 = _slicedToArray(_useState, 2),
+      isGameStarted = _useState2[0],
+      setGameStarted = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(props.isLeader || false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isLeader = _useState4[0],
+      setLeader = _useState4[1];
+
+  var onClickStartGame = function onClickStartGame() {
+    var socket = props.socket;
+    var game_id = props.game_id;
+    socket.emit("startGame", game_id);
+    socket.on("gameStarted", function (response) {
+      if (response.game_id === game_id) {
+        setGameStarted(true);
+        props.startGameAction();
+      }
+    });
+  };
+
+  var onClickPause = function onClickPause(e) {
+    console.log("PAUSE");
+  };
+
+  var onClickToDashboard = function onClickToDashboard() {
+    var socket = props.socket;
+    var data = {
+      game_id: props.game_id,
+      nickname: props.user
+    };
+    socket.emit("leaveGame", data);
+    socket.on("leftGame", function (response) {
+      console.log("RESPONSE", response);
+
+      if (response) {
+        props.history.push("/");
+      }
+    });
+  };
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var socket = props.socket;
+    var game_id = props.game_id;
+    socket.emit("isGameStarted", game_id);
+    socket.on("gameStatus", function (response) {
+      if (response === undefined) {
+        props.history.push('/');
+      }
+    });
+  }, []);
+
+  if (isLeader) {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "room-management__btns"
+    }, isGameStarted ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: "nes-btn",
+      onClick: onClickPause
+    }, "Pause") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: "nes-btn",
+      onClick: onClickStartGame
+    }, "Start"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: "nes-btn",
+      onClick: onClickToDashboard
+    }, "Dashboard"));
+  } else {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "room-management__btns"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      className: "nes-btn",
+      onClick: onClickToDashboard
+    }, "Dashboard"));
+  }
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (RoomManagementBtns);
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    startGameAction: function startGameAction() {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_3__["startGameAction"])());
+    }
+  };
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.user.nickname,
+    isGameStarted: state.game.isGameStarted,
+    isLeader: state.game.isLeader
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["withRouter"])(RoomManagementBtns)));
 
 /***/ }),
 
@@ -41132,7 +41256,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
+/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51083,7 +51207,14 @@ var initialState = {
   switch (action.type) {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["CREATE_GAME"]:
       return _objectSpread({}, state, {
-        id: action.id
+        id: action.id,
+        isLeader: true,
+        isGameStarted: false
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_0__["START_GAME"]:
+      return _objectSpread({}, state, {
+        isGameStarted: true
       });
 
     default:

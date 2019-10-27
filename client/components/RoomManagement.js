@@ -8,7 +8,7 @@ const RoomManagement = (props) => {
       <div className="room__management">
           <GameLink game_id={props.game_id}/>
           <div className="enemy__field"/>
-          <RoomManagementBtns socket={props.socket}/>
+          <RoomManagementBtns socket={props.socket} game_id={props.game_id}/>
       </div>
     );
 

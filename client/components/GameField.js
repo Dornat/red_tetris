@@ -8,15 +8,17 @@ import Field from './Field';
 import {useField} from "../hooks/useField";
 import {usePiece} from "../hooks/usePiece";
 import {checkCollision} from "../utils/checkCollision";
+import {startGameAction} from "../actions/gameActions";
 
 const GameField = (props) => {
 
-    const [pieces, setPieces] = useState('L');
+    const [pieces, setPieces] = useState('T');
+    const [isGameStarted, setGameStarted] = useState(false);
 
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
 
-    const [piece, updatePiecePosition, resetPiece] = usePiece('L');
+    const [piece, updatePiecePosition, resetPiece] = usePiece('O');
     const [field, setField] = useField(piece, resetPiece);
 
     console.log('re-render');
@@ -52,7 +54,17 @@ const GameField = (props) => {
     };
 
     useEffect(() => {
-        startGame();
+
+        const socket = props.socket;
+        const game_id = props.game_id;
+
+        socket.on("gameStarted", (response) => {
+            if (response.game_id === game_id) {
+                setGameStarted(true);
+                props.startGameAction();
+            }
+        });
+        // startGame();
         // props.socket.emit('generatePieces', {id: props.game_id});
         // props.socket.on('getPieces', (data) => {
         //     console.log(pieces);
@@ -85,10 +97,12 @@ const GameField = (props) => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        game_id: state.game.id
+        startGameAction: () => {
+            dispatch(startGameAction())
+        }
     }
 };
 
-export default connect(mapStateToProps, null)(GameField);
+export default connect(null, mapDispatchToProps)(GameField);
