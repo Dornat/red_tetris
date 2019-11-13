@@ -3,8 +3,6 @@ import tetrominoes from '../utils/TetrominoesScheme';
 import {COLUMN_AMOUNT} from "../utils/createField";
 
 export const usePiece = (tetromino) => {
-    // console.log('tetrominoes[' + tetromino + ']', tetrominoes[tetromino]);
-    // console.log('tetrominoes[' + tetromino + '].shape', tetrominoes[tetromino].shape);
     const [piece, setPiece] = useState({
         position: {
             x: 0,
@@ -17,6 +15,7 @@ export const usePiece = (tetromino) => {
     /**
      * @param x
      * @param y
+     * @param collided
      */
     const updatePiecePosition = ({x, y, collided}) => {
         setPiece(prev => ({

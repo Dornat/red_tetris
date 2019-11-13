@@ -48,7 +48,6 @@ class Game {
         if (player.isLeader && this.players.length) {
             this.promoteToLeader(this.players[0]);
         }
-        console.log("RETURNING TRUE");
         return true;
     }
 

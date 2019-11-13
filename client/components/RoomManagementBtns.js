@@ -16,6 +16,7 @@ const RoomManagementBtns = (props) => {
         socket.emit("startGame", game_id);
 
         socket.on("gameStarted", (response) => {
+            console.log('in roomManagement');
             if (response.game_id === game_id) {
                 setGameStarted(true);
                 props.startGameAction();

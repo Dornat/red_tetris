@@ -12,14 +12,14 @@ import {startGameAction} from "../actions/gameActions";
 
 const GameField = (props) => {
 
-    const [pieces, setPieces] = useState('T');
+    const [pieces, setPieces] = useState([{shape: 0}]);
     const [isGameStarted, setGameStarted] = useState(false);
 
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
 
-    const [piece, updatePiecePosition, resetPiece] = usePiece('O');
-    const [field, setField] = useField(piece, resetPiece);
+    const [piece, updatePiecePosition, resetPiece] = usePiece(0);
+    const [field, setField] = useField(piece, resetPiece, pieces);
 
     console.log('re-render');
 
@@ -36,7 +36,22 @@ const GameField = (props) => {
     };
 
     const drop = () => {
-        updatePiecePosition({x: 0, y: 1, collided: false});
+        if (!checkCollision(piece, field, {x: 0, y: 1})) {
+            updatePiecePosition({x: 0, y: 1, collided: false});
+        } else {
+            console.log('I\'m in else');
+            console.log(pieces.length);
+            if (pieces.length === 0) {
+                console.log(props.game_id);
+                socket.emit('generatePieces', {id: props.game_id});
+                socket.on('getPieces', (data) => {
+                    setPieces(data.pieces);
+                    updatePiecePosition({x: 0, y: 0, collided: true});
+                });
+            } else {
+                updatePiecePosition({x: 0, y: 0, collided: true});
+            }
+        }
     };
 
     const dropPiece = () => {
@@ -53,17 +68,46 @@ const GameField = (props) => {
         }
     };
 
+    const socket = props.socket;
+    const game_id = props.game_id;
+
+    socket.on('gameStarted', (response) => {
+        if (response.game_id === game_id) {
+            setGameStarted(true);
+            props.startGameAction();
+            console.log('gameStarted socket');
+            socket.emit('generatePieces', {id: response.game_id});
+            socket.on('getPieces', (data) => {
+                setPieces(data.pieces);
+                console.log('pieces in gameStarted socket', pieces);
+                // updatePiecePosition({x: 0, y: 0, collided: false});
+                // resetPiece(pieces[0].shape);
+                console.log('piece in gameStarted socket', piece);
+            });
+        }
+    });
+    
     useEffect(() => {
-
-        const socket = props.socket;
-        const game_id = props.game_id;
-
-        socket.on("gameStarted", (response) => {
-            if (response.game_id === game_id) {
-                setGameStarted(true);
-                props.startGameAction();
-            }
-        });
+        console.log('useEffect');
+        resetPiece(pieces[0].shape);
+        console.log(piece);
+        // const socket = props.socket;
+        // const game_id = props.game_id;
+        //
+        // socket.on('gameStarted', (response) => {
+        //     if (response.game_id === game_id) {
+        //         setGameStarted(true);
+        //         props.startGameAction();
+        //         console.log('gameStarted socket');
+        //         socket.emit('generatePieces', {id: response.game_id});
+        //         socket.on('getPieces', (data) => {
+        //             console.log(pieces);
+        //             console.log(data.pieces);
+        //             setPieces('hello');
+        //             console.log(pieces);
+        //         });
+        //     }
+        // });
         // startGame();
         // props.socket.emit('generatePieces', {id: props.game_id});
         // props.socket.on('getPieces', (data) => {
@@ -85,7 +129,7 @@ const GameField = (props) => {
         //
         // });
 
-    }, []);
+    }, [pieces]);
 
 
     return (

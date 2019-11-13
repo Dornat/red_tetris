@@ -105,6 +105,8 @@ io.on('connection', (socket) => {
         let game = games[data.id];
         let pieces = game.generatePieces(5);
 
+        console.log('generating...');
+        console.log(pieces);
         socket.emit('getPieces', {pieces: pieces});
     })
 });
