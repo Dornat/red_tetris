@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {createField} from "../utils/createField";
 
-export const useField = (piece, resetPiece) => {
+export const useField = (piece, resetPiece, pieces) => {
     const [field, setField] = useState(createField());
 
     useEffect(() => {
@@ -29,7 +29,11 @@ export const useField = (piece, resetPiece) => {
             });
 
             if (piece.collided) {
-                resetPiece();
+                console.log('COLLIDED');
+                console.log(piece);
+                console.log(pieces);
+                resetPiece(pieces[0].shape);
+                pieces.shift();
             }
 
             return newField;
@@ -37,7 +41,7 @@ export const useField = (piece, resetPiece) => {
 
         setField(prev => updateField(prev));
 
-    }, [piece, resetPiece]);
+    }, [piece, resetPiece, pieces]);
 
     return [field, setField];
 };

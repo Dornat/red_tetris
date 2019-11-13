@@ -492,7 +492,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var GameField = function GameField(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('T'),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([{
+    shape: 0
+  }]),
       _useState2 = _slicedToArray(_useState, 2),
       pieces = _useState2[0],
       setPieces = _useState2[1];
@@ -512,13 +514,13 @@ var GameField = function GameField(props) {
       gameOver = _useState8[0],
       setGameOver = _useState8[1];
 
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])('O'),
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])(0),
       _usePiece2 = _slicedToArray(_usePiece, 3),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
       resetPiece = _usePiece2[2];
 
-  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece),
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece, pieces),
       _useField2 = _slicedToArray(_useField, 2),
       field = _useField2[0],
       setField = _useField2[1];
@@ -544,11 +546,40 @@ var GameField = function GameField(props) {
   };
 
   var drop = function drop() {
-    updatePiecePosition({
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
       x: 0,
-      y: 1,
-      collided: false
-    });
+      y: 1
+    })) {
+      updatePiecePosition({
+        x: 0,
+        y: 1,
+        collided: false
+      });
+    } else {
+      console.log('I\'m in else');
+      console.log(pieces.length);
+
+      if (pieces.length === 0) {
+        console.log(props.game_id);
+        socket.emit('generatePieces', {
+          id: props.game_id
+        });
+        socket.on('getPieces', function (data) {
+          setPieces(data.pieces);
+          updatePiecePosition({
+            x: 0,
+            y: 0,
+            collided: true
+          });
+        });
+      } else {
+        updatePiecePosition({
+          x: 0,
+          y: 0,
+          collided: true
+        });
+      }
+    }
   };
 
   var dropPiece = function dropPiece() {
@@ -565,15 +596,46 @@ var GameField = function GameField(props) {
     }
   };
 
+  var socket = props.socket;
+  var game_id = props.game_id;
+  socket.on('gameStarted', function (response) {
+    if (response.game_id === game_id) {
+      setGameStarted(true);
+      props.startGameAction();
+      console.log('gameStarted socket');
+      socket.emit('generatePieces', {
+        id: response.game_id
+      });
+      socket.on('getPieces', function (data) {
+        setPieces(data.pieces);
+        console.log('pieces in gameStarted socket', pieces); // updatePiecePosition({x: 0, y: 0, collided: false});
+        // resetPiece(pieces[0].shape);
+
+        console.log('piece in gameStarted socket', piece);
+      });
+    }
+  });
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    var socket = props.socket;
-    var game_id = props.game_id;
-    socket.on("gameStarted", function (response) {
-      if (response.game_id === game_id) {
-        setGameStarted(true);
-        props.startGameAction();
-      }
-    }); // startGame();
+    console.log('useEffect');
+    resetPiece(pieces[0].shape);
+    console.log(piece); // const socket = props.socket;
+    // const game_id = props.game_id;
+    //
+    // socket.on('gameStarted', (response) => {
+    //     if (response.game_id === game_id) {
+    //         setGameStarted(true);
+    //         props.startGameAction();
+    //         console.log('gameStarted socket');
+    //         socket.emit('generatePieces', {id: response.game_id});
+    //         socket.on('getPieces', (data) => {
+    //             console.log(pieces);
+    //             console.log(data.pieces);
+    //             setPieces('hello');
+    //             console.log(pieces);
+    //         });
+    //     }
+    // });
+    // startGame();
     // props.socket.emit('generatePieces', {id: props.game_id});
     // props.socket.on('getPieces', (data) => {
     //     console.log(pieces);
@@ -591,7 +653,7 @@ var GameField = function GameField(props) {
     // props.socket.on('getNextPieces', (data) => {
     //
     // });
-  }, []);
+  }, [pieces]);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     tabIndex: "0",
     className: "flex_centered",
@@ -848,6 +910,8 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
     var game_id = props.game_id;
     socket.emit("startGame", game_id);
     socket.on("gameStarted", function (response) {
+      console.log('in roomManagement');
+
       if (response.game_id === game_id) {
         setGameStarted(true);
         props.startGameAction();
@@ -1025,7 +1089,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var useField = function useField(piece, resetPiece) {
+var useField = function useField(piece, resetPiece, pieces) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_1__["createField"])()),
       _useState2 = _slicedToArray(_useState, 2),
       field = _useState2[0],
@@ -1049,7 +1113,11 @@ var useField = function useField(piece, resetPiece) {
       });
 
       if (piece.collided) {
-        resetPiece();
+        console.log('COLLIDED');
+        console.log(piece);
+        console.log(pieces);
+        resetPiece(pieces[0].shape);
+        pieces.shift();
       }
 
       return newField;
@@ -1058,7 +1126,7 @@ var useField = function useField(piece, resetPiece) {
     setField(function (prev) {
       return updateField(prev);
     });
-  }, [piece, resetPiece]);
+  }, [piece, resetPiece, pieces]);
   return [field, setField];
 };
 
@@ -1096,8 +1164,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var usePiece = function usePiece(tetromino) {
-  // console.log('tetrominoes[' + tetromino + ']', tetrominoes[tetromino]);
-  // console.log('tetrominoes[' + tetromino + '].shape', tetrominoes[tetromino].shape);
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
     position: {
       x: 0,
@@ -1112,6 +1178,7 @@ var usePiece = function usePiece(tetromino) {
   /**
    * @param x
    * @param y
+   * @param collided
    */
 
 
