@@ -7,6 +7,7 @@ import Field from './Field';
 
 import {useField} from "../hooks/useField";
 import {usePiece} from "../hooks/usePiece";
+import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
 import {startGameAction} from "../actions/gameActions";
 
@@ -18,10 +19,8 @@ const GameField = (props) => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
 
-    const [piece, updatePiecePosition, resetPiece] = usePiece(0);
+    const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
     const [field, setField] = useField(piece, resetPiece, pieces);
-
-    // console.log('re-render');
 
     const movePiece = direction => {
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
@@ -39,25 +38,45 @@ const GameField = (props) => {
         if (!checkCollision(piece, field, {x: 0, y: 1})) {
             updatePiecePosition({x: 0, y: 1, collided: false});
         } else {
+            if (piece.position.y < 1) {
+                console.log('GAME OVER!!!');
+                setGameOver(true);
+                setDropTime(null);
+            }
             if (pieces.length === 0) {
-                socket.emit('generatePieces', {id: props.game_id});
+                socket.emit('generatePieces', {id: props.game_id}); // inject pieces with new dose from server
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
+            }
+
+            console.log('collision');
+        }
+    };
+
+    const keyReleased = (e) => {
+        if (!gameOver) {
+            if (e.keyCode === 40) {
+                setDropTime(1000);
             }
         }
     };
 
     const dropPiece = () => {
+        setDropTime(null);
         drop();
     };
 
     const move = (e) => {
-        if (e.keyCode === 72 || e.keyCode === 37) {
-            movePiece(-1);
-        } else if (e.keyCode === 76 || e.keyCode === 39) {
-            movePiece(1);
-        } else if (e.keyCode === 74 || e.keyCode === 40) {
-            dropPiece();
+        if (!gameOver) {
+            if (e.keyCode === 72 || e.keyCode === 37) {
+                movePiece(-1);
+            } else if (e.keyCode === 76 || e.keyCode === 39) {
+                movePiece(1);
+            } else if (e.keyCode === 74 || e.keyCode === 40) {
+                dropPiece();
+            } else if (e.keyCode === 38) {
+                pieceRotate(field, 1);
+            }
         }
     };
 
@@ -74,6 +93,7 @@ const GameField = (props) => {
         socket.on('gameStarted', (response) => {
             if (response.game_id === game_id) {
                 setGameStarted(true);
+                setDropTime(1000);
                 props.startGameAction();
                 socket.emit('generatePieces', {id: response.game_id});
                 socket.on('getPieces', (data) => {
@@ -83,8 +103,12 @@ const GameField = (props) => {
         });
     }, []);
 
+    useInterval(() => {
+        drop();
+    }, dropTime);
+
     return (
-        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)}>
+        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}>
             <div className="field">
                 <Field field={field}/>
             </div>
