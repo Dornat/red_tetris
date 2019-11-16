@@ -29,9 +29,6 @@ export const useField = (piece, resetPiece, pieces) => {
             });
 
             if (piece.collided) {
-                console.log('COLLIDED');
-                console.log(piece);
-                console.log(pieces);
                 resetPiece(pieces[0].shape);
                 pieces.shift();
             }

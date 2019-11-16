@@ -21,7 +21,7 @@ const GameField = (props) => {
     const [piece, updatePiecePosition, resetPiece] = usePiece(0);
     const [field, setField] = useField(piece, resetPiece, pieces);
 
-    console.log('re-render');
+    // console.log('re-render');
 
     const movePiece = direction => {
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
@@ -39,15 +39,8 @@ const GameField = (props) => {
         if (!checkCollision(piece, field, {x: 0, y: 1})) {
             updatePiecePosition({x: 0, y: 1, collided: false});
         } else {
-            console.log('I\'m in else');
-            console.log(pieces.length);
             if (pieces.length === 0) {
-                console.log(props.game_id);
                 socket.emit('generatePieces', {id: props.game_id});
-                socket.on('getPieces', (data) => {
-                    setPieces(data.pieces);
-                    updatePiecePosition({x: 0, y: 0, collided: true});
-                });
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
             }
@@ -71,66 +64,24 @@ const GameField = (props) => {
     const socket = props.socket;
     const game_id = props.game_id;
 
-    socket.on('gameStarted', (response) => {
-        if (response.game_id === game_id) {
-            setGameStarted(true);
-            props.startGameAction();
-            console.log('gameStarted socket');
-            socket.emit('generatePieces', {id: response.game_id});
-            socket.on('getPieces', (data) => {
-                setPieces(data.pieces);
-                console.log('pieces in gameStarted socket', pieces);
-                // updatePiecePosition({x: 0, y: 0, collided: false});
-                // resetPiece(pieces[0].shape);
-                console.log('piece in gameStarted socket', piece);
-            });
-        }
-    });
-    
     useEffect(() => {
-        console.log('useEffect');
-        resetPiece(pieces[0].shape);
-        console.log(piece);
-        // const socket = props.socket;
-        // const game_id = props.game_id;
-        //
-        // socket.on('gameStarted', (response) => {
-        //     if (response.game_id === game_id) {
-        //         setGameStarted(true);
-        //         props.startGameAction();
-        //         console.log('gameStarted socket');
-        //         socket.emit('generatePieces', {id: response.game_id});
-        //         socket.on('getPieces', (data) => {
-        //             console.log(pieces);
-        //             console.log(data.pieces);
-        //             setPieces('hello');
-        //             console.log(pieces);
-        //         });
-        //     }
-        // });
-        // startGame();
-        // props.socket.emit('generatePieces', {id: props.game_id});
-        // props.socket.on('getPieces', (data) => {
-        //     console.log(pieces);
-        //     if (pieces.length === 0 || pieces[0] === '0') {
-        //         console.log(data.pieces);
-        //         setPieces(data.pieces);
-        //         console.log(pieces);
-        //     }
-        //     console.log(pieces[0].shape);
-        //     // usePiece(pieces[0].shape)
-        // });
+        if (pieces.length === 5) { // draw piece only for first piece in pieces array and only when array is full
+            updatePiecePosition({x: 0, y: 0, collided: true}); // true is important here
+        }
+    }, [pieces]); // this fires every time when pieces array is refreshed
 
-        // props.socket.on('gameStarted', (data) => {
-        //     props.socket.emit('getNextPieces');
-        // });
-
-        // props.socket.on('getNextPieces', (data) => {
-        //
-        // });
-
-    }, [pieces]);
-
+    useEffect(() => {
+        socket.on('gameStarted', (response) => {
+            if (response.game_id === game_id) {
+                setGameStarted(true);
+                props.startGameAction();
+                socket.emit('generatePieces', {id: response.game_id});
+                socket.on('getPieces', (data) => {
+                    setPieces(data.pieces);
+                });
+            }
+        });
+    }, []);
 
     return (
         <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)}>
