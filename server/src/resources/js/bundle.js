@@ -470,8 +470,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
 /* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
 /* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
-/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -479,6 +480,7 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -515,19 +517,19 @@ var GameField = function GameField(props) {
       setGameOver = _useState8[1];
 
   var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])(0),
-      _usePiece2 = _slicedToArray(_usePiece, 3),
+      _usePiece2 = _slicedToArray(_usePiece, 4),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
-      resetPiece = _usePiece2[2];
+      resetPiece = _usePiece2[2],
+      pieceRotate = _usePiece2[3];
 
   var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece, pieces),
       _useField2 = _slicedToArray(_useField, 2),
       field = _useField2[0],
-      setField = _useField2[1]; // console.log('re-render');
-
+      setField = _useField2[1];
 
   var movePiece = function movePiece(direction) {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
       x: direction,
       y: 0
     })) {
@@ -545,7 +547,7 @@ var GameField = function GameField(props) {
   };
 
   var drop = function drop() {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
       x: 0,
       y: 1
     })) {
@@ -555,10 +557,16 @@ var GameField = function GameField(props) {
         collided: false
       });
     } else {
+      if (piece.position.y < 1) {
+        console.log('GAME OVER!!!');
+        setGameOver(true);
+        setDropTime(null);
+      }
+
       if (pieces.length === 0) {
         socket.emit('generatePieces', {
           id: props.game_id
-        });
+        }); // inject pieces with new dose from server
       } else {
         updatePiecePosition({
           x: 0,
@@ -566,20 +574,35 @@ var GameField = function GameField(props) {
           collided: true
         });
       }
+
+      console.log('collision');
+    }
+  };
+
+  var keyReleased = function keyReleased(e) {
+    if (!gameOver) {
+      if (e.keyCode === 40) {
+        setDropTime(1000);
+      }
     }
   };
 
   var dropPiece = function dropPiece() {
+    setDropTime(null);
     drop();
   };
 
   var move = function move(e) {
-    if (e.keyCode === 72 || e.keyCode === 37) {
-      movePiece(-1);
-    } else if (e.keyCode === 76 || e.keyCode === 39) {
-      movePiece(1);
-    } else if (e.keyCode === 74 || e.keyCode === 40) {
-      dropPiece();
+    if (!gameOver) {
+      if (e.keyCode === 72 || e.keyCode === 37) {
+        movePiece(-1);
+      } else if (e.keyCode === 76 || e.keyCode === 39) {
+        movePiece(1);
+      } else if (e.keyCode === 74 || e.keyCode === 40) {
+        dropPiece();
+      } else if (e.keyCode === 38) {
+        pieceRotate(field, 1);
+      }
     }
   };
 
@@ -600,6 +623,7 @@ var GameField = function GameField(props) {
     socket.on('gameStarted', function (response) {
       if (response.game_id === game_id) {
         setGameStarted(true);
+        setDropTime(1000);
         props.startGameAction();
         socket.emit('generatePieces', {
           id: response.game_id
@@ -610,12 +634,16 @@ var GameField = function GameField(props) {
       }
     });
   }, []);
+  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__["useInterval"])(function () {
+    drop();
+  }, dropTime);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     tabIndex: "0",
     className: "flex_centered",
     onKeyDown: function onKeyDown(e) {
       return move(e);
-    }
+    },
+    onKeyUp: keyReleased
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "field"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -626,7 +654,7 @@ var GameField = function GameField(props) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     startGameAction: function startGameAction() {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_9__["startGameAction"])());
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_10__["startGameAction"])());
     }
   };
 };
@@ -1049,7 +1077,31 @@ var useField = function useField(piece, resetPiece, pieces) {
       field = _useState2[0],
       setField = _useState2[1];
 
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
+      _useState4 = _slicedToArray(_useState3, 2),
+      rowsCleared = _useState4[0],
+      setRowsCleared = _useState4[1];
+
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    setRowsCleared(0);
+
+    var sweepRows = function sweepRows(newField) {
+      return newField.reduce(function (accumulator, row) {
+        if (row.findIndex(function (cell) {
+          return cell[0] === 0;
+        }) === -1) {
+          setRowsCleared(function (prev) {
+            return prev + 1;
+          });
+          accumulator.unshift(new Array(newField[0].length).fill([0, 'empty']));
+          return accumulator;
+        }
+
+        accumulator.push(row);
+        return accumulator;
+      }, []);
+    };
+
     var updateField = function updateField(prevField) {
       // clear field from the previous render
       var newField = prevField.map(function (row) {
@@ -1061,7 +1113,8 @@ var useField = function useField(piece, resetPiece, pieces) {
       piece.tetromino.forEach(function (row, y) {
         row.forEach(function (value, x) {
           if (value !== 0) {
-            newField[y + piece.position.y][x + piece.position.x] = [value, 'empty', "".concat(piece.collided ? 'filled' : 'empty')];
+            newField[y + piece.position.y][x + piece.position.x] = [value, // 'empty',
+            "".concat(piece.collided ? 'filled' : 'empty')];
           }
         });
       });
@@ -1069,6 +1122,7 @@ var useField = function useField(piece, resetPiece, pieces) {
       if (piece.collided) {
         resetPiece(pieces[0].shape);
         pieces.shift();
+        return sweepRows(newField);
       }
 
       return newField;
@@ -1078,8 +1132,44 @@ var useField = function useField(piece, resetPiece, pieces) {
       return updateField(prev);
     });
   }, [piece, resetPiece, pieces]);
-  return [field, setField];
+  return [field, setField, rowsCleared];
 };
+
+/***/ }),
+
+/***/ "./hooks/useInterval.js":
+/*!******************************!*\
+  !*** ./hooks/useInterval.js ***!
+  \******************************/
+/*! exports provided: useInterval */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useInterval", function() { return useInterval; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+function useInterval(callback, delay) {
+  var savedCallback = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(); // Remember the latest callback.
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    savedCallback.current = callback;
+  }, [callback]); // Set up the interval.
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    function tick() {
+      savedCallback.current();
+    }
+
+    if (delay !== null) {
+      var id = setInterval(tick, delay);
+      return function () {
+        clearInterval(id);
+      };
+    }
+  }, [delay]);
+}
 
 /***/ }),
 
@@ -1097,6 +1187,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
 /* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -1114,6 +1205,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 var usePiece = function usePiece(tetromino) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
     position: {
@@ -1126,6 +1218,46 @@ var usePiece = function usePiece(tetromino) {
       _useState2 = _slicedToArray(_useState, 2),
       piece = _useState2[0],
       setPiece = _useState2[1];
+
+  var rotate = function rotate(tetrominoMatrix, direction) {
+    // make the rows to become columns
+    var rotatedTetromino = tetrominoMatrix.map(function (_, index) {
+      return tetrominoMatrix.map(function (column) {
+        return column[index];
+      });
+    }); // reverse each row to get a rotated matrix
+
+    if (direction > 0) {
+      return rotatedTetromino.map(function (row) {
+        return row.reverse();
+      });
+    }
+
+    return rotatedTetromino.reverse();
+  };
+
+  var pieceRotate = function pieceRotate(field, direction) {
+    var pieceClone = JSON.parse(JSON.stringify(piece));
+    pieceClone.tetromino = rotate(pieceClone.tetromino, direction);
+    var position = pieceClone.position.x;
+    var offset = 1;
+
+    while (Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_3__["checkCollision"])(pieceClone, field, {
+      x: 0,
+      y: 0
+    })) {
+      pieceClone.position.x += offset;
+      offset = -(offset + (offset > 0 ? 1 : -1));
+
+      if (offset > pieceClone.tetromino[0].length) {
+        rotate(pieceClone.tetromino, -direction);
+        pieceClone.position.x = position;
+        return;
+      }
+    }
+
+    setPiece(pieceClone);
+  };
   /**
    * @param x
    * @param y
@@ -1164,7 +1296,7 @@ var usePiece = function usePiece(tetromino) {
       collided: false
     });
   }, []);
-  return [piece, updatePiecePosition, resetPiece];
+  return [piece, updatePiecePosition, resetPiece, pieceRotate];
 };
 
 /***/ }),
