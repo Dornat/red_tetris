@@ -523,9 +523,8 @@ var GameField = function GameField(props) {
   var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece, pieces),
       _useField2 = _slicedToArray(_useField, 2),
       field = _useField2[0],
-      setField = _useField2[1];
+      setField = _useField2[1]; // console.log('re-render');
 
-  console.log('re-render');
 
   var movePiece = function movePiece(direction) {
     if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
@@ -556,21 +555,9 @@ var GameField = function GameField(props) {
         collided: false
       });
     } else {
-      console.log('I\'m in else');
-      console.log(pieces.length);
-
       if (pieces.length === 0) {
-        console.log(props.game_id);
         socket.emit('generatePieces', {
           id: props.game_id
-        });
-        socket.on('getPieces', function (data) {
-          setPieces(data.pieces);
-          updatePiecePosition({
-            x: 0,
-            y: 0,
-            collided: true
-          });
         });
       } else {
         updatePiecePosition({
@@ -598,62 +585,31 @@ var GameField = function GameField(props) {
 
   var socket = props.socket;
   var game_id = props.game_id;
-  socket.on('gameStarted', function (response) {
-    if (response.game_id === game_id) {
-      setGameStarted(true);
-      props.startGameAction();
-      console.log('gameStarted socket');
-      socket.emit('generatePieces', {
-        id: response.game_id
-      });
-      socket.on('getPieces', function (data) {
-        setPieces(data.pieces);
-        console.log('pieces in gameStarted socket', pieces); // updatePiecePosition({x: 0, y: 0, collided: false});
-        // resetPiece(pieces[0].shape);
-
-        console.log('piece in gameStarted socket', piece);
-      });
-    }
-  });
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    console.log('useEffect');
-    resetPiece(pieces[0].shape);
-    console.log(piece); // const socket = props.socket;
-    // const game_id = props.game_id;
-    //
-    // socket.on('gameStarted', (response) => {
-    //     if (response.game_id === game_id) {
-    //         setGameStarted(true);
-    //         props.startGameAction();
-    //         console.log('gameStarted socket');
-    //         socket.emit('generatePieces', {id: response.game_id});
-    //         socket.on('getPieces', (data) => {
-    //             console.log(pieces);
-    //             console.log(data.pieces);
-    //             setPieces('hello');
-    //             console.log(pieces);
-    //         });
-    //     }
-    // });
-    // startGame();
-    // props.socket.emit('generatePieces', {id: props.game_id});
-    // props.socket.on('getPieces', (data) => {
-    //     console.log(pieces);
-    //     if (pieces.length === 0 || pieces[0] === '0') {
-    //         console.log(data.pieces);
-    //         setPieces(data.pieces);
-    //         console.log(pieces);
-    //     }
-    //     console.log(pieces[0].shape);
-    //     // usePiece(pieces[0].shape)
-    // });
-    // props.socket.on('gameStarted', (data) => {
-    //     props.socket.emit('getNextPieces');
-    // });
-    // props.socket.on('getNextPieces', (data) => {
-    //
-    // });
-  }, [pieces]);
+    if (pieces.length === 5) {
+      // draw piece only for first piece in pieces array and only when array is full
+      updatePiecePosition({
+        x: 0,
+        y: 0,
+        collided: true
+      }); // true is important here
+    }
+  }, [pieces]); // this fires every time when pieces array is refreshed
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    socket.on('gameStarted', function (response) {
+      if (response.game_id === game_id) {
+        setGameStarted(true);
+        props.startGameAction();
+        socket.emit('generatePieces', {
+          id: response.game_id
+        });
+        socket.on('getPieces', function (data) {
+          setPieces(data.pieces);
+        });
+      }
+    });
+  }, []);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     tabIndex: "0",
     className: "flex_centered",
@@ -910,8 +866,6 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
     var game_id = props.game_id;
     socket.emit("startGame", game_id);
     socket.on("gameStarted", function (response) {
-      console.log('in roomManagement');
-
       if (response.game_id === game_id) {
         setGameStarted(true);
         props.startGameAction();
@@ -1113,9 +1067,6 @@ var useField = function useField(piece, resetPiece, pieces) {
       });
 
       if (piece.collided) {
-        console.log('COLLIDED');
-        console.log(piece);
-        console.log(pieces);
         resetPiece(pieces[0].shape);
         pieces.shift();
       }
