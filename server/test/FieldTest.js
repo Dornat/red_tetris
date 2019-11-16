@@ -60,4 +60,16 @@ describe('Field Tests', function () {
         assert.equal(field.columnAmount, columnAmount);
     });
 
+    it('should sweep the row', function () {
+        let field = new Field();
+        let coordsI = [[19, 0], [19, 1], [19, 2], [19, 3]];
+        let coordsL = [[18, 6], [19, 4], [19, 5], [19, 6]];
+        let coordsT = [[18, 8], [19, 7], [19, 8], [19, 9]];
+
+        field.fillCoordinates(coordsI);
+        field.fillCoordinates(coordsL);
+        field.fillCoordinates(coordsT);
+
+        assert.deepEqual(field.matrix[field.matrix.length - 1], [0, 0, 0, 0, 0, 0, 1, 0, 1, 0]);
+    });
 });

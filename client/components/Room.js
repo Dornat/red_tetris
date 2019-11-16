@@ -23,7 +23,7 @@ const Room = (props) => {
         return (
             <div className="row">
                 <div className="game__container">
-                    <GameField field={createField()} socket={props.socket} game_id={props.game_id}/>
+                    <GameField field={createField()} socket={props.socket} game_id={props.game_id} user={props.user}/>
                 </div>
                 <div className="room-management__container">
                     <RoomManagement game_id={props.game_id} socket={props.socket}/>

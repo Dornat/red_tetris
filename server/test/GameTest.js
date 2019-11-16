@@ -112,4 +112,20 @@ describe('Game Tests', function () {
 
         assert.isArray(pieces, 'lets assume that this array is perfectly random');
     });
+
+    it('should get player by nickname', function () {
+        let player1 = new Player('testName1');
+        let player2 = new Player('testName2');
+        let game = new Game(player1);
+
+        game.addPlayer(player2);
+
+        let returned = game.getPlayerByNickname('testName1');
+        let returned2 = game.getPlayerByNickname('testName2');
+        let returnedFalse = game.getPlayerByNickname('testName');
+
+        assert.equal(returned, player1, 'this player is The Chosen One');
+        assert.equal(returned2, player2, 'this player is The Chosen One');
+        assert.equal(returnedFalse, undefined, 'this player is not here');
+    });
 });

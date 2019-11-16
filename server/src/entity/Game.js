@@ -108,7 +108,13 @@ class Game {
         return pieces;
     }
 
-
+    /**
+     * Returns player by its nickname
+     * @param {string} nickname
+     */
+    getPlayerByNickname(nickname) {
+        return this.players.find(player => player.nickname === nickname);
+    }
 
     // enableLevelSystem(level) {
     //
