@@ -49,8 +49,31 @@ const GameField = (props) => {
                 updatePiecePosition({x: 0, y: 0, collided: true});
             }
 
-            console.log('collision');
+            const coords = assembleCoordinatesForFillingFieldOnServer(piece);
+            socket.emit('updatePlayerField', {id: props.game_id, nickname: props.user, coords: coords});
         }
+    };
+
+    const assembleCoordinatesForFillingFieldOnServer = piece => {
+        const tetromino = piece.tetromino;
+        let variableCoords = JSON.parse(JSON.stringify(piece.position)); // important cloning of original object
+        let coords = [];
+
+        for (let i = 0; i < tetromino.length; i++) {
+            variableCoords.x = piece.position.x;
+            for (let j = 0; j < tetromino[i].length; j++) {
+                if (tetromino[i][j] !== 0) {
+                    coords.push([
+                        variableCoords.y,
+                        variableCoords.x
+                    ]);
+                }
+                variableCoords.x += 1;
+            }
+            variableCoords.y += 1;
+        }
+
+        return coords;
     };
 
     const keyReleased = (e) => {

@@ -575,8 +575,36 @@ var GameField = function GameField(props) {
         });
       }
 
-      console.log('collision');
+      var coords = assembleCoordinatesForFillingFieldOnServer(piece);
+      socket.emit('updatePlayerField', {
+        id: props.game_id,
+        nickname: props.user,
+        coords: coords
+      });
     }
+  };
+
+  var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesForFillingFieldOnServer(piece) {
+    var tetromino = piece.tetromino;
+    var variableCoords = JSON.parse(JSON.stringify(piece.position)); // important cloning of original object
+
+    var coords = [];
+
+    for (var i = 0; i < tetromino.length; i++) {
+      variableCoords.x = piece.position.x;
+
+      for (var j = 0; j < tetromino[i].length; j++) {
+        if (tetromino[i][j] !== 0) {
+          coords.push([variableCoords.y, variableCoords.x]);
+        }
+
+        variableCoords.x += 1;
+      }
+
+      variableCoords.y += 1;
+    }
+
+    return coords;
   };
 
   var keyReleased = function keyReleased(e) {
@@ -794,7 +822,8 @@ var Room = function Room(props) {
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
       field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
       socket: props.socket,
-      game_id: props.game_id
+      game_id: props.game_id,
+      user: props.user
     })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "room-management__container"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_1__["default"], {

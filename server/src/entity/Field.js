@@ -40,6 +40,14 @@ class Field {
             for (let i = 0; i < coordinates.length; i++) {
                 this.matrix[coordinates[i][0]][coordinates[i][1]] = 1;
             }
+
+            for (let i = 0; i < this.matrix.length; i++) {
+                if (this.matrix[i].findIndex(cell => cell === 0) === -1) {
+                    this.matrix.splice(i, 1);
+                    this.matrix.unshift(new Array(this.matrix[0].length).fill(0));
+                }
+            }
+
             return true;
         }
         return false;

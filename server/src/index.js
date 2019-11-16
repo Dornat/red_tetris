@@ -108,7 +108,18 @@ io.on('connection', (socket) => {
         console.log('generating...');
         console.log(pieces);
         socket.emit('getPieces', {pieces: pieces});
-    })
+    });
+
+    socket.on('updatePlayerField', (data) => {
+        let game = games[data.id];
+        let player = game.getPlayerByNickname(data.nickname);
+
+        let cheater = player.field.fillCoordinates(data.coords);
+        if (cheater) {
+            socket.emit('fireInTheHoleTheCheaterIsHere');
+        }
+        console.log(player.field);
+    });
 });
 
 
