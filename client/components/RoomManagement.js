@@ -39,8 +39,12 @@ const RoomManagement = (props) => {
         setField(updateField(field));
     }, [pieces]);
 
+    const setFocusToField = () => {
+        props.gameFieldRef.current.focus();
+    };
+
     return (
-        <div className="room__management">
+        <div className="room__management" onClick={setFocusToField}>
             <GameLink game_id={props.game_id}/>
             <div className="future-block">
                 <Field field={createField(6, 6)}/>
