@@ -124,6 +124,7 @@ const GameField = (props) => {
     }, [pieces]); // this fires every time when pieces array is refreshed
 
     useEffect(() => {
+
         socket.on('gameStarted', (response) => {
             if (response.game_id === game_id) {
                 setGameStarted(true);
@@ -156,7 +157,7 @@ const GameField = (props) => {
     }, dropTime);
 
     return (
-        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}>
+        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased} ref={props.gameFieldRef}>
             <div className="field">
                 <Field field={field}/>
             </div>
