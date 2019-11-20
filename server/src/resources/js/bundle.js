@@ -90,13 +90,14 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction, startGameAction */
+/*! exports provided: createRoomAction, startGameAction, setScoreAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function createRoomAction(id) {
@@ -110,6 +111,12 @@ function startGameAction() {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["START_GAME"]
   };
 }
+function setScoreAction(score) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_SCORE"],
+    score: score
+  };
+}
 
 /***/ }),
 
@@ -117,7 +124,7 @@ function startGameAction() {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -125,9 +132,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_USER", function() { return SET_USER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_GAME", function() { return CREATE_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "START_GAME", function() { return START_GAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SCORE", function() { return SET_SCORE; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
 var START_GAME = "START_GAME";
+var SET_SCORE = "SET_SCORE";
 
 /***/ }),
 
@@ -209,11 +218,11 @@ __webpack_require__.r(__webpack_exports__);
 var Cell = function Cell(_ref) {
   var type = _ref.type;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: type === 0 ? 'cell' : 'cell filled'
+    className: type === 0 ? 'cell' : 'cell filled-for-type-' + type
   });
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Cell);
+/* harmony default export */ __webpack_exports__["default"] = (react__WEBPACK_IMPORTED_MODULE_0___default.a.memo(Cell));
 
 /***/ }),
 
@@ -494,6 +503,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var GameField = function GameField(props) {
+  var DROPTIME_MULTIPLIER = 142;
+  var DROPTIME_BASE = 1000;
+
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([{
     shape: 0
   }]),
@@ -506,15 +518,20 @@ var GameField = function GameField(props) {
       isGameStarted = _useState4[0],
       setGameStarted = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(1),
       _useState6 = _slicedToArray(_useState5, 2),
-      dropTime = _useState6[0],
-      setDropTime = _useState6[1];
+      gameLevel = _useState6[0],
+      setGameLevel = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
       _useState8 = _slicedToArray(_useState7, 2),
-      gameOver = _useState8[0],
-      setGameOver = _useState8[1];
+      dropTime = _useState8[0],
+      setDropTime = _useState8[1];
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      gameOver = _useState10[0],
+      setGameOver = _useState10[1];
 
   var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])(0),
       _usePiece2 = _slicedToArray(_usePiece, 4),
@@ -610,7 +627,7 @@ var GameField = function GameField(props) {
   var keyReleased = function keyReleased(e) {
     if (!gameOver) {
       if (e.keyCode === 40) {
-        setDropTime(1000);
+        setDropTime(assembleDropTime());
       }
     }
   };
@@ -634,6 +651,16 @@ var GameField = function GameField(props) {
     }
   };
 
+  var assembleDropTime = function assembleDropTime() {
+    var dropTime = DROPTIME_BASE - gameLevel * DROPTIME_MULTIPLIER;
+
+    if (dropTime < 42) {
+      dropTime = 42;
+    }
+
+    return dropTime;
+  };
+
   var socket = props.socket;
   var game_id = props.game_id;
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
@@ -651,7 +678,7 @@ var GameField = function GameField(props) {
     socket.on('gameStarted', function (response) {
       if (response.game_id === game_id) {
         setGameStarted(true);
-        setDropTime(1000);
+        setDropTime(assembleDropTime());
         props.startGameAction();
         socket.emit('generatePieces', {
           id: response.game_id
@@ -661,7 +688,15 @@ var GameField = function GameField(props) {
         });
       }
     });
+    socket.on('sendUpdatedGameData', function (data) {
+      props.setScoreAction(data.score);
+      setGameLevel(data.level);
+    });
   }, []);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    setDropTime(assembleDropTime());
+  }, [gameLevel]); // this fires every time when game level is changed
+
   Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__["useInterval"])(function () {
     drop();
   }, dropTime);
@@ -683,6 +718,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     startGameAction: function startGameAction() {
       dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_10__["startGameAction"])());
+    },
+    setScoreAction: function setScoreAction(score) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_10__["setScoreAction"])(score));
     }
   };
 };
@@ -3965,7 +4003,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled {\n      background-color: #3e3634; }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\n.enemy__field {\n  background: #71b9b7;\n  width: 160px;\n  height: 320px; }\n\n.room-management__btns {\n  text-align: center; }\n  .room-management__btns button {\n    margin: 0 0 15px 0; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom-color: rgba(80, 227, 230, 0.1);\n      border-right-color: #50e3e6;\n      border-top-color: #50e3e6;\n      border-left-color: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom-color: rgba(223, 217, 36, 0.1);\n      border-right-color: #dfd924;\n      border-top-color: #dfd924;\n      border-left-color: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom-color: rgba(36, 95, 223, 0.1);\n      border-right-color: #245fdf;\n      border-top-color: #245fdf;\n      border-left-color: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom-color: rgba(223, 173, 36, 0.1);\n      border-right-color: #dfad24;\n      border-top-color: #dfad24;\n      border-left-color: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom-color: rgba(48, 211, 56, 0.1);\n      border-right-color: #30d338;\n      border-top-color: #30d338;\n      border-left-color: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom-color: rgba(227, 78, 78, 0.1);\n      border-right-color: #e34e4e;\n      border-top-color: #e34e4e;\n      border-left-color: rgba(227, 78, 78, 0.3); }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\n.enemy__field {\n  background: #71b9b7;\n  width: 160px;\n  height: 320px; }\n\n.room-management__btns {\n  text-align: center; }\n  .room-management__btns button {\n    margin: 0 0 15px 0; }\n", ""]);
 
 
 /***/ }),
@@ -51394,6 +51432,11 @@ var initialState = {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["START_GAME"]:
       return _objectSpread({}, state, {
         isGameStarted: true
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_0__["SET_SCORE"]:
+      return _objectSpread({}, state, {
+        score: action.score
       });
 
     default:

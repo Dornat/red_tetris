@@ -30,10 +30,10 @@ class Field {
     }
 
     /**
-     * On success returns true, else false
-     * Example: [[20, 2], [19, 2], [18, 2], [17, 2]] - stick (####) tetramino
+     * On success returns deleted rows, else null.
+     * Parameter example: [[20, 2], [19, 2], [18, 2], [17, 2]] - stick (####) tetromino.
      * @param {Array} coordinates
-     * @returns {boolean}
+     * @returns {null|number}
      */
     fillCoordinates(coordinates) {
         if (this.coordinatesAreFillable(coordinates)) {
@@ -41,16 +41,19 @@ class Field {
                 this.matrix[coordinates[i][0]][coordinates[i][1]] = 1;
             }
 
+            let sweptRows = 0;
+            // This is for rows sweeping.
             for (let i = 0; i < this.matrix.length; i++) {
                 if (this.matrix[i].findIndex(cell => cell === 0) === -1) {
                     this.matrix.splice(i, 1);
                     this.matrix.unshift(new Array(this.matrix[0].length).fill(0));
+                    sweptRows++;
                 }
             }
 
-            return true;
+            return sweptRows;
         }
-        return false;
+        return null;
     }
 
     /**
