@@ -114,11 +114,19 @@ io.on('connection', (socket) => {
         let game = games[data.id];
         let player = game.getPlayerByNickname(data.nickname);
 
-        let cheater = player.field.fillCoordinates(data.coords);
-        if (cheater) {
+        let cheater = game.managePiecePlacement(data.coords, player);
+        if (cheater === null) {
             socket.emit('fireInTheHoleTheCheaterIsHere');
         }
+
+        socket.emit('sendUpdatedGameData', {
+            score: player.score.quantity,
+            level: game.level
+        });
+
         console.log(player.field);
+        console.log('cheater', cheater);
+        console.log('score', player.score);
     });
 });
 

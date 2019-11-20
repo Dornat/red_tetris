@@ -9,12 +9,15 @@ import {useField} from "../hooks/useField";
 import {usePiece} from "../hooks/usePiece";
 import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
-import {startGameAction} from "../actions/gameActions";
+import {startGameAction, setScoreAction} from "../actions/gameActions";
 
 const GameField = (props) => {
+    const DROPTIME_MULTIPLIER = 142;
+    const DROPTIME_BASE = 1000;
 
     const [pieces, setPieces] = useState([{shape: 0}]);
     const [isGameStarted, setGameStarted] = useState(false);
+    const [gameLevel, setGameLevel] = useState(1);
 
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
@@ -79,7 +82,7 @@ const GameField = (props) => {
     const keyReleased = (e) => {
         if (!gameOver) {
             if (e.keyCode === 40) {
-                setDropTime(1000);
+                setDropTime(assembleDropTime());
             }
         }
     };
@@ -103,6 +106,14 @@ const GameField = (props) => {
         }
     };
 
+    const assembleDropTime = () => {
+        let dropTime = DROPTIME_BASE - (gameLevel * DROPTIME_MULTIPLIER);
+        if (dropTime < 42) {
+            dropTime = 42;
+        }
+        return dropTime;
+    };
+
     const socket = props.socket;
     const game_id = props.game_id;
 
@@ -116,7 +127,7 @@ const GameField = (props) => {
         socket.on('gameStarted', (response) => {
             if (response.game_id === game_id) {
                 setGameStarted(true);
-                setDropTime(1000);
+                setDropTime(assembleDropTime());
                 props.startGameAction();
                 socket.emit('generatePieces', {id: response.game_id});
                 socket.on('getPieces', (data) => {
@@ -124,7 +135,16 @@ const GameField = (props) => {
                 });
             }
         });
+
+        socket.on('sendUpdatedGameData', (data) => {
+            props.setScoreAction(data.score);
+            setGameLevel(data.level);
+        });
     }, []);
+
+    useEffect(() => {
+        setDropTime(assembleDropTime());
+    }, [gameLevel]); // this fires every time when game level is changed
 
     useInterval(() => {
         drop();
@@ -143,7 +163,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         startGameAction: () => {
             dispatch(startGameAction())
-        }
+        },
+        setScoreAction: (score) => {
+            dispatch(setScoreAction(score))
+        },
     }
 };
 

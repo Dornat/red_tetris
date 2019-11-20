@@ -2,17 +2,17 @@ import crypto from 'crypto';
 import Player from './Player';
 import Piece from './Piece';
 
+const LEVEL_MEDIAN = 1000;
+
 class Game {
     /**
      * @param {Player} player
      */
     constructor(player) {
         this.id = crypto.randomBytes(4).toString('hex');
-
         this.players = [player];
         this.leader = player;
-
-        // Возможно что-то еще
+        this.level = 1;
         this.isGameStarted = false;
     }
 
@@ -116,18 +116,37 @@ class Game {
         return this.players.find(player => player.nickname === nickname);
     }
 
-    // enableLevelSystem(level) {
-    //
-    // }
+    /**
+     * Manages peace placement, fills coordinates for appropriate player field, sweeps field rows, increases player
+     * score, increases game level.
+     * @param {array} coordinates
+     * @param {Player} player
+     * @returns {number}
+     */
+    managePiecePlacement(coordinates, player) {
+        const sweptRows = player.field.fillCoordinates(coordinates);
+        if (sweptRows) {
+            player.score.increaseScore(sweptRows, this.level);
+        }
+        this._manageLevel();
+        return sweptRows;
+    }
 
-    // TODO ??
-    // startGame() {
-    //
-    // }
-    //
-    // restartGame() {
-    //
-    // }
+    /**
+     * Calculates sum of scores for all players and then intelligently increases game level depending on result.
+     * @private
+     */
+    _manageLevel() {
+        let accumulatedScore = 0;
+        for (let i = 0; i < this.players.length; i++) {
+            console.log('i\'m in for');
+            accumulatedScore += this.players[i].score.quantity;
+        }
+
+        if ((accumulatedScore / LEVEL_MEDIAN) > this.level) {
+            this.level += 1;
+        }
+    }
 }
 
 export default Game;
