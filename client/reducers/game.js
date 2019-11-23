@@ -16,7 +16,8 @@ export default (state = initialState, action = {}) => {
                 ...state,
                 id: action.id,
                 isLeader: true,
-                isGameStarted: false
+                isGameStarted: false,
+                score: 0
             };
         case START_GAME:
             return {

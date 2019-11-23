@@ -70,10 +70,10 @@ export const usePiece = (tetromino) => {
      * Tetromino is a character here
      * @param tetromino
      */
-    const resetPiece = useCallback((tetromino) => {
+    const resetPiece = useCallback((tetromino, columnAmount = COLUMN_AMOUNT) => {
         setPiece({
             position: {
-                x: COLUMN_AMOUNT / 2 - 2, // to position the piece in the middle of game field
+                x: columnAmount / 2 - 2, // to position the piece in the middle of game field
                 y: 0
             },
             tetromino: tetrominoes[tetromino].shape,

@@ -143,7 +143,12 @@ const GameField = (props) => {
     }, []);
 
     useEffect(() => {
+        console.log('useEffect props after score changed', props);
+    }, [props.score]);
+
+    useEffect(() => {
         setDropTime(assembleDropTime());
+        console.log('level is', gameLevel);
     }, [gameLevel]); // this fires every time when game level is changed
 
     useInterval(() => {
@@ -170,4 +175,10 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(null, mapDispatchToProps)(GameField);
+const mapStateToProps = (state) => {
+    return {
+        score: state.game.score
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GameField);

@@ -1,20 +1,16 @@
-button
-{
+button {
   font-weight: 900;
 }
 
-.container
-{
+.container {
   width: 100%;
 }
 
-.d-flex
-{
+.d-flex {
   display: flex;
 }
 
-.flex_centered
-{
+.flex_centered {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -33,33 +29,28 @@ button
   .col-6 {
     flex: 1 0 50%;
   }
-  .col
-  {
+
+  .col {
     flex: 0 1 100%;
   }
 }
 
-.centered
-{
+.centered {
   text-align: center;
 }
 
-.left
-{
+.left {
   text-align: left;
 }
 
-.right
-{
+.right {
   text-align: right;
 }
 
-.label
-{
+.label {
   font-weight: 900;
 }
 
-.text-uppercase
-{
+.text-uppercase {
   text-transform: uppercase;
 }
