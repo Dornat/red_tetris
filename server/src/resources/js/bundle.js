@@ -90,7 +90,7 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction, startGameAction, setScoreAction */
+/*! exports provided: createRoomAction, startGameAction, setScoreAction, setPiecesAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -98,6 +98,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPiecesAction", function() { return setPiecesAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function createRoomAction(id) {
@@ -117,6 +118,12 @@ function setScoreAction(score) {
     score: score
   };
 }
+function setPiecesAction(pieces) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_PIECES"],
+    pieces: pieces
+  };
+}
 
 /***/ }),
 
@@ -124,7 +131,7 @@ function setScoreAction(score) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -133,10 +140,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_GAME", function() { return CREATE_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "START_GAME", function() { return START_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SCORE", function() { return SET_SCORE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PIECES", function() { return SET_PIECES; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
 var START_GAME = "START_GAME";
 var SET_SCORE = "SET_SCORE";
+var SET_PIECES = "SET_PIECES";
 
 /***/ }),
 
@@ -468,17 +477,15 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Cell__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Cell */ "./components/Cell.js");
-/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
-/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
-/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
-/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
-/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
-/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
-/* harmony import */ var _GameStats__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./GameStats */ "./components/GameStats.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
+/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _NextPieceField__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./NextPieceField */ "./components/NextPieceField.js");
+/* harmony import */ var _GameStats__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./GameStats */ "./components/GameStats.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -486,8 +493,6 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
 
 
 
@@ -508,43 +513,50 @@ var GameField = function GameField(props) {
     shape: 0
   }]),
       _useState2 = _slicedToArray(_useState, 2),
-      pieces = _useState2[0],
-      setPieces = _useState2[1];
+      piecesBuffer = _useState2[0],
+      setPiecesBuffer = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([{
+    shape: 0
+  }]),
       _useState4 = _slicedToArray(_useState3, 2),
-      isGameStarted = _useState4[0],
-      setGameStarted = _useState4[1];
+      pieces = _useState4[0],
+      setPieces = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(1),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
-      gameLevel = _useState6[0],
-      setGameLevel = _useState6[1];
+      isGameStarted = _useState6[0],
+      setGameStarted = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(1),
       _useState8 = _slicedToArray(_useState7, 2),
-      dropTime = _useState8[0],
-      setDropTime = _useState8[1];
+      gameLevel = _useState8[0],
+      setGameLevel = _useState8[1];
 
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(null),
       _useState10 = _slicedToArray(_useState9, 2),
-      gameOver = _useState10[0],
-      setGameOver = _useState10[1];
+      dropTime = _useState10[0],
+      setDropTime = _useState10[1];
 
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_7__["usePiece"])(0),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      gameOver = _useState12[0],
+      setGameOver = _useState12[1];
+
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_4__["usePiece"])(0),
       _usePiece2 = _slicedToArray(_usePiece, 4),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
       resetPiece = _usePiece2[2],
       pieceRotate = _usePiece2[3];
 
-  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_6__["useField"])(piece, resetPiece, pieces),
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_3__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props),
       _useField2 = _slicedToArray(_useField, 2),
       field = _useField2[0],
       setField = _useField2[1];
 
   var movePiece = function movePiece(direction) {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_6__["checkCollision"])(piece, field, {
       x: direction,
       y: 0
     })) {
@@ -555,14 +567,8 @@ var GameField = function GameField(props) {
     }
   };
 
-  var startGame = function startGame() {
-    // reset everything
-    setField(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])());
-    resetPiece('T');
-  };
-
   var drop = function drop() {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_6__["checkCollision"])(piece, field, {
       x: 0,
       y: 1
     })) {
@@ -578,7 +584,7 @@ var GameField = function GameField(props) {
         setDropTime(null);
       }
 
-      if (pieces.length === 0) {
+      if (piecesBuffer.length === 1) {
         socket.emit('generatePieces', {
           id: props.game_id
         }); // inject pieces with new dose from server
@@ -670,8 +676,13 @@ var GameField = function GameField(props) {
         collided: true
       }); // true is important here
     }
-  }, [pieces]); // this fires every time when pieces array is refreshed
+  }, [pieces]); // this fires every time when pieces is updated
 
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    if (pieces.length === 0 || pieces[0].shape === 0) {
+      setPieces(piecesBuffer);
+    }
+  }, [piecesBuffer]);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     socket.on('gameStarted', function (response) {
       if (response.game_id === game_id) {
@@ -682,7 +693,7 @@ var GameField = function GameField(props) {
           id: response.game_id
         });
         socket.on('getPieces', function (data) {
-          setPieces(data.pieces);
+          setPiecesBuffer(data.pieces);
         });
       }
     });
@@ -696,10 +707,10 @@ var GameField = function GameField(props) {
   }, [props.score]);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     setDropTime(assembleDropTime());
-    console.log('level is', gameLevel);
+    console.log('the level is', gameLevel);
   }, [gameLevel]); // this fires every time when game level is changed
 
-  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__["useInterval"])(function () {
+  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_5__["useInterval"])(function () {
     drop();
   }, dropTime);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -716,26 +727,25 @@ var GameField = function GameField(props) {
     className: "game-field__body"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game-field__col"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameStats__WEBPACK_IMPORTED_MODULE_11__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "game-field__col"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameStats__WEBPACK_IMPORTED_MODULE_9__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "game-field__col field__border"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_2__["default"], {
     field: field
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game-field__col"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "future-block"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])(6, 6)
-  }))))));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NextPieceField__WEBPACK_IMPORTED_MODULE_8__["default"], null)))));
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     startGameAction: function startGameAction() {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_10__["startGameAction"])());
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_7__["startGameAction"])());
     },
     setScoreAction: function setScoreAction(score) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_10__["setScoreAction"])(score));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_7__["setScoreAction"])(score));
+    },
+    setPiecesAction: function setPiecesAction(pieces) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_7__["setPiecesAction"])(pieces));
     }
   };
 };
@@ -746,7 +756,7 @@ var mapStateToProps = function mapStateToProps(state) {
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
 
 /***/ }),
 
@@ -828,6 +838,102 @@ var Loader = function Loader() {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Loader);
+
+/***/ }),
+
+/***/ "./components/NextPieceField.js":
+/*!**************************************!*\
+  !*** ./components/NextPieceField.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/TetrominoesScheme */ "./utils/TetrominoesScheme.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+var NextPieceField = function NextPieceField(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
+    position: {
+      x: 0,
+      y: 0
+    },
+    tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__["default"][0].shape,
+    collided: false
+  }),
+      _useState2 = _slicedToArray(_useState, 2),
+      piece = _useState2[0],
+      setPiece = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_1__["createField"])(6, 6)),
+      _useState4 = _slicedToArray(_useState3, 2),
+      field = _useState4[0],
+      setField = _useState4[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    setPiece({
+      position: {
+        x: 1,
+        // to position the piece in the middle of game field
+        y: 1
+      },
+      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__["default"][props.pieces === null ? 0 : props.pieces].shape,
+      collided: true
+    });
+  }, [props.pieces]);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var updateField = function updateField(prevField) {
+      // clear field from the previous render
+      var newField = prevField.map(function (row) {
+        return row.map(function () {
+          return [0, 'empty'];
+        });
+      }); // draw the tetromino
+
+      piece.tetromino.forEach(function (row, y) {
+        row.forEach(function (value, x) {
+          if (value !== 0) {
+            newField[y + piece.position.y][x + piece.position.x] = [value, "".concat(piece.collided ? 'filled' : 'empty')];
+          }
+        });
+      });
+      return newField;
+    };
+
+    setField(updateField(field));
+  }, [piece]);
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "future-block"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    field: field
+  }));
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    pieces: state.game.pieces
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, null)(NextPieceField));
 
 /***/ }),
 
@@ -993,65 +1099,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _GameLink__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameLink */ "./components/GameLink.js");
 /* harmony import */ var _RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RoomManagementBtns */ "./components/RoomManagementBtns.js");
-/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
-/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
-/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
 
 
 
 
 var RoomManagement = function RoomManagement(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([{
-    shape: 0
-  }]),
-      _useState2 = _slicedToArray(_useState, 2),
-      pieces = _useState2[0],
-      setPieces = _useState2[1];
-
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_5__["usePiece"])(0),
-      _usePiece2 = _slicedToArray(_usePiece, 2),
-      piece = _usePiece2[0],
-      resetPiece = _usePiece2[1];
-
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(6, 6)),
-      _useState4 = _slicedToArray(_useState3, 2),
-      field = _useState4[0],
-      setField = _useState4[1];
-
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    var updateField = function updateField(prevField) {
-      // clear field from the previous render
-      var newField = prevField.map(function (row) {
-        return row.map(function () {
-          return [0, 'empty'];
-        });
-      }); // draw the tetromino
-
-      piece.tetromino.forEach(function (row, y) {
-        row.forEach(function (value, x) {
-          if (value !== 0) {
-            newField[y + piece.position.y][x + piece.position.x] = [value, "".concat(piece.collided ? 'filled' : 'empty')];
-          }
-        });
-      });
-      resetPiece(pieces[0].shape);
-      return newField;
-    };
-
-    setField(updateField(field));
-  }, [pieces]);
-
   var setFocusToField = function setFocusToField() {
     props.gameFieldRef.current.focus();
   };
@@ -1291,7 +1343,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var useField = function useField(piece, resetPiece, pieces) {
+var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_1__["createField"])()),
       _useState2 = _slicedToArray(_useState, 2),
       field = _useState2[0],
@@ -1337,10 +1389,28 @@ var useField = function useField(piece, resetPiece, pieces) {
           }
         });
       });
+      /**
+       * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
+       * to another and of course for seamless usage in future block.
+       */
 
       if (piece.collided) {
-        resetPiece(pieces[0].shape);
-        pieces.shift();
+        if (pieces.length === 0) {
+          setPieces(piecesBuffer);
+          resetPiece(piecesBuffer[0].shape);
+          piecesBuffer.shift();
+          props.setPiecesAction(piecesBuffer[0].shape);
+        } else {
+          resetPiece(pieces[0].shape);
+          pieces.shift();
+
+          if (pieces.length === 0) {
+            props.setPiecesAction(piecesBuffer[0].shape);
+          } else {
+            props.setPiecesAction(pieces[0].shape);
+          }
+        }
+
         return sweepRows(newField);
       }
 
@@ -1350,7 +1420,7 @@ var useField = function useField(piece, resetPiece, pieces) {
     setField(function (prev) {
       return updateField(prev);
     });
-  }, [piece, resetPiece, pieces]);
+  }, [piece, resetPiece, pieces, piecesBuffer]);
   return [field, setField, rowsCleared];
 };
 
@@ -4156,7 +4226,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 120px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom-color: rgba(80, 227, 230, 0.1);\n      border-right-color: #50e3e6;\n      border-top-color: #50e3e6;\n      border-left-color: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom-color: rgba(223, 217, 36, 0.1);\n      border-right-color: #dfd924;\n      border-top-color: #dfd924;\n      border-left-color: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom-color: rgba(36, 95, 223, 0.1);\n      border-right-color: #245fdf;\n      border-top-color: #245fdf;\n      border-left-color: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom-color: rgba(223, 173, 36, 0.1);\n      border-right-color: #dfad24;\n      border-top-color: #dfad24;\n      border-left-color: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom-color: rgba(48, 211, 56, 0.1);\n      border-right-color: #30d338;\n      border-top-color: #30d338;\n      border-left-color: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom-color: rgba(227, 78, 78, 0.1);\n      border-right-color: #e34e4e;\n      border-top-color: #e34e4e;\n      border-left-color: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 60px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n", ""]);
+exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 120px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 60px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n", ""]);
 
 
 /***/ }),
@@ -53090,7 +53160,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var initialState = {
-  id: null
+  id: null,
+  pieces: null
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -53113,6 +53184,11 @@ var initialState = {
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["SET_SCORE"]:
       return _objectSpread({}, state, {
         score: action.score
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_0__["SET_PIECES"]:
+      return _objectSpread({}, state, {
+        pieces: action.pieces
       });
 
     default:
