@@ -694,7 +694,11 @@ var GameField = function GameField(props) {
     });
   }, []);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    console.log('useEffect props after score changed', props);
+  }, [props.score]);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     setDropTime(assembleDropTime());
+    console.log('level is', gameLevel);
   }, [gameLevel]); // this fires every time when game level is changed
 
   Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_8__["useInterval"])(function () {
@@ -725,7 +729,13 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(null, mapDispatchToProps)(GameField));
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    score: state.game.score
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
 
 /***/ }),
 
@@ -858,7 +868,6 @@ var Room = function Room(props) {
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "game__container"
     }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(),
       socket: props.socket,
       game_id: props.game_id,
       user: props.user
@@ -897,18 +906,73 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _GameLink__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameLink */ "./components/GameLink.js");
 /* harmony import */ var _RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RoomManagementBtns */ "./components/RoomManagementBtns.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
 
 
 
 
 var RoomManagement = function RoomManagement(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([{
+    shape: 0
+  }]),
+      _useState2 = _slicedToArray(_useState, 2),
+      pieces = _useState2[0],
+      setPieces = _useState2[1];
+
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_5__["usePiece"])(0),
+      _usePiece2 = _slicedToArray(_usePiece, 2),
+      piece = _usePiece2[0],
+      resetPiece = _usePiece2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(6, 6)),
+      _useState4 = _slicedToArray(_useState3, 2),
+      field = _useState4[0],
+      setField = _useState4[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var updateField = function updateField(prevField) {
+      // clear field from the previous render
+      var newField = prevField.map(function (row) {
+        return row.map(function () {
+          return [0, 'empty'];
+        });
+      }); // draw the tetromino
+
+      piece.tetromino.forEach(function (row, y) {
+        row.forEach(function (value, x) {
+          if (value !== 0) {
+            newField[y + piece.position.y][x + piece.position.x] = [value, "".concat(piece.collided ? 'filled' : 'empty')];
+          }
+        });
+      });
+      resetPiece(pieces[0].shape);
+      return newField;
+    };
+
+    setField(updateField(field));
+  }, [pieces]);
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "room__management"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_1__["default"], {
     game_id: props.game_id
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "enemy__field"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    className: "future-block"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    field: Object(_utils_createField__WEBPACK_IMPORTED_MODULE_3__["createField"])(6, 6)
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
     socket: props.socket,
     game_id: props.game_id
   }));
@@ -1180,8 +1244,7 @@ var useField = function useField(piece, resetPiece, pieces) {
       piece.tetromino.forEach(function (row, y) {
         row.forEach(function (value, x) {
           if (value !== 0) {
-            newField[y + piece.position.y][x + piece.position.x] = [value, // 'empty',
-            "".concat(piece.collided ? 'filled' : 'empty')];
+            newField[y + piece.position.y][x + piece.position.x] = [value, "".concat(piece.collided ? 'filled' : 'empty')];
           }
         });
       });
@@ -1353,9 +1416,10 @@ var usePiece = function usePiece(tetromino) {
 
 
   var resetPiece = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (tetromino) {
+    var columnAmount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _utils_createField__WEBPACK_IMPORTED_MODULE_2__["COLUMN_AMOUNT"];
     setPiece({
       position: {
-        x: _utils_createField__WEBPACK_IMPORTED_MODULE_2__["COLUMN_AMOUNT"] / 2 - 2,
+        x: columnAmount / 2 - 2,
         // to position the piece in the middle of game field
         y: 0
       },
@@ -4003,7 +4067,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom-color: rgba(80, 227, 230, 0.1);\n      border-right-color: #50e3e6;\n      border-top-color: #50e3e6;\n      border-left-color: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom-color: rgba(223, 217, 36, 0.1);\n      border-right-color: #dfd924;\n      border-top-color: #dfd924;\n      border-left-color: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom-color: rgba(36, 95, 223, 0.1);\n      border-right-color: #245fdf;\n      border-top-color: #245fdf;\n      border-left-color: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom-color: rgba(223, 173, 36, 0.1);\n      border-right-color: #dfad24;\n      border-top-color: #dfad24;\n      border-left-color: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom-color: rgba(48, 211, 56, 0.1);\n      border-right-color: #30d338;\n      border-top-color: #30d338;\n      border-left-color: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom-color: rgba(227, 78, 78, 0.1);\n      border-right-color: #e34e4e;\n      border-top-color: #e34e4e;\n      border-left-color: rgba(227, 78, 78, 0.3); }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\n.enemy__field {\n  background: #71b9b7;\n  width: 160px;\n  height: 320px; }\n\n.room-management__btns {\n  text-align: center; }\n  .room-management__btns button {\n    margin: 0 0 15px 0; }\n", ""]);
+exports.push([module.i, "button {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 500px;\n  height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 50px;\n    height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom-color: rgba(80, 227, 230, 0.1);\n      border-right-color: #50e3e6;\n      border-top-color: #50e3e6;\n      border-left-color: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom-color: rgba(223, 217, 36, 0.1);\n      border-right-color: #dfd924;\n      border-top-color: #dfd924;\n      border-left-color: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom-color: rgba(36, 95, 223, 0.1);\n      border-right-color: #245fdf;\n      border-top-color: #245fdf;\n      border-left-color: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom-color: rgba(223, 173, 36, 0.1);\n      border-right-color: #dfad24;\n      border-top-color: #dfad24;\n      border-left-color: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom-color: rgba(48, 211, 56, 0.1);\n      border-right-color: #30d338;\n      border-top-color: #30d338;\n      border-left-color: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom-color: rgba(227, 78, 78, 0.1);\n      border-right-color: #e34e4e;\n      border-top-color: #e34e4e;\n      border-left-color: rgba(227, 78, 78, 0.3); }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 300px; }\n\n.dasboard__menu {\n  padding-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n@media (max-width: 600px) {\n  .dashboard__btn {\n    width: auto; } }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__container {\n  height: 100vh;\n  flex: 0 1 calc(100% - 250px); }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\n.future-block {\n  background: #f9f9f9;\n  width: 180px;\n  height: 180px; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 180px;\n    height: 180px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 30px;\n      height: 30px; }\n\n.room-management__btns {\n  text-align: center; }\n  .room-management__btns button {\n    margin: 0 0 15px 0; }\n", ""]);
 
 
 /***/ }),
@@ -51426,7 +51490,8 @@ var initialState = {
       return _objectSpread({}, state, {
         id: action.id,
         isLeader: true,
-        isGameStarted: false
+        isGameStarted: false,
+        score: 0
       });
 
     case _actions_types__WEBPACK_IMPORTED_MODULE_0__["START_GAME"]:
@@ -51713,8 +51778,10 @@ var COLUMN_AMOUNT = 10;
 var ROWS_AMOUNT = 20;
 var MINIMUM_ROWS_AMOUNT = 5;
 var createField = function createField() {
-  return Array.from(Array(ROWS_AMOUNT), function () {
-    return new Array(COLUMN_AMOUNT).fill([0, 'empty']);
+  var rowsAmount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ROWS_AMOUNT;
+  var columnAmount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : COLUMN_AMOUNT;
+  return Array.from(Array(rowsAmount), function () {
+    return new Array(columnAmount).fill([0, 'empty']);
   });
 };
 

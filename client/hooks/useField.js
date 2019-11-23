@@ -36,7 +36,6 @@ export const useField = (piece, resetPiece, pieces) => {
                     if (value !== 0) {
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
-                            // 'empty',
                             `${piece.collided ? 'filled' : 'empty'}`
                         ]
                     }
