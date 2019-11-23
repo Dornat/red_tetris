@@ -179,18 +179,18 @@ button {
 
     &.filled-for-type-I {
       background: rgba(80, 227, 230, 0.8);
-      border-bottom-color: rgba(80, 227, 230, 0.1);
-      border-right-color: rgba(80, 227, 230, 1);
-      border-top-color: rgba(80, 227, 230, 1);
-      border-left-color: rgba(80, 227, 230, 0.3);
+      //border-bottom-color: rgba(80, 227, 230, 0.1);
+      //border-right-color: rgba(80, 227, 230, 1);
+      //border-top-color: rgba(80, 227, 230, 1);
+      //border-left-color: rgba(80, 227, 230, 0.3);
     }
 
     &.filled-for-type-O {
       background: rgba(223, 217, 36, 0.8);
-      border-bottom-color: rgba(223, 217, 36, 0.1);
-      border-right-color: rgba(223, 217, 36, 1);
-      border-top-color: rgba(223, 217, 36, 1);
-      border-left-color: rgba(223, 217, 36, 0.3);
+      //border-bottom-color: rgba(223, 217, 36, 0.1);
+      //border-right-color: rgba(223, 217, 36, 1);
+      //border-top-color: rgba(223, 217, 36, 1);
+      //border-left-color: rgba(223, 217, 36, 0.3);
     }
 
     &.filled-for-type-T {
@@ -203,34 +203,34 @@ button {
 
     &.filled-for-type-J {
       background: rgba(36, 95, 223, 0.8);
-      border-bottom-color: rgba(36, 95, 223, 0.1);
-      border-right-color: rgba(36, 95, 223, 1);
-      border-top-color: rgba(36, 95, 223, 1);
-      border-left-color: rgba(36, 95, 223, 0.3);
+      //border-bottom-color: rgba(36, 95, 223, 0.1);
+      //border-right-color: rgba(36, 95, 223, 1);
+      //border-top-color: rgba(36, 95, 223, 1);
+      //border-left-color: rgba(36, 95, 223, 0.3);
     }
 
     &.filled-for-type-L {
       background: rgba(223, 173, 36, 0.8);
-      border-bottom-color: rgba(223, 173, 36, 0.1);
-      border-right-color: rgba(223, 173, 36, 1);
-      border-top-color: rgba(223, 173, 36, 1);
-      border-left-color: rgba(223, 173, 36, 0.3);
+      //border-bottom-color: rgba(223, 173, 36, 0.1);
+      //border-right-color: rgba(223, 173, 36, 1);
+      //border-top-color: rgba(223, 173, 36, 1);
+      //border-left-color: rgba(223, 173, 36, 0.3);
     }
 
     &.filled-for-type-S {
       background: rgba(48, 211, 56, 0.8);
-      border-bottom-color: rgba(48, 211, 56, 0.1);
-      border-right-color: rgba(48, 211, 56, 1);
-      border-top-color: rgba(48, 211, 56, 1);
-      border-left-color: rgba(48, 211, 56, 0.3);
+      //border-bottom-color: rgba(48, 211, 56, 0.1);
+      //border-right-color: rgba(48, 211, 56, 1);
+      //border-top-color: rgba(48, 211, 56, 1);
+      //border-left-color: rgba(48, 211, 56, 0.3);
     }
 
     &.filled-for-type-Z {
       background: rgba(227, 78, 78, 0.8);
-      border-bottom-color: rgba(227, 78, 78, 0.1);
-      border-right-color: rgba(227, 78, 78, 1);
-      border-top-color: rgba(227, 78, 78, 1);
-      border-left-color: rgba(227, 78, 78, 0.3);
+      //border-bottom-color: rgba(227, 78, 78, 0.1);
+      //border-right-color: rgba(227, 78, 78, 1);
+      //border-top-color: rgba(227, 78, 78, 1);
+      //border-left-color: rgba(227, 78, 78, 0.3);
     }
   }
 }
@@ -389,4 +389,9 @@ button {
   {
     margin-bottom: 12px;
   }
+}
+
+.field__border
+{
+  border: 3px solid #000;
 }

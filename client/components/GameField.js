@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {createField} from "../utils/createField";
 import {connect} from 'react-redux';
 import Field from './Field';
 
@@ -9,6 +8,7 @@ import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
 import {startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
 import NextPieceField from "./NextPieceField";
+import GameStats from './GameStats';
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -161,14 +161,11 @@ const GameField = (props) => {
                     <div className="game-field__col">
                         <GameStats/>
                     </div>
-                    <div className="game-field__col">
+                    <div className="game-field__col field__border">
                         <Field field={field}/>
                     </div>
                     <div className="game-field__col">
                         <NextPieceField/>
-                        {/*<div className="future-block">*/}
-                        {/*    <Field field={createField(6, 6)}/>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
             </div>
