@@ -13,7 +13,7 @@ const NextPieceField = (props) => {
         tetromino: tetrominoes[0].shape,
         collided: false
     });
-    const [field, setField] = useState(createField(6, 6));
+    const [field, setField] = useState(createField(5, 6));
 
     useEffect(() => {
         setPiece({

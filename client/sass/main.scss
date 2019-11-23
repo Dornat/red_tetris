@@ -6,21 +6,18 @@ body {
   width: 400px;
 }
 
-.form-nickname__group
-{
+.form-nickname__group {
   display: flex;
   align-items: center;
   flex-direction: column;
 
-  input[type="submit"]
-  {
+  input[type="submit"] {
     width: 150px;
     margin-top: 10px;
   }
 }
 
-.d-flex-col
-{
+.d-flex-col {
   display: flex;
   flex-direction: column;
 }
@@ -138,14 +135,15 @@ button {
 }
 
 .future-block {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+
   .field {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     width: 120px;
-    height: 120px;
+    height: 100px;
     box-shadow: inset 0 0 0 1px #dedede;
 
     .cell {
@@ -179,65 +177,64 @@ button {
 
     &.filled-for-type-I {
       background: rgba(80, 227, 230, 0.8);
-      //border-bottom-color: rgba(80, 227, 230, 0.1);
-      //border-right-color: rgba(80, 227, 230, 1);
-      //border-top-color: rgba(80, 227, 230, 1);
-      //border-left-color: rgba(80, 227, 230, 0.3);
+      border-bottom: rgba(80, 227, 230, 0.1);
+      border-right: rgba(80, 227, 230, 1);
+      border-top: rgba(80, 227, 230, 1);
+      border-left: rgba(80, 227, 230, 0.3);
     }
 
     &.filled-for-type-O {
       background: rgba(223, 217, 36, 0.8);
-      //border-bottom-color: rgba(223, 217, 36, 0.1);
-      //border-right-color: rgba(223, 217, 36, 1);
-      //border-top-color: rgba(223, 217, 36, 1);
-      //border-left-color: rgba(223, 217, 36, 0.3);
+      border-bottom: rgba(223, 217, 36, 0.1);
+      border-right: rgba(223, 217, 36, 1);
+      border-top: rgba(223, 217, 36, 1);
+      border-left: rgba(223, 217, 36, 0.3);
     }
 
     &.filled-for-type-T {
       background: rgba(132, 61, 198, 0.8);
-      border-bottom-color: rgba(132, 61, 198, 0.1);
-      border-right-color: rgba(132, 61, 198, 1);
-      border-top-color: rgba(132, 61, 198, 1);
-      border-left-color: rgba(132, 61, 198, 0.3);
+      border-bottom: rgba(132, 61, 198, 0.1);
+      border-right: rgba(132, 61, 198, 1);
+      border-top: rgba(132, 61, 198, 1);
+      border-left: rgba(132, 61, 198, 0.3);
     }
 
     &.filled-for-type-J {
       background: rgba(36, 95, 223, 0.8);
-      //border-bottom-color: rgba(36, 95, 223, 0.1);
-      //border-right-color: rgba(36, 95, 223, 1);
-      //border-top-color: rgba(36, 95, 223, 1);
-      //border-left-color: rgba(36, 95, 223, 0.3);
+      border-bottom: rgba(36, 95, 223, 0.1);
+      border-right: rgba(36, 95, 223, 1);
+      border-top: rgba(36, 95, 223, 1);
+      border-left: rgba(36, 95, 223, 0.3);
     }
 
     &.filled-for-type-L {
       background: rgba(223, 173, 36, 0.8);
-      //border-bottom-color: rgba(223, 173, 36, 0.1);
-      //border-right-color: rgba(223, 173, 36, 1);
-      //border-top-color: rgba(223, 173, 36, 1);
-      //border-left-color: rgba(223, 173, 36, 0.3);
+      border-bottom: rgba(223, 173, 36, 0.1);
+      border-right: rgba(223, 173, 36, 1);
+      border-top: rgba(223, 173, 36, 1);
+      border-left: rgba(223, 173, 36, 0.3);
     }
 
     &.filled-for-type-S {
       background: rgba(48, 211, 56, 0.8);
-      //border-bottom-color: rgba(48, 211, 56, 0.1);
-      //border-right-color: rgba(48, 211, 56, 1);
-      //border-top-color: rgba(48, 211, 56, 1);
-      //border-left-color: rgba(48, 211, 56, 0.3);
+      border-bottom: rgba(48, 211, 56, 0.1);
+      border-right: rgba(48, 211, 56, 1);
+      border-top: rgba(48, 211, 56, 1);
+      border-left: rgba(48, 211, 56, 0.3);
     }
 
     &.filled-for-type-Z {
       background: rgba(227, 78, 78, 0.8);
-      //border-bottom-color: rgba(227, 78, 78, 0.1);
-      //border-right-color: rgba(227, 78, 78, 1);
-      //border-top-color: rgba(227, 78, 78, 1);
-      //border-left-color: rgba(227, 78, 78, 0.3);
+      border-bottom: rgba(227, 78, 78, 0.1);
+      border-right: rgba(227, 78, 78, 1);
+      border-top: rgba(227, 78, 78, 1);
+      border-left: rgba(227, 78, 78, 0.3);
     }
   }
 }
 
 @media (max-width: 992px) {
-  .game__container
-  {
+  .game__container {
     height: calc(100vh - 150px);
     order: 1;
     display: flex;
@@ -247,14 +244,12 @@ button {
     width: 100%;
   }
 
-  .room-management__container
-  {
+  .room-management__container {
     display: flex;
     order: 2;
     width: 100%;
   }
-  .room__management
-  {
+  .room__management {
     position: absolute;
     bottom: 0;
     padding: 10px 15px;
@@ -265,45 +260,41 @@ button {
     flex-direction: row;
     display: flex;
     align-items: center;
+
     label {
       font-size: 13px;
     }
   }
-  .game__link
-  {
+  .game__link {
     span {
       padding: 8px 10px;
       width: 80px;
       font-size: 10px;
     }
   }
-  .invite-cpy__btn
-  {
+  .invite-cpy__btn {
     width: 40px;
     height: 40px;
     font-size: 14px;
   }
-  .future-block
-  {
-    .field
-    {
+
+  .future-block {
+    .field {
       width: 60px;
-      height: 60px;
-      .cell
-      {
+      height: 50px;
+
+      .cell {
         width: 10px;
         height: 10px;
       }
     }
   }
-  .room-management__btns
-  {
+  .room-management__btns {
     display: flex;
     flex-direction: column;
     font-size: 12px;
   }
-  .game-field__wrap
-  {
+  .game-field__wrap {
     height: 100%;
     padding: 10px;
   }
@@ -317,31 +308,26 @@ button {
 }
 
 @media (max-width: 576px) {
-  .game__container
-  {
+  .game__container {
     height: calc(100vh - 80px);
   }
-  .room__management
-  {
+  .room__management {
     height: 80px;
   }
-  .game-link__label
-  {
+  .game-link__label {
     display: none;
   }
-  .field
-  {
+  .field {
     width: 40vw;
     height: 80vw;
+
     .cell {
       width: 4vw;
       height: 4vw;
     }
   }
-  .room-management__btns
-  {
-    button
-    {
+  .room-management__btns {
+    button {
       width: 70px;
       margin: 0;
       padding: 0;
@@ -350,48 +336,39 @@ button {
   }
 }
 
-.game-field__area
-{
+.game-field__area {
   width: 90%;
 }
 
-.game-field__body
-{
+.game-field__body {
   display: flex;
   justify-content: space-between;
 }
 
-.test
-{
+.test {
   background-color: #eceded;
   width: 15vw;
   height: 30vw;
 }
 
-.game-stats__btns
-{
+.game-stats__btns {
   display: flex;
   flex-direction: column;
 }
 
-.game-stats__btn
-{
-
+.game-stats__btn {
   span {
     text-transform: uppercase;
     font-weight: 900;
   }
 }
 
-.room-management__btns
-{
-  button:first-child
-  {
+.room-management__btns {
+  button:first-child {
     margin-bottom: 12px;
   }
 }
 
-.field__border
-{
+.field__border {
   border: 3px solid #000;
 }
