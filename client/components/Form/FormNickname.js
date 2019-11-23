@@ -19,7 +19,7 @@ const FormNickname = (props) => {
 
     return (
         <form className="form__nickname" onSubmit={event => onSubmit(event)}>
-            <div className="input__group">
+            <div className="form-nickname__group">
                 <label className="input__label">Enter your nickname</label>
                 <input type="text" name="user"
                     className={props.isError ? "nes-input is-error nickname__input" : "nes-input nickname__input"}

@@ -8,6 +8,7 @@ import {usePiece} from "../hooks/usePiece";
 import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
 import {startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
+import NextPieceField from "./NextPieceField";
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -152,13 +153,25 @@ const GameField = (props) => {
         drop();
     }, dropTime);
 
+
     return (
-        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}
-             ref={props.gameFieldRef}>
-            <div className="field">
-                <Field field={field}/>
+        <div tabIndex="0" className="game-field__wrap flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased} ref={props.gameFieldRef}>
+            <div className="game-field__area">
+                <div className="game-field__body">
+                    <div className="game-field__col">
+                        <GameStats/>
+                    </div>
+                    <div className="game-field__col">
+                        <Field field={field}/>
+                    </div>
+                    <div className="game-field__col">
+                        <NextPieceField/>
+                        {/*<div className="future-block">*/}
+                        {/*    <Field field={createField(6, 6)}/>*/}
+                        {/*</div>*/}
+                    </div>
+                </div>
             </div>
-            <NextPieceField/>
         </div>
     );
 };
