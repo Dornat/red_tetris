@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import RoomManagement from './RoomManagement'
 import GameField from './GameField'
-import {createField} from "../utils/createField";
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import Loader from './Loader';
@@ -74,7 +73,7 @@ const Room = (props) => {
                     {renderModalContent()}
                 </ReactModal>
                 <div className="game__container">
-                    <GameField socket={props.socket} game_id={props.game_id} user={props.user}/>
+                    <GameField socket={props.socket} game_id={props.game_id} user={props.user} gameFieldRef={gameFieldRef}/>
                 </div>
                 <div className="room-management__container">
                     <RoomManagement game_id={props.game_id} socket={props.socket} gameFieldRef={gameFieldRef}/>
