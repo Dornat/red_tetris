@@ -41,18 +41,14 @@ const Dashboard = (props) => {
     return (
         <main>
             <div className="flex_centered">
-                <div className="row">
+                <div className="dashboard__section">
                     <div className="col">
                         <FormNickname form={form} isError={isError} setError={setError} setValues={setValues} onChange={onChange}/>
                     </div>
                 </div>
-                <div className="row dashboard__menu">
-                    <div className="col-6">
-                        <button type="button" className="nes-btn dashboard__btn" onClick={createRoom} disabled={isCreateRoomBtnDisabled}>Create a room</button>
-                    </div>
-                    <div className="col-6">
-                        <button type="button" className="nes-btn dashboard__btn">Score</button>
-                    </div>
+                <div className="dashboard__section dashboard__menu d-flex-col">
+                    <button type="button" className="nes-btn dashboard__btn" onClick={createRoom} disabled={isCreateRoomBtnDisabled}>Create a room</button>
+                    <button type="button" className="nes-btn dashboard__btn">Score</button>
                 </div>
             </div>
         </main>

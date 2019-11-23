@@ -7,11 +7,11 @@ const GameLink = (props) => {
 
     return (
         <div>
-            <label className="label text-uppercase">Invite link</label>
+            <label className="game-link__label label text-uppercase">Invite link</label>
             <div className="game__link">
                 <span>{props.game_id}</span>
                 <CopyToClipboard text={window.location.origin + "/room/" + props.game_id}>
-                    <button className="nes-btn is-primary">{buttonLabel}</button>
+                    <button className="invite-cpy__btn nes-btn is-primary">{buttonLabel}</button>
                 </CopyToClipboard>
             </div>
         </div>
