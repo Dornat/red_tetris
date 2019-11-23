@@ -124,7 +124,6 @@ io.on('connection', (socket) => {
             level: game.level
         });
 
-        console.log(player.field);
         console.log('cheater', cheater);
         console.log('score', player.score);
     });

@@ -1,16 +1,17 @@
 import {
     CREATE_GAME,
     START_GAME,
-    SET_SCORE
+    SET_SCORE,
+    SET_PIECES
 } from '../actions/types'
 
 const initialState = {
-    id: null
+    id: null,
+    pieces: null
 };
 
 export default (state = initialState, action = {}) => {
-
-    switch(action.type) {
+    switch (action.type) {
         case CREATE_GAME:
             return {
                 ...state,
@@ -28,6 +29,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 score: action.score
+            };
+        case SET_PIECES:
+            return {
+                ...state,
+                pieces: action.pieces
             };
         default: {
             return state;
