@@ -1,13 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import GameLink from './GameLink';
-import RoomManagementBtns from './RoomManagementBtns';
 import {createField} from "../utils/createField";
 import Field from './Field';
-import {usePiece} from "../hooks/usePiece";
 import {connect} from 'react-redux';
 import tetrominoes from '../utils/TetrominoesScheme';
 
-const RoomManagement = (props) => {
+const NextPieceField = (props) => {
     const [piece, setPiece] = useState({
         position: {
             x: 0,
@@ -57,17 +54,9 @@ const RoomManagement = (props) => {
 
     }, [piece]);
 
-    const setFocusToField = () => {
-        props.gameFieldRef.current.focus();
-    };
-
     return (
-        <div className="room__management" onClick={setFocusToField}>
-            <GameLink game_id={props.game_id}/>
-            <div className="future-block">
-                <Field field={field}/>
-            </div>
-            <RoomManagementBtns socket={props.socket} game_id={props.game_id}/>
+        <div className="future-block">
+            <Field field={field}/>
         </div>
     );
 
@@ -79,4 +68,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, null)(RoomManagement);
+export default connect(mapStateToProps, null)(NextPieceField);

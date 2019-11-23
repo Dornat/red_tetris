@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {createField} from "../utils/createField";
 
-export const useField = (piece, resetPiece, pieces) => {
+export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, props) => {
     const [field, setField] = useState(createField());
     const [rowsCleared, setRowsCleared] = useState(0);
 
@@ -42,9 +42,25 @@ export const useField = (piece, resetPiece, pieces) => {
                 })
             });
 
+            /**
+             * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
+             * to another and of course for seamless usage in future block.
+             */
             if (piece.collided) {
-                resetPiece(pieces[0].shape);
-                pieces.shift();
+                if (pieces.length === 0) {
+                    setPieces(piecesBuffer);
+                    resetPiece(piecesBuffer[0].shape);
+                    piecesBuffer.shift();
+                    props.setPiecesAction(piecesBuffer[0].shape);
+                } else {
+                    resetPiece(pieces[0].shape);
+                    pieces.shift();
+                    if (pieces.length === 0) {
+                        props.setPiecesAction(piecesBuffer[0].shape);
+                    } else {
+                        props.setPiecesAction(pieces[0].shape);
+                    }
+                }
                 return sweepRows(newField);
             }
 
@@ -53,7 +69,7 @@ export const useField = (piece, resetPiece, pieces) => {
 
         setField(prev => updateField(prev));
 
-    }, [piece, resetPiece, pieces]);
+    }, [piece, resetPiece, pieces, piecesBuffer]);
 
     return [field, setField, rowsCleared];
 };

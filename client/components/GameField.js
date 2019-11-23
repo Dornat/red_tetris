@@ -1,40 +1,31 @@
 import React, {useState, useEffect} from 'react';
-import Cell from './Cell';
-import {COLUMN_AMOUNT, createField, ROWS_AMOUNT} from "../utils/createField";
+import {createField} from "../utils/createField";
 import {connect} from 'react-redux';
-import tetrominoes from '../utils/TetrominoesScheme'
 import Field from './Field';
 
 import {useField} from "../hooks/useField";
 import {usePiece} from "../hooks/usePiece";
 import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
-import {startGameAction, setScoreAction} from "../actions/gameActions";
+import {startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
     const DROPTIME_BASE = 1000;
 
+    const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
     const [isGameStarted, setGameStarted] = useState(false);
     const [gameLevel, setGameLevel] = useState(1);
-
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
-    const [field, setField] = useField(piece, resetPiece, pieces);
+    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props);
 
     const movePiece = direction => {
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
             updatePiecePosition({x: direction, y: 0});
         }
-    };
-
-    const startGame = () => {
-        // reset everything
-        setField(createField());
-        resetPiece('T');
     };
 
     const drop = () => {
@@ -46,7 +37,7 @@ const GameField = (props) => {
                 setGameOver(true);
                 setDropTime(null);
             }
-            if (pieces.length === 0) {
+            if (piecesBuffer.length === 1) {
                 socket.emit('generatePieces', {id: props.game_id}); // inject pieces with new dose from server
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
@@ -121,10 +112,15 @@ const GameField = (props) => {
         if (pieces.length === 5) { // draw piece only for first piece in pieces array and only when array is full
             updatePiecePosition({x: 0, y: 0, collided: true}); // true is important here
         }
-    }, [pieces]); // this fires every time when pieces array is refreshed
+    }, [pieces]); // this fires every time when pieces is updated
 
     useEffect(() => {
+        if (pieces.length === 0 || pieces[0].shape === 0) {
+            setPieces(piecesBuffer);
+        }
+    }, [piecesBuffer]);
 
+    useEffect(() => {
         socket.on('gameStarted', (response) => {
             if (response.game_id === game_id) {
                 setGameStarted(true);
@@ -132,7 +128,7 @@ const GameField = (props) => {
                 props.startGameAction();
                 socket.emit('generatePieces', {id: response.game_id});
                 socket.on('getPieces', (data) => {
-                    setPieces(data.pieces);
+                    setPiecesBuffer(data.pieces);
                 });
             }
         });
@@ -149,7 +145,7 @@ const GameField = (props) => {
 
     useEffect(() => {
         setDropTime(assembleDropTime());
-        console.log('level is', gameLevel);
+        console.log('the level is', gameLevel);
     }, [gameLevel]); // this fires every time when game level is changed
 
     useInterval(() => {
@@ -157,10 +153,12 @@ const GameField = (props) => {
     }, dropTime);
 
     return (
-        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased} ref={props.gameFieldRef}>
+        <div tabIndex="0" className="flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}
+             ref={props.gameFieldRef}>
             <div className="field">
                 <Field field={field}/>
             </div>
+            <NextPieceField/>
         </div>
     );
 };
@@ -173,6 +171,9 @@ const mapDispatchToProps = (dispatch) => {
         setScoreAction: (score) => {
             dispatch(setScoreAction(score))
         },
+        setPiecesAction: (pieces) => {
+            dispatch(setPiecesAction(pieces))
+        }
     }
 };
 

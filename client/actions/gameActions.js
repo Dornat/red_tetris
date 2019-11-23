@@ -2,6 +2,7 @@ import {
     CREATE_GAME,
     START_GAME,
     SET_SCORE,
+    SET_PIECES,
 } from './types';
 
 export function createRoomAction(id) {
@@ -21,5 +22,12 @@ export function setScoreAction(score) {
     return {
         type: SET_SCORE,
         score
+    }
+}
+
+export function setPiecesAction(pieces) {
+    return {
+        type: SET_PIECES,
+        pieces
     }
 }
