@@ -2,7 +2,8 @@ import {
     CREATE_GAME,
     START_GAME,
     SET_SCORE,
-    SET_PIECES
+    SET_PIECES,
+    JOIN_GAME,
 } from '../actions/types'
 
 const initialState = {
@@ -17,6 +18,14 @@ export default (state = initialState, action = {}) => {
                 ...state,
                 id: action.id,
                 isLeader: true,
+                isGameStarted: false,
+                score: 0
+            };
+        case JOIN_GAME:
+            return {
+                ...state,
+                id: action.id,
+                isLeader: false,
                 isGameStarted: false,
                 score: 0
             };

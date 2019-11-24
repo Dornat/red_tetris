@@ -122,10 +122,8 @@ const GameField = (props) => {
     }, [piecesBuffer]);
 
     useEffect(() => {
-
-        console.log("SCORE", props.score);
-
         socket.on('gameStarted', (response) => {
+            console.log('in GameField on gameStarted socket');
             if (response.game_id === game_id) {
                 setGameLevel(1);
                 setGameStarted(true);

@@ -90,12 +90,13 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction, startGameAction, setScoreAction, setPiecesAction */
+/*! exports provided: createRoomAction, joinGameAction, startGameAction, setScoreAction, setPiecesAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "joinGameAction", function() { return joinGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPiecesAction", function() { return setPiecesAction; });
@@ -104,6 +105,12 @@ __webpack_require__.r(__webpack_exports__);
 function createRoomAction(id) {
   return {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["CREATE_GAME"],
+    id: id
+  };
+}
+function joinGameAction(id) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["JOIN_GAME"],
     id: id
   };
 }
@@ -131,7 +138,7 @@ function setPiecesAction(pieces) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, JOIN_GAME */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -141,11 +148,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "START_GAME", function() { return START_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SCORE", function() { return SET_SCORE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PIECES", function() { return SET_PIECES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JOIN_GAME", function() { return JOIN_GAME; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
 var START_GAME = "START_GAME";
 var SET_SCORE = "SET_SCORE";
 var SET_PIECES = "SET_PIECES";
+var JOIN_GAME = "JOIN_GAME";
 
 /***/ }),
 
@@ -308,8 +317,8 @@ var Dashboard = function Dashboard(props) {
       props.socket.emit('createGame', props.user);
       setBtnDisability(true);
       props.socket.on('gameCreated', function (game_id) {
-        props.createRoomAction(game_id); // props.history.push('/room/' + game_id);
-
+        props.socket.emit('join', game_id);
+        props.createRoomAction(game_id);
         props.history.push({
           pathname: '/room/' + game_id,
           state: {
@@ -465,6 +474,67 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(null, mapDispatchToProps)(FormNickname));
+
+/***/ }),
+
+/***/ "./components/Form/JoinGame.js":
+/*!*************************************!*\
+  !*** ./components/Form/JoinGame.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _FormNickname__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FormNickname */ "./components/Form/FormNickname.js");
+
+
+
+
+
+var JoinGame = function JoinGame(_ref) {
+  var onClick = _ref.onClick;
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false),
+      _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState, 2),
+      isError = _useState2[0],
+      setError = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])({
+    user: ''
+  }),
+      _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState3, 2),
+      form = _useState4[0],
+      setValues = _useState4[1];
+
+  var onChange = function onChange(e) {
+    setValues(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()({}, e.target.name, e.target.value));
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    className: "dashboard__section"
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+    className: "col"
+  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_FormNickname__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    form: form,
+    isError: isError,
+    setError: setError,
+    setValues: setValues,
+    onChange: onChange
+  }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn dashboard__btn",
+    onClick: onClick
+  }, "Enroll into battle")));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (JoinGame);
 
 /***/ }),
 
@@ -681,8 +751,9 @@ var GameField = function GameField(props) {
     }
   }, [piecesBuffer]);
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
-    console.log("SCORE", props.score);
     socket.on('gameStarted', function (response) {
+      console.log('in GameField on gameStarted socket');
+
       if (response.game_id === game_id) {
         setGameLevel(1);
         setGameStarted(true);
@@ -893,7 +964,7 @@ var NextPieceField = function NextPieceField(props) {
       piece = _useState2[0],
       setPiece = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])(6, 6)),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])(5, 6)),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
       field = _useState4[0],
       setField = _useState4[1];
@@ -992,6 +1063,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Loader */ "./components/Loader.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _Form_JoinGame__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Form/JoinGame */ "./components/Form/JoinGame.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+
+
 
 
 
@@ -1054,9 +1129,12 @@ var Room = function Room(props) {
   var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(null);
 
   var canJoinTheGame = function canJoinTheGame(game_id) {
+    console.log('canJoinGame');
+    props.socket.emit('join', game_id);
     props.socket.emit('joinGame', {
       game_id: game_id
     });
+    props.joinGameAction(game_id);
     return new Promise(function (resolve, reject) {
       props.socket.on('gameJoined', function (response) {
         if (response.success) {
@@ -1110,6 +1188,7 @@ var Room = function Room(props) {
               case 0:
                 _context.prev = 0;
                 game_id = props.match.params.game_id;
+                setGameId(game_id);
                 locationState = props.location.state;
                 isGameCreator = false;
 
@@ -1118,7 +1197,7 @@ var Room = function Room(props) {
                 }
 
                 if (!isGameCreator) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
@@ -1126,31 +1205,31 @@ var Room = function Room(props) {
                   msg: MSG_GAME_CREATED
                 });
 
-              case 7:
-                _context.next = 9;
+              case 8:
+                _context.next = 10;
                 return canJoinTheGame(game_id);
 
-              case 9:
+              case 10:
                 _ref2 = _context.sent;
                 _opponent = _ref2.data;
                 msg = _ref2.msg;
                 setOpponent(_opponent);
 
                 if (!props.user) {
-                  _context.next = 23;
+                  _context.next = 24;
                   break;
                 }
 
-                _context.next = 16;
+                _context.next = 17;
                 return acceptPlayer(props.user, game_id);
 
-              case 16:
+              case 17:
                 _ref3 = _context.sent;
                 success = _ref3.data;
                 _msg = _ref3.msg;
 
                 if (!success) {
-                  _context.next = 21;
+                  _context.next = 22;
                   break;
                 }
 
@@ -1158,25 +1237,25 @@ var Room = function Room(props) {
                   msg: _msg
                 });
 
-              case 21:
-                _context.next = 24;
+              case 22:
+                _context.next = 25;
                 break;
 
-              case 23:
+              case 24:
                 return _context.abrupt("return", {
                   msg: msg
                 });
 
-              case 24:
-                _context.next = 30;
+              case 25:
+                _context.next = 31;
                 break;
 
-              case 26:
-                _context.prev = 26;
+              case 27:
+                _context.prev = 27;
                 _context.t0 = _context["catch"](0);
 
                 if (!(_context.t0.msg === ERROR_GAME_NOT_FOUND || _context.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context.next = 30;
+                  _context.next = 31;
                   break;
                 }
 
@@ -1184,12 +1263,12 @@ var Room = function Room(props) {
                   msg: _context.t0.msg
                 });
 
-              case 30:
+              case 31:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 26]]);
+        }, _callee, null, [[0, 27]]);
       }));
 
       return function handleJoining() {
@@ -1249,18 +1328,23 @@ var Room = function Room(props) {
     });
   }, []);
 
+  var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
+    setIsOpen(false);
+    acceptPlayer(props.user, gameId);
+  };
+
   var renderModalContent = function renderModalContent() {
-    if (modal == MODAL_GAME_JOINED) {
+    if (modal === MODAL_GAME_JOINED) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("i", {
-        className: "nes-squirtle"
-      }), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h1", null, "Game is paused"));
-    } else if (modal == MODAL_NO_ROOM) {
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Form_JoinGame__WEBPACK_IMPORTED_MODULE_10__["default"], {
+        onClick: closeModalAndEnrollNewPlayerIntoTheGame
+      }));
+    } else if (modal === MODAL_NO_ROOM) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No such room");
-    } else if (modal == MODAL_GAME_PAUSED) {
+    } else if (modal === MODAL_GAME_PAUSED) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game is paused");
-    } else if (modal == MODAL_NO_SPACE) {
+    } else if (modal === MODAL_NO_SPACE) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No space in room");
     }
   };
@@ -1300,7 +1384,15 @@ var mapStateToProps = function mapStateToProps(state) {
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_6__["connect"])(mapStateToProps, null)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_7__["withRouter"])(Room)));
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    joinGameAction: function joinGameAction(gameId) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_11__["joinGameAction"])(gameId));
+    }
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_6__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_7__["withRouter"])(Room)));
 
 /***/ }),
 
@@ -1377,17 +1469,11 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
   var onClickStartGame = function onClickStartGame() {
     var socket = props.socket;
     var game_id = props.game_id;
-    socket.emit("startGame", game_id);
-    socket.on("gameStarted", function (response) {
-      if (response.game_id === game_id) {
-        setGameStarted(true);
-        props.startGameAction();
-      }
-    });
+    socket.emit('startGame', game_id);
   };
 
   var onClickPause = function onClickPause(e) {
-    console.log("PAUSE");
+    console.log('PAUSE');
   };
 
   var onClickToDashboard = function onClickToDashboard() {
@@ -1396,12 +1482,22 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
       game_id: props.game_id,
       nickname: props.user
     };
-    socket.emit("leaveGame", data);
-    socket.on("leftGame", function (response) {
-      console.log("RESPONSE", response);
-
+    socket.emit('leaveGame', data);
+    socket.on('leftGame', function (response) {
       if (response) {
-        props.history.push("/");
+        props.history.push('/');
+      }
+    });
+    /**
+     * Does this work???
+     */
+
+    socket.on('gameStarted', function (response) {
+      console.log('in gameStarted socket');
+
+      if (response.game_id === props.game_id) {
+        setGameStarted(true);
+        props.startGameAction();
       }
     });
   };
@@ -1409,8 +1505,8 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     var socket = props.socket;
     var game_id = props.game_id;
-    socket.emit("isGameStarted", game_id);
-    socket.on("gameStatus", function (response) {
+    socket.emit('isGameStarted', game_id);
+    socket.on('gameStatus', function (response) {
       if (response === undefined) {
         props.history.push('/');
       }
@@ -4638,7 +4734,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 120px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom-color: rgba(132, 61, 198, 0.1);\n      border-right-color: #843dc6;\n      border-top-color: #843dc6;\n      border-left-color: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 60px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n", ""]);
+exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n", ""]);
 
 
 /***/ }),
@@ -54327,6 +54423,14 @@ var initialState = {
         score: 0
       });
 
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["JOIN_GAME"]:
+      return _objectSpread({}, state, {
+        id: action.id,
+        isLeader: false,
+        isGameStarted: false,
+        score: 0
+      });
+
     case _actions_types__WEBPACK_IMPORTED_MODULE_1__["START_GAME"]:
       return _objectSpread({}, state, {
         isGameStarted: true
@@ -54525,8 +54629,7 @@ var loadFormLocalStorage = function loadFormLocalStorage() {
 };
 
 var persistedState = loadFormLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });
