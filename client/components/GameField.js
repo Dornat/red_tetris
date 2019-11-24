@@ -17,7 +17,7 @@ const GameField = (props) => {
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
     const [isGameStarted, setGameStarted] = useState(false);
-    const [gameLevel, setGameLevel] = useState(1);
+    const [gameLevel, setGameLevel] = useState(null);
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
@@ -122,8 +122,12 @@ const GameField = (props) => {
     }, [piecesBuffer]);
 
     useEffect(() => {
+
+        console.log("SCORE", props.score);
+
         socket.on('gameStarted', (response) => {
             if (response.game_id === game_id) {
+                setGameLevel(1);
                 setGameStarted(true);
                 setDropTime(assembleDropTime());
                 props.startGameAction();
@@ -159,7 +163,7 @@ const GameField = (props) => {
             <div className="game-field__area">
                 <div className="game-field__body">
                     <div className="game-field__col">
-                        <GameStats/>
+                        <GameStats score={props.score || 0} level={gameLevel}/>
                     </div>
                     <div className="game-field__col field__border">
                         <Field field={field}/>
@@ -189,7 +193,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        score: state.game.score
+        score: state.game.score || null
     }
 };
 

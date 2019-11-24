@@ -26,7 +26,12 @@ const Dashboard = (props) => {
 
             props.socket.on('gameCreated', (game_id) => {
                 props.createRoomAction(game_id);
-                props.history.push('/room/' + game_id);
+                // props.history.push('/room/' + game_id);
+
+                props.history.push({
+                    pathname: '/room/' + game_id,
+                    state: { gameCreator: true }
+                })
             });
         }
     };
