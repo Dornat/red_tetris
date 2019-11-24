@@ -5,9 +5,11 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import Loader from './Loader';
 import ReactModal from 'react-modal';
+import JoinGame from './Form/JoinGame';
+import {joinGameAction} from "../actions/gameActions";
 
 const modalStyles = {
-    content : {
+    content: {
         top: '50%',
         left: '50%',
         right: 'auto',
@@ -21,7 +23,6 @@ const modalStyles = {
 ReactModal.setAppElement('#app');
 
 const Room = (props) => {
-
     const MODAL_NO_ROOM = 1;
     const MODAL_NO_SPACE = 2;
     const MODAL_GAME_JOINED = 3;
@@ -42,8 +43,10 @@ const Room = (props) => {
     const gameFieldRef = useRef(null);
 
     const canJoinTheGame = (game_id) => {
-
+        console.log('canJoinGame');
+        props.socket.emit('join', game_id);
         props.socket.emit('joinGame', {game_id: game_id});
+        props.joinGameAction(game_id);
 
         return new Promise((resolve, reject) => {
             props.socket.on('gameJoined', (response) => {
@@ -86,10 +89,10 @@ const Room = (props) => {
     };
 
     useEffect(() => {
-
-        const handleJoining = async() => {
+        const handleJoining = async () => {
             try {
                 const game_id = props.match.params.game_id;
+                setGameId(game_id);
                 const locationState = props.location.state;
 
                 let isGameCreator = false;
@@ -103,7 +106,7 @@ const Room = (props) => {
                     return {msg: MSG_GAME_CREATED}
                 }
 
-                const { data: opponent, msg } = await canJoinTheGame(game_id);
+                const {data: opponent, msg} = await canJoinTheGame(game_id);
 
                 setOpponent(opponent);
 
@@ -113,12 +116,10 @@ const Room = (props) => {
                     if (success) {
                         return {msg: msg}
                     }
-                }
-                else {
+                } else {
                     return {msg: msg}
                 }
-            }
-            catch(e) {
+            } catch (e) {
 
                 if (e.msg === ERROR_GAME_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
                     return {msg: e.msg}
@@ -134,62 +135,63 @@ const Room = (props) => {
 
             const msg = res.msg;
 
-           switch(msg) {
-               case MSG_GAME_CREATED: {
-                   setGameExists(true);
-                   break;
-               }
-               case MSG_PLAYER_ADDED: {
-                   setGameExists(true);
-                   break;
-               }
-               case MSG_JOINED_GAME: {
-                   setGameExists(true);
-                   setModal(MODAL_GAME_JOINED);
-                   setIsOpen(true);
-                   break;
-               }
-               case ERROR_GAME_NOT_FOUND: {
-                   setModal(MODAL_NO_ROOM);
-                   setIsOpen(true);
-                   setGameExists(true);
-                   break;
-               }
-               case ERROR_NO_SPACE_AVAILABLE: {
-                   setModal(MODAL_NO_SPACE);
-                   setIsOpen(true);
-                   setGameExists(true);
-                   break;
-               }
-               default: {
-                   break;
-               }
-           }
+            switch (msg) {
+                case MSG_GAME_CREATED: {
+                    setGameExists(true);
+                    break;
+                }
+                case MSG_PLAYER_ADDED: {
+                    setGameExists(true);
+                    break;
+                }
+                case MSG_JOINED_GAME: {
+                    setGameExists(true);
+                    setModal(MODAL_GAME_JOINED);
+                    setIsOpen(true);
+                    break;
+                }
+                case ERROR_GAME_NOT_FOUND: {
+                    setModal(MODAL_NO_ROOM);
+                    setIsOpen(true);
+                    setGameExists(true);
+                    break;
+                }
+                case ERROR_NO_SPACE_AVAILABLE: {
+                    setModal(MODAL_NO_SPACE);
+                    setIsOpen(true);
+                    setGameExists(true);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
         });
 
     }, []);
 
 
+    const closeModalAndEnrollNewPlayerIntoTheGame = () => {
+        setIsOpen(false);
+        acceptPlayer(props.user, gameId);
+    };
+
     const renderModalContent = () => {
-        if (modal == MODAL_GAME_JOINED) {
+        if (modal === MODAL_GAME_JOINED) {
             return (
                 <div className="nes-dialog">
-                    <i className="nes-squirtle"></i>
-                    <h1>Game is paused</h1>
+                    <JoinGame onClick={closeModalAndEnrollNewPlayerIntoTheGame}/>
                 </div>
             )
-        }
-        else if (modal == MODAL_NO_ROOM) {
+        } else if (modal === MODAL_NO_ROOM) {
             return (
                 <h2>No such room</h2>
             );
-        }
-        else if (modal == MODAL_GAME_PAUSED) {
+        } else if (modal === MODAL_GAME_PAUSED) {
             return (
                 <h2>Game is paused</h2>
             )
-        }
-        else if (modal == MODAL_NO_SPACE) {
+        } else if (modal === MODAL_NO_SPACE) {
             return (
                 <h2>No space in room</h2>
             )
@@ -229,4 +231,12 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, null)(withRouter(Room));
+const mapDispatchToProps = (dispatch) => {
+    return {
+        joinGameAction: (gameId) => {
+            dispatch(joinGameAction(gameId))
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Room));

@@ -14,23 +14,21 @@ const Dashboard = (props) => {
     });
 
     const createRoom = (e) => {
-
         setValues({user: props.user});
 
         if (!props.user) {
             setError(true);
-        }
-        else {
+        } else {
             props.socket.emit('createGame', props.user);
             setBtnDisability(true);
 
             props.socket.on('gameCreated', (game_id) => {
+                props.socket.emit('join', game_id);
                 props.createRoomAction(game_id);
-                // props.history.push('/room/' + game_id);
 
                 props.history.push({
                     pathname: '/room/' + game_id,
-                    state: { gameCreator: true }
+                    state: {gameCreator: true}
                 })
             });
         }
@@ -42,17 +40,20 @@ const Dashboard = (props) => {
         });
     };
 
-
     return (
         <main>
             <div className="flex_centered">
                 <div className="dashboard__section">
                     <div className="col">
-                        <FormNickname form={form} isError={isError} setError={setError} setValues={setValues} onChange={onChange}/>
+                        <FormNickname form={form} isError={isError} setError={setError} setValues={setValues}
+                                      onChange={onChange}/>
                     </div>
                 </div>
                 <div className="dashboard__section dashboard__menu d-flex-col">
-                    <button type="button" className="nes-btn dashboard__btn" onClick={createRoom} disabled={isCreateRoomBtnDisabled}>Create a room</button>
+                    <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}
+                            disabled={isCreateRoomBtnDisabled}>
+                        Create a room
+                    </button>
                     <button type="button" className="nes-btn dashboard__btn">Score</button>
                 </div>
             </div>

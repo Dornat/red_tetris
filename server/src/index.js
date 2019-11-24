@@ -15,7 +15,7 @@ const server = new Server({
     port: process.env.SERVER_PORT || 3000,
     createStaticFolder: true,
     onInit: (port) => {
-        console.log("Red Tetris is running on http://localhost:" + port);
+        console.log('Red Tetris is running on http://localhost:' + port);
     }
 });
 
@@ -46,25 +46,32 @@ io.on('connection', (socket) => {
         socket.emit('gameCreated', game.id);
     });
 
-    socket.on("isGameStarted", (game_id) => {
+    socket.on('join', (game) => {
+        console.log('join', game);
+        socket.join(game);
+    });
+
+    socket.on('isGameStarted', (game_id) => {
         if (games[game_id] === undefined) {
-            socket.emit("gameStatus", undefined);
+            socket.emit('gameStatus', undefined);
         }
 
         if (games[game_id]) {
-            socket.emit("gameStatus", {isGameStarted: games[game_id].isGameStarted})
+            socket.emit('gameStatus', {isGameStarted: games[game_id].isGameStarted})
         }
 
     });
 
-    socket.on("startGame", (game_id) => {
+    socket.on('startGame', (game_id) => {
+        console.log('in startGame');
         if (games[game_id] === undefined) {
-            socket.emit("gameStatus", undefined);
+            socket.emit('gameStatus', undefined);
         }
 
         if (games[game_id]) {
             games[game_id].startGame();
-            socket.emit("gameStarted", {game_id: game_id});
+            console.log('games[game_id]', games[game_id]);
+            io.in(game_id).emit('gameStarted', {game_id: game_id});
         }
     });
 
@@ -83,6 +90,7 @@ io.on('connection', (socket) => {
         let game = games[game_id];
         let newPlayer = new Player(nickname, false);
         let playerWasAccepted = game.addPlayer(newPlayer);
+        console.log('acceptPlayer game', game);
 
         socket.emit('playerWasAccepted', {
             success: playerWasAccepted
@@ -136,9 +144,7 @@ io.on('connection', (socket) => {
 
         if (typeof game === "undefined") {
             socket.emit('gameJoined', {success: false});
-        }
-        else {
-
+        } else {
             const player = game.players[0];
 
             socket.emit('gameJoined', {
@@ -148,7 +154,6 @@ io.on('connection', (socket) => {
                 }
             });
         }
-
     });
 });
 
