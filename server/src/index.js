@@ -79,12 +79,14 @@ io.on('connection', (socket) => {
         socket.emit('playerWasKicked', playerWasKicked);
     });
 
-    socket.on('acceptPlayer', (playerName, gameId) => {
-        let game = games[gameId];
-        let newPlayer = new Player(playerName, false);
+    socket.on('acceptPlayer', ({game_id, nickname}) => {
+        let game = games[game_id];
+        let newPlayer = new Player(nickname, false);
         let playerWasAccepted = game.addPlayer(newPlayer);
 
-        socket.emit('playerWasAccepted', playerWasAccepted);
+        socket.emit('playerWasAccepted', {
+            success: playerWasAccepted
+        });
     });
 
     socket.on('leaveGame', (data) => {
@@ -126,6 +128,27 @@ io.on('connection', (socket) => {
 
         console.log('cheater', cheater);
         console.log('score', player.score);
+    });
+
+    socket.on('joinGame', (data) => {
+        const game_id = data.game_id;
+        const game = games[game_id];
+
+        if (typeof game === "undefined") {
+            socket.emit('gameJoined', {success: false});
+        }
+        else {
+
+            const player = game.players[0];
+
+            socket.emit('gameJoined', {
+                success: true,
+                data: {
+                    opponent: {nickname: player.nickname, isLeader: player.isLeader}
+                }
+            });
+        }
+
     });
 });
 
