@@ -182,7 +182,7 @@ const Room = (props) => {
                 <div className="nes-dialog">
                     <JoinGame onClick={closeModalAndEnrollNewPlayerIntoTheGame}/>
                 </div>
-            )
+            );
         } else if (modal === MODAL_NO_ROOM) {
             return (
                 <h2>No such room</h2>
@@ -190,16 +190,14 @@ const Room = (props) => {
         } else if (modal === MODAL_GAME_PAUSED) {
             return (
                 <h2>Game is paused</h2>
-            )
+            );
         } else if (modal === MODAL_NO_SPACE) {
             return (
                 <h2>No space in room</h2>
-            )
+            );
         }
-
     };
 
-    console.log("IS OPEN", isOpen);
 
     const renderOnGame = () => {
         return (

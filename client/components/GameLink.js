@@ -6,7 +6,7 @@ const GameLink = (props) => {
     const buttonLabel = "<>";
 
     return (
-        <div>
+        <div className="game-link__wrap">
             <label className="game-link__label label text-uppercase">Invite link</label>
             <div className="game__link">
                 <span>{props.game_id}</span>

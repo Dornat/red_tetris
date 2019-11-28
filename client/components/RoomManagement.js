@@ -1,6 +1,7 @@
 import React from 'react';
 import GameLink from './GameLink';
 import RoomManagementBtns from './RoomManagementBtns';
+import GamePlayers from './GamePlayers';
 
 const RoomManagement = (props) => {
 
@@ -10,7 +11,10 @@ const RoomManagement = (props) => {
 
     return (
         <div className="room__management" onClick={setFocusToField}>
-            <GameLink game_id={props.game_id}/>
+            <div>
+                <GameLink game_id={props.game_id}/>
+                <GamePlayers/>
+            </div>
             <RoomManagementBtns socket={props.socket} game_id={props.game_id}/>
         </div>
     );
