@@ -892,14 +892,23 @@ var GamePlayers = function GamePlayers(props) {
       hidden = _useState2[0],
       setHidden = _useState2[1];
 
-  var renderSelfNickname = function renderSelfNickname() {
-    if (props.nickname) {
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(null),
+      _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
+      opponent = _useState4[0],
+      setOpponent = _useState4[1];
+  /**
+   * @param {object} player: {nickname, isLeader}
+   */
+
+
+  var renderNickname = function renderNickname(player) {
+    if (player.nickname) {
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
         href: "#",
         className: "nes-badge"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
         className: "is-primary"
-      }, props.nickname, " ", props.isLeader === true ? '(L)' : ''));
+      }, player.nickname, " ", player.isLeader === true ? '(L)' : ''));
     }
   };
 
@@ -917,6 +926,9 @@ var GamePlayers = function GamePlayers(props) {
       handleDisplay();
     });
   }, []);
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    setOpponent(props.opponent);
+  }, [props.opponent]);
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "game__players",
     style: hidden ? {
@@ -926,7 +938,10 @@ var GamePlayers = function GamePlayers(props) {
     }
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", {
     className: "game-players__title"
-  }, "Players"), renderSelfNickname());
+  }, "Players"), renderNickname({
+    nickname: props.nickname,
+    isLeader: props.isLeader
+  }), opponent ? renderNickname(opponent) : '');
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -1203,7 +1218,6 @@ var Room = function Room(props) {
   var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(null);
 
   var canJoinTheGame = function canJoinTheGame(game_id) {
-    console.log('canJoinGame');
     props.socket.emit('join', game_id);
     props.socket.emit('joinGame', {
       game_id: game_id
@@ -1254,8 +1268,7 @@ var Room = function Room(props) {
       var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var game_id, locationState, isGameCreator, _ref2, _opponent, msg, _ref3, success, _msg;
-
+        var game_id, locationState, isGameCreator, canJoinGame, accepted;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -1284,52 +1297,48 @@ var Room = function Room(props) {
                 return canJoinTheGame(game_id);
 
               case 10:
-                _ref2 = _context.sent;
-                _opponent = _ref2.data;
-                msg = _ref2.msg;
-                setOpponent(_opponent);
+                canJoinGame = _context.sent;
+                setOpponent(canJoinGame.opponent);
 
                 if (!props.user) {
-                  _context.next = 24;
+                  _context.next = 20;
                   break;
                 }
 
-                _context.next = 17;
+                _context.next = 15;
                 return acceptPlayer(props.user, game_id);
 
-              case 17:
-                _ref3 = _context.sent;
-                success = _ref3.data;
-                _msg = _ref3.msg;
+              case 15:
+                accepted = _context.sent;
 
-                if (!success) {
-                  _context.next = 22;
+                if (!accepted.success) {
+                  _context.next = 18;
                   break;
                 }
 
                 return _context.abrupt("return", {
-                  msg: _msg
+                  msg: accepted.msg
                 });
 
-              case 22:
-                _context.next = 25;
+              case 18:
+                _context.next = 21;
                 break;
 
-              case 24:
+              case 20:
                 return _context.abrupt("return", {
-                  msg: msg
+                  msg: canJoinGame.msg
                 });
 
-              case 25:
-                _context.next = 31;
+              case 21:
+                _context.next = 27;
                 break;
 
-              case 27:
-                _context.prev = 27;
+              case 23:
+                _context.prev = 23;
                 _context.t0 = _context["catch"](0);
 
                 if (!(_context.t0.msg === ERROR_GAME_NOT_FOUND || _context.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context.next = 31;
+                  _context.next = 27;
                   break;
                 }
 
@@ -1337,12 +1346,12 @@ var Room = function Room(props) {
                   msg: _context.t0.msg
                 });
 
-              case 31:
+              case 27:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 27]]);
+        }, _callee, null, [[0, 23]]);
       }));
 
       return function handleJoining() {
@@ -1400,6 +1409,15 @@ var Room = function Room(props) {
           }
       }
     });
+    props.socket.on('playersJoined', function (data) {
+      var opponent = data.find(function (player) {
+        return player.nickname !== props.user;
+      });
+      setOpponent({
+        nickname: opponent.nickname,
+        isLeader: opponent.isLeader
+      });
+    });
   }, []);
 
   var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
@@ -1442,7 +1460,8 @@ var Room = function Room(props) {
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_4__["default"], {
       game_id: gameId,
       socket: props.socket,
-      gameFieldRef: gameFieldRef
+      gameFieldRef: gameFieldRef,
+      opponent: opponent
     })));
   };
 
@@ -1497,7 +1516,10 @@ var RoomManagement = function RoomManagement(props) {
     onClick: setFocusToField
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_1__["default"], {
     game_id: props.game_id
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GamePlayers__WEBPACK_IMPORTED_MODULE_3__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GamePlayers__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    socket: props.socket,
+    opponent: props.opponent
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
     socket: props.socket,
     game_id: props.game_id
   }));
@@ -43726,7 +43748,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

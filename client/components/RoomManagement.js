@@ -13,7 +13,7 @@ const RoomManagement = (props) => {
         <div className="room__management" onClick={setFocusToField}>
             <div>
                 <GameLink game_id={props.game_id}/>
-                <GamePlayers/>
+                <GamePlayers socket={props.socket} opponent={props.opponent}/>
             </div>
             <RoomManagementBtns socket={props.socket} game_id={props.game_id}/>
         </div>
