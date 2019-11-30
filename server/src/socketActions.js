@@ -1,24 +1,48 @@
 import Player from "./entity/Player";
 import Game from "./entity/Game";
+import Room from "./entity/Room";
 
-export const isPlayerUnique = (games, nickname) =>
+export const isPlayerUnique = (players, nickname) =>
 {
-    let player = null;
+    let player = players.some((player) => {
+        return player.nickname === nickname;
+    });
 
-    for (let id in games) {
-        let gamePlayers = games[id].players;
+    console.log("PLAYER", player);
 
-        player = gamePlayers.some((player) => {
-            return player.nickname === nickname;
-        });
-    }
-
-    return player === null;
+    return player === false;
 };
 
-const socketActions = (io, games, players) => {
+const socketActions = (io, rooms, games, players) => {
 
     io.on('connection', (socket) => {
+
+        socket.on('isPlayerNameUnique', ({nickname}) => {
+            if (!isPlayerUnique(players, nickname)) {
+                socket.emit('playerNameOccupied');
+                return;
+            }
+            socket.emit('playerNameIsValid');
+        });
+
+        socket.on('createRoom', () => {
+            let room = new Room();
+
+            rooms[room.id] = room;
+            socket.emit('roomCreated', room.id);
+        });
+
+        socket.on('roomJoin', ({room_id, nickname}) => {
+            let player = new Player(nickname);
+            players.push(player);
+
+            if (rooms[room_id] !== undefined) {
+                rooms[room_id].addPlayer(player);
+            }
+
+            socket.emit('joinedRoom');
+        });
+
         socket.on('createGame', (playerName) => {
 
             console.log("PLAYERNAME", playerName);

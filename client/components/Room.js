@@ -86,6 +86,12 @@ const Room = (props) => {
     };
 
     useEffect(() => {
+        props.socket.emit('acceptPlayer', {nickname: props.user});
+
+        props.socket.on('')
+    });
+
+    useEffect(() => {
         const handleJoining = async () => {
             try {
                 const game_id = props.match.params.game_id;

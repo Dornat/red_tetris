@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import FormNickname from "./Form/FormNickname";
-import {createRoomAction} from "../actions/gameActions";
+import {createRoomAction} from "../actions/roomActions";
 import {connect} from "react-redux";
 import {withRouter} from 'react-router-dom';
 
@@ -20,23 +20,29 @@ const Dashboard = (props) => {
         if (!props.user) {
             setError(true);
         } else {
-            props.socket.emit('createGame', props.user);
-            setBtnDisability(true);
 
-            props.socket.on('playerNameOccupied', () => {
-                setBtnDisability(false);
-                setNicknameError(true);
-                setError(true);
+            props.socket.emit('isPlayerNameUnique', {nickname: props.user});
+
+            props.socket.on('playerNameIsValid', () => {
+
+                props.socket.emit('createRoom');
+                setBtnDisability(true);
+
+                props.socket.on('roomCreated', (room_id) => {
+                    props.socket.emit('roomJoin', {room_id: room_id, nickname: props.user});
+                    props.socket.on('joinedRoom', () => {
+                        props.createRoomAction(room_id);
+                        props.history.push({
+                            pathname: '/room/' + room_id,
+                        });
+                    });
+                });
             });
 
-            props.socket.on('gameCreated', (game_id) => {
-                props.socket.emit('join', game_id);
-                props.createRoomAction(game_id);
-
-                props.history.push({
-                    pathname: '/room/' + game_id,
-                    state: {gameCreator: true}
-                })
+            props.socket.on('playerNameOccupied', () => {
+               setBtnDisability(false);
+               setNicknameError(true);
+               setError(true);
             });
         }
     };

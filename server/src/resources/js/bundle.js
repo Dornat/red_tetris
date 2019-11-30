@@ -134,11 +134,34 @@ function setPiecesAction(pieces) {
 
 /***/ }),
 
+/***/ "./actions/roomActions.js":
+/*!********************************!*\
+  !*** ./actions/roomActions.js ***!
+  \********************************/
+/*! exports provided: createRoomAction */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
+
+function createRoomAction(id) {
+  var isLeader = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["CREATE_ROOM"],
+    id: id,
+    isLeader: isLeader
+  };
+}
+
+/***/ }),
+
 /***/ "./actions/types.js":
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, JOIN_GAME */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, JOIN_GAME, CREATE_ROOM */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -149,12 +172,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SCORE", function() { return SET_SCORE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PIECES", function() { return SET_PIECES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JOIN_GAME", function() { return JOIN_GAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_ROOM", function() { return CREATE_ROOM; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
 var START_GAME = "START_GAME";
 var SET_SCORE = "SET_SCORE";
 var SET_PIECES = "SET_PIECES";
 var JOIN_GAME = "JOIN_GAME";
+var CREATE_ROOM = "CREATE_ROOM";
 
 /***/ }),
 
@@ -277,7 +302,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Form_FormNickname__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Form/FormNickname */ "./components/Form/FormNickname.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 
@@ -319,22 +344,29 @@ var Dashboard = function Dashboard(props) {
     if (!props.user) {
       setError(true);
     } else {
-      props.socket.emit('createGame', props.user);
-      setBtnDisability(true);
+      props.socket.emit('isPlayerNameUnique', {
+        nickname: props.user
+      });
+      props.socket.on('playerNameIsValid', function () {
+        props.socket.emit('createRoom');
+        setBtnDisability(true);
+        props.socket.on('roomCreated', function (room_id) {
+          props.socket.emit('roomJoin', {
+            room_id: room_id,
+            nickname: props.user
+          });
+          props.socket.on('joinedRoom', function () {
+            props.createRoomAction(room_id);
+            props.history.push({
+              pathname: '/room/' + room_id
+            });
+          });
+        });
+      });
       props.socket.on('playerNameOccupied', function () {
         setBtnDisability(false);
         setNicknameError(true);
         setError(true);
-      });
-      props.socket.on('gameCreated', function (game_id) {
-        props.socket.emit('join', game_id);
-        props.createRoomAction(game_id);
-        props.history.push({
-          pathname: '/room/' + game_id,
-          state: {
-            gameCreator: true
-          }
-        });
       });
     }
   };
@@ -385,7 +417,7 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
   return {
     createRoomAction: function createRoomAction(user) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_4__["createRoomAction"])(user));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_4__["createRoomAction"])(user));
     }
   };
 };
@@ -1279,6 +1311,12 @@ var Room = function Room(props) {
     });
   };
 
+  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
+    props.socket.emit('acceptPlayer', {
+      nickname: props.user
+    });
+    props.socket.on('');
+  });
   Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
     var handleJoining =
     /*#__PURE__*/
@@ -54588,13 +54626,58 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 /* harmony import */ var _user__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./user */ "./reducers/user.js");
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./game */ "./reducers/game.js");
+/* harmony import */ var _room__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./room */ "./reducers/room.js");
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
   user: _user__WEBPACK_IMPORTED_MODULE_1__["default"],
+  room: _room__WEBPACK_IMPORTED_MODULE_3__["default"],
   game: _game__WEBPACK_IMPORTED_MODULE_2__["default"]
 }));
+
+/***/ }),
+
+/***/ "./reducers/room.js":
+/*!**************************!*\
+  !*** ./reducers/room.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../actions/types */ "./actions/types.js");
+
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+
+var initialState = {
+  id: null
+};
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  switch (action.type) {
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["CREATE_ROOM"]:
+      return _objectSpread({}, state, {
+        id: action.id,
+        isLeader: action.isLeader
+      });
+
+    default:
+      {
+        return state;
+      }
+  }
+});
 
 /***/ }),
 
@@ -54750,8 +54833,7 @@ var loadFormLocalStorage = function loadFormLocalStorage() {
 };
 
 var persistedState = loadFormLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });

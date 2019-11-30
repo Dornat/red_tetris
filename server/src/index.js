@@ -33,11 +33,12 @@ const io = socket(socketServer);
  * @type {{}}
  */
 const games = {};
+const rooms = {};
 const players = [];
 
 socketServer.listen(process.env.IO_SERVER_PORT);
 
-socketActions(io, games, players);
+socketActions(io, rooms, games, players);
 
 
 database.initConnection();
