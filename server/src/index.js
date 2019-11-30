@@ -134,7 +134,8 @@ io.on('connection', (socket) => {
 
         socket.emit('sendUpdatedGameData', {
             score: player.score.quantity,
-            level: game.level
+            level: game.level,
+            opponent: game.getMeMyOpponentByNickname(data.nickname)
         });
 
         console.log('cheater', cheater);

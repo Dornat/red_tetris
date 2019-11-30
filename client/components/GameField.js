@@ -9,6 +9,8 @@ import {checkCollision} from "../utils/checkCollision";
 import {startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
 import NextPieceField from "./NextPieceField";
 import GameStats from './GameStats';
+import EnemyField from "./EnemyField";
+import {createField} from "../utils/createField";
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -22,6 +24,7 @@ const GameField = (props) => {
     const [gameOver, setGameOver] = useState(false);
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
     const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props);
+    const [opponentField, setOpponentField] = useState(createField());
 
     const movePiece = direction => {
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
@@ -123,7 +126,6 @@ const GameField = (props) => {
 
     useEffect(() => {
         socket.on('gameStarted', (response) => {
-            console.log('in GameField on gameStarted socket');
             if (response.game_id === game_id) {
                 setGameLevel(1);
                 setGameStarted(true);
@@ -137,10 +139,23 @@ const GameField = (props) => {
         });
 
         socket.on('sendUpdatedGameData', (data) => {
+            console.log(data.opponent.field.matrix);
+            redrawOpponentField(data.opponent.field.matrix);
             props.setScoreAction(data.score);
             setGameLevel(data.level);
         });
     }, []);
+
+    const redrawOpponentField = (matrix) => {
+        let newField = createField();
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
+                newField[i][j] = matrix[i][j] === 1 ? ['J', 'filled'] : [0, 'empty'];
+            }
+        }
+
+        setOpponentField(newField);
+    };
 
     useEffect(() => {
         console.log('useEffect props after score changed', props);
@@ -157,7 +172,8 @@ const GameField = (props) => {
 
 
     return (
-        <div tabIndex="0" className="game-field__wrap flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased} ref={props.gameFieldRef}>
+        <div tabIndex="0" className="game-field__wrap flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}
+             ref={props.gameFieldRef}>
             <div className="game-field__area">
                 <div className="game-field__body">
                     <div className="game-field__col">
@@ -168,6 +184,7 @@ const GameField = (props) => {
                     </div>
                     <div className="game-field__col">
                         <NextPieceField/>
+                        <EnemyField field={opponentField}/>
                     </div>
                 </div>
             </div>

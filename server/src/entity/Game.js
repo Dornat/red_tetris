@@ -147,6 +147,19 @@ class Game {
             this.level += 1;
         }
     }
+
+    /**
+     * Returns opponent if there is one.
+     * @param myNickname
+     * @returns {null|T}
+     */
+    getMeMyOpponentByNickname(myNickname) {
+        if (this.players.length > 1) {
+            return this.players.find((player) => player.nickname !== myNickname);
+        } else {
+            return null;
+        }
+    }
 }
 
 export default Game;

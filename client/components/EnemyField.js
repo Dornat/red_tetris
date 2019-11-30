@@ -1,9 +1,13 @@
 import React from 'react';
 import Field from "./Field";
+import {useState, useEffect} from 'react';
+import {createField} from "../utils/createField";
 
-const EnemyField = () => {
+const EnemyField = (props) => {
     return (
-        <Field/>
+        <div className="enemy-field">
+            <Field field={props.field}/>
+        </div>
     );
 };
 
