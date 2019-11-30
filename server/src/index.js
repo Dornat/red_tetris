@@ -90,11 +90,14 @@ io.on('connection', (socket) => {
         let game = games[game_id];
         let newPlayer = new Player(nickname, false);
         let playerWasAccepted = game.addPlayer(newPlayer);
-        console.log('acceptPlayer game', game);
 
         socket.emit('playerWasAccepted', {
             success: playerWasAccepted
         });
+
+        if (playerWasAccepted) {
+            io.in(game_id).emit('playersJoined', game.players);
+        }
     });
 
     socket.on('leaveGame', (data) => {
@@ -147,7 +150,7 @@ io.on('connection', (socket) => {
         } else {
             const player = game.players[0];
 
-            socket.emit('gameJoined', {
+            io.in(game_id).emit('gameJoined', {
                 success: true,
                 data: {
                     opponent: {nickname: player.nickname, isLeader: player.isLeader}

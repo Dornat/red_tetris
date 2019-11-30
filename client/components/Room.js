@@ -43,7 +43,6 @@ const Room = (props) => {
     const gameFieldRef = useRef(null);
 
     const canJoinTheGame = (game_id) => {
-        console.log('canJoinGame');
         props.socket.emit('join', game_id);
         props.socket.emit('joinGame', {game_id: game_id});
         props.joinGameAction(game_id);
@@ -61,7 +60,6 @@ const Room = (props) => {
                 });
             });
         });
-
     };
 
     const acceptPlayer = (user, game_id) => {
@@ -72,7 +70,6 @@ const Room = (props) => {
 
         return new Promise((resolve, reject) => {
             props.socket.on('playerWasAccepted', (response) => {
-
                 if (response.success) {
                     resolve({
                         success: response.success,
@@ -106,21 +103,20 @@ const Room = (props) => {
                     return {msg: MSG_GAME_CREATED}
                 }
 
-                const {data: opponent, msg} = await canJoinTheGame(game_id);
+                const canJoinGame = await canJoinTheGame(game_id);
 
-                setOpponent(opponent);
+                setOpponent(canJoinGame.opponent);
 
                 if (props.user) {
-                    const {data: success, msg} = await acceptPlayer(props.user, game_id);
+                    const accepted = await acceptPlayer(props.user, game_id);
 
-                    if (success) {
-                        return {msg: msg}
+                    if (accepted.success) {
+                        return {msg: accepted.msg}
                     }
                 } else {
-                    return {msg: msg}
+                    return {msg: canJoinGame.msg}
                 }
             } catch (e) {
-
                 if (e.msg === ERROR_GAME_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
                     return {msg: e.msg}
                 }
@@ -128,7 +124,6 @@ const Room = (props) => {
         };
 
         handleJoining().then((res) => {
-
             if (typeof res === "undefined") {
                 return;
             }
@@ -168,6 +163,10 @@ const Room = (props) => {
             }
         });
 
+        props.socket.on('playersJoined', (data) => {
+            const opponent = data.find((player) => player.nickname !== props.user);
+            setOpponent({nickname: opponent.nickname, isLeader: opponent.isLeader});
+        });
     }, []);
 
 
@@ -213,7 +212,7 @@ const Room = (props) => {
                     <GameField socket={props.socket} game_id={gameId} user={props.user} gameFieldRef={gameFieldRef}/>
                 </div>
                 <div className="room-management__container">
-                    <RoomManagement game_id={gameId} socket={props.socket} gameFieldRef={gameFieldRef}/>
+                    <RoomManagement game_id={gameId} socket={props.socket} gameFieldRef={gameFieldRef} opponent={opponent}/>
                 </div>
             </div>
         );
