@@ -299,12 +299,17 @@ var Dashboard = function Dashboard(props) {
       isCreateRoomBtnDisabled = _useState4[0],
       setBtnDisability = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])({
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false),
+      _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState5, 2),
+      nicknameError = _useState6[0],
+      setNicknameError = _useState6[1];
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])({
     user: props.user || ''
   }),
-      _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState5, 2),
-      form = _useState6[0],
-      setValues = _useState6[1];
+      _useState8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState7, 2),
+      form = _useState8[0],
+      setValues = _useState8[1];
 
   var createRoom = function createRoom(e) {
     setValues({
@@ -316,6 +321,11 @@ var Dashboard = function Dashboard(props) {
     } else {
       props.socket.emit('createGame', props.user);
       setBtnDisability(true);
+      props.socket.on('playerNameOccupied', function () {
+        setBtnDisability(false);
+        setNicknameError(true);
+        setError(true);
+      });
       props.socket.on('gameCreated', function (game_id) {
         props.socket.emit('join', game_id);
         props.createRoomAction(game_id);
@@ -333,6 +343,14 @@ var Dashboard = function Dashboard(props) {
     setValues(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()({}, e.target.name, e.target.value));
   };
 
+  var renderNicknameError = function renderNicknameError() {
+    if (nicknameError) {
+      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", {
+        className: "form__error"
+      }, "The selected nickname is occupied");
+    }
+  };
+
   return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
     className: "flex_centered"
   }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
@@ -347,7 +365,7 @@ var Dashboard = function Dashboard(props) {
     onChange: onChange
   }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
     className: "dashboard__section dashboard__menu d-flex-col"
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+  }, renderNicknameError(), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn",
     onClick: createRoom,
@@ -1275,16 +1293,23 @@ var Room = function Room(props) {
               case 0:
                 _context.prev = 0;
                 game_id = props.match.params.game_id;
-                setGameId(game_id);
                 locationState = props.location.state;
+                setGameId(game_id);
                 isGameCreator = false;
 
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
                   isGameCreator = locationState.gameCreator;
                 }
 
+                if (props.game_id === null) {
+                  props.socket.emit('annulGame', {
+                    nickname: props.user
+                  });
+                  props.history.push('/');
+                }
+
                 if (!isGameCreator) {
-                  _context.next = 8;
+                  _context.next = 9;
                   break;
                 }
 
@@ -1292,27 +1317,27 @@ var Room = function Room(props) {
                   msg: MSG_GAME_CREATED
                 });
 
-              case 8:
-                _context.next = 10;
+              case 9:
+                _context.next = 11;
                 return canJoinTheGame(game_id);
 
-              case 10:
+              case 11:
                 canJoinGame = _context.sent;
                 setOpponent(canJoinGame.opponent);
 
                 if (!props.user) {
-                  _context.next = 20;
+                  _context.next = 21;
                   break;
                 }
 
-                _context.next = 15;
+                _context.next = 16;
                 return acceptPlayer(props.user, game_id);
 
-              case 15:
+              case 16:
                 accepted = _context.sent;
 
                 if (!accepted.success) {
-                  _context.next = 18;
+                  _context.next = 19;
                   break;
                 }
 
@@ -1320,25 +1345,25 @@ var Room = function Room(props) {
                   msg: accepted.msg
                 });
 
-              case 18:
-                _context.next = 21;
+              case 19:
+                _context.next = 22;
                 break;
 
-              case 20:
+              case 21:
                 return _context.abrupt("return", {
                   msg: canJoinGame.msg
                 });
 
-              case 21:
-                _context.next = 27;
+              case 22:
+                _context.next = 28;
                 break;
 
-              case 23:
-                _context.prev = 23;
+              case 24:
+                _context.prev = 24;
                 _context.t0 = _context["catch"](0);
 
                 if (!(_context.t0.msg === ERROR_GAME_NOT_FOUND || _context.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context.next = 27;
+                  _context.next = 28;
                   break;
                 }
 
@@ -1346,12 +1371,12 @@ var Room = function Room(props) {
                   msg: _context.t0.msg
                 });
 
-              case 27:
+              case 28:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 23]]);
+        }, _callee, null, [[0, 24]]);
       }));
 
       return function handleJoining() {
@@ -4830,7 +4855,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n", ""]);
+exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n", ""]);
 
 
 /***/ }),
@@ -43748,7 +43773,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
+/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54725,7 +54750,8 @@ var loadFormLocalStorage = function loadFormLocalStorage() {
 };
 
 var persistedState = loadFormLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });
