@@ -32,6 +32,7 @@ body {
 }
 
 .dashboard__menu {
+  align-items: center;
   margin-top: 50px;
 }
 
@@ -401,4 +402,10 @@ button {
     margin-bottom: 0;
     display: none;
   }
+}
+
+.form__error
+{
+  color: red;
+  font-weight: 900;
 }

@@ -8,6 +8,7 @@ const Dashboard = (props) => {
 
     const [isError, setError] = useState(false);
     const [isCreateRoomBtnDisabled, setBtnDisability] = useState(false);
+    const [nicknameError, setNicknameError] = useState(false);
 
     const [form, setValues] = useState({
         user: props.user || ''
@@ -21,6 +22,12 @@ const Dashboard = (props) => {
         } else {
             props.socket.emit('createGame', props.user);
             setBtnDisability(true);
+
+            props.socket.on('playerNameOccupied', () => {
+                setBtnDisability(false);
+                setNicknameError(true);
+                setError(true);
+            });
 
             props.socket.on('gameCreated', (game_id) => {
                 props.socket.emit('join', game_id);
@@ -40,6 +47,14 @@ const Dashboard = (props) => {
         });
     };
 
+    const renderNicknameError = () => {
+        if (nicknameError) {
+            return (
+                <p className="form__error">The selected nickname is occupied</p>
+            )
+        }
+    };
+
     return (
         <main>
             <div className="flex_centered">
@@ -50,6 +65,7 @@ const Dashboard = (props) => {
                     </div>
                 </div>
                 <div className="dashboard__section dashboard__menu d-flex-col">
+                    { renderNicknameError() }
                     <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}
                             disabled={isCreateRoomBtnDisabled}>
                         Create a room
