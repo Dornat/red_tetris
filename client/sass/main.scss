@@ -373,32 +373,54 @@ button {
   border: 3px solid #000;
 }
 
-.game__players
-{
+.game__players {
   margin-top: 30px;
   display: inline-block;
 }
 
-.game-link__wrap
-{
+.game-link__wrap {
   display: inline-block;
 }
 
-.game-players__title
-{
+.game-players__title {
   margin-bottom: 10px;
 }
 
-@media (max-width: 992px)
-{
-  .game__players
-  {
+@media (max-width: 992px) {
+  .game__players {
     margin-top: 0;
     margin-left: 30px;
   }
-  .game-players__title
-  {
+  .game-players__title {
     margin-bottom: 0;
     display: none;
+  }
+}
+
+.game-field {
+  &__col {
+    .enemy-field {
+      margin-top: 15px;
+
+      .field {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        width: 20vw;
+        height: 40vw;
+        max-width: 300px;
+        max-height: 600px;
+        box-shadow: inset 0 0 0 1px black;
+
+        .cell {
+          width: 2vw;
+          height: 2vw;
+          max-width: 30px;
+          max-height: 30px;
+          box-shadow: inset 0 0 0 1px #00000005;
+        }
+      }
+    }
   }
 }
