@@ -1,7 +1,5 @@
 import React from 'react';
 import Field from "./Field";
-import {useState, useEffect} from 'react';
-import {createField} from "../utils/createField";
 
 const EnemyField = (props) => {
     return (

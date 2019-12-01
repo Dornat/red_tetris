@@ -388,9 +388,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Field__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Field */ "./components/Field.js");
-/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
-
-
 
 
 
@@ -802,10 +799,22 @@ var GameField = function GameField(props) {
         });
       }
     });
+    /**
+     * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
+     * method handles proper update of score and opponent field.
+     */
+
     socket.on('sendUpdatedGameData', function (data) {
-      console.log(data.opponent.field.matrix);
-      redrawOpponentField(data.opponent.field.matrix);
-      props.setScoreAction(data.score);
+      console.log('sendUpdatedGameData', data);
+
+      if (data.myNickName === props.user) {
+        props.setScoreAction(data.score);
+      }
+
+      if (data.myNickName !== props.user) {
+        redrawOpponentField(data.field);
+      }
+
       setGameLevel(data.level);
     });
   }, []);
