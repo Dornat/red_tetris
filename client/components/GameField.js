@@ -138,10 +138,18 @@ const GameField = (props) => {
             }
         });
 
+        /**
+         * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
+         * method handles proper update of score and opponent field.
+         */
         socket.on('sendUpdatedGameData', (data) => {
-            console.log(data.opponent.field.matrix);
-            redrawOpponentField(data.opponent.field.matrix);
-            props.setScoreAction(data.score);
+            console.log('sendUpdatedGameData', data);
+            if (data.myNickName === props.user) {
+                props.setScoreAction(data.score);
+            }
+            if (data.myNickName !== props.user) {
+                redrawOpponentField(data.field);
+            }
             setGameLevel(data.level);
         });
     }, []);

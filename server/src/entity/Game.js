@@ -139,7 +139,6 @@ class Game {
     _manageLevel() {
         let accumulatedScore = 0;
         for (let i = 0; i < this.players.length; i++) {
-            console.log('i\'m in for');
             accumulatedScore += this.players[i].score.quantity;
         }
 

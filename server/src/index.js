@@ -132,14 +132,12 @@ io.on('connection', (socket) => {
             socket.emit('fireInTheHoleTheCheaterIsHere');
         }
 
-        socket.emit('sendUpdatedGameData', {
+        io.in(data.id).emit('sendUpdatedGameData', {
+            myNickName: player.nickname,
             score: player.score.quantity,
             level: game.level,
-            opponent: game.getMeMyOpponentByNickname(data.nickname)
+            field: player.field.matrix
         });
-
-        console.log('cheater', cheater);
-        console.log('score', player.score);
     });
 
     socket.on('joinGame', (data) => {
