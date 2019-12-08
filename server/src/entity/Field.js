@@ -53,8 +53,6 @@ class Field {
 
             return sweptRows;
         }
-        console.log('coordinates are not fillable');
-        console.log('coords', coordinates);
         return null;
     }
 
@@ -64,14 +62,11 @@ class Field {
      */
     coordinatesAreFillable(coordinates) {
         let matrix = this.matrix;
-        console.log('coordinates', coordinates);
 
         // check if coordinates array doesn't have the duplicate coordinates in itself
         let valuesSoFar = [];
         for (let i = 0; i < coordinates.length; i++) {
             let value = coordinates[i];
-            console.log('value', value);
-            console.log('valuesSoFar', valuesSoFar);
             for (let j = 0; j < valuesSoFar.length; j++) {
                 if (valuesSoFar[j][0] === value[0] && valuesSoFar[j][1] === value[1]) {
                     return false;
