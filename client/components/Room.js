@@ -86,11 +86,18 @@ const Room = (props) => {
     };
 
     useEffect(() => {
+        props.socket.emit('acceptPlayer', {nickname: props.user});
+
+        props.socket.on('')
+    });
+
+    useEffect(() => {
         const handleJoining = async () => {
             try {
                 const game_id = props.match.params.game_id;
-                setGameId(game_id);
                 const locationState = props.location.state;
+
+                setGameId(game_id);
 
                 let isGameCreator = false;
 
@@ -98,6 +105,12 @@ const Room = (props) => {
                     isGameCreator = locationState.gameCreator;
                 }
 
+                if (props.game_id === null) {
+                    props.socket.emit('annulGame', {
+                       nickname: props.user
+                    });
+                    props.history.push('/');
+                }
 
                 if (isGameCreator) {
                     return {msg: MSG_GAME_CREATED}
