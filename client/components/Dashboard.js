@@ -14,28 +14,30 @@ const Dashboard = (props) => {
         user: props.user || ''
     });
 
-    const createRoom = (e) => {
+    const createRoom = () => {
         setValues({user: props.user});
 
         if (!props.user) {
             setError(true);
         } else {
-
             props.socket.emit('isPlayerNameUnique', {nickname: props.user});
 
             props.socket.on('playerNameIsValid', () => {
-
-                props.socket.emit('createRoom');
+                props.socket.emit('createRoom', props.user);
                 setBtnDisability(true);
 
                 props.socket.on('roomCreated', (room_id) => {
-                    props.socket.emit('roomJoin', {room_id: room_id, nickname: props.user});
-                    props.socket.on('joinedRoom', () => {
-                        props.createRoomAction(room_id);
-                        props.history.push({
-                            pathname: '/room/' + room_id,
-                        });
+                    props.createRoomAction(room_id);
+                    console.log('before history push');
+                    props.history.push({
+                        pathname: '/room/' + room_id,
+                        state: {
+                            gameCreator: true
+                        }
                     });
+                    // props.socket.emit('roomJoin', {room_id: room_id, nickname: props.user});
+                    // props.socket.on('joinedRoom', () => {
+                    // });
                 });
             });
 

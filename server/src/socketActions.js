@@ -2,31 +2,34 @@ import Player from "./entity/Player";
 import Game from "./entity/Game";
 import Room from "./entity/Room";
 
-export const isPlayerUnique = (players, nickname) =>
-{
+/**
+ * Checks if given nickname exists in players array, if it is than returns false, else true.
+ * 
+ * @param players
+ * @param nickname
+ * @returns {boolean}
+ */
+export const isPlayerUnique = (players, nickname) => {
     let player = players.some((player) => {
         return player.nickname === nickname;
     });
-
-    console.log("PLAYER", player);
 
     return player === false;
 };
 
 const socketActions = (io, rooms, games, players) => {
-
     io.on('connection', (socket) => {
-
         socket.on('isPlayerNameUnique', ({nickname}) => {
             if (!isPlayerUnique(players, nickname)) {
                 socket.emit('playerNameOccupied');
-                return;
+            } else {
+                socket.emit('playerNameIsValid');
             }
-            socket.emit('playerNameIsValid');
         });
 
-        socket.on('createRoom', () => {
-            let room = new Room();
+        socket.on('createRoom', (nickname) => {
+            const player = new Player(nickname);
+            const room = new Room(player);
 
             rooms[room.id] = room;
             socket.emit('roomCreated', room.id);
@@ -40,14 +43,12 @@ const socketActions = (io, rooms, games, players) => {
                 rooms[room_id].addPlayer(player);
             }
 
+            console.log('rooms', rooms);
             socket.emit('joinedRoom');
         });
 
         socket.on('createGame', (playerName) => {
-
-            console.log("PLAYERNAME", playerName);
-            console.log("GAMES", games);
-
+            console.log('in createGame, playerName', playerName);
             if (!isPlayerUnique(games, playerName)) {
                 socket.emit('playerNameOccupied');
                 return;
@@ -78,7 +79,7 @@ const socketActions = (io, rooms, games, players) => {
             }
 
             if (game_id && games[game_id] !== undefined) {
-                delete(games[game_id]);
+                delete (games[game_id]);
             }
         });
 
@@ -141,8 +142,6 @@ const socketActions = (io, rooms, games, players) => {
             let game = games[game_id];
             let result = game.exitFromGame(data.nickname);
 
-            console.log("RESULT", result);
-
             if (!games[game_id].players.length) {
                 delete games[game_id];
             }
@@ -150,10 +149,8 @@ const socketActions = (io, rooms, games, players) => {
             socket.emit('leftGame', result);
         });
 
-        socket.on('generatePieces', (data) => {
-            let game = games[data.id];
-            let pieces = game.generatePieces(5);
-
+        socket.on('generatePieces', () => {
+            const pieces = Game.generatePieces(5);
             console.log('generating...');
             console.log(pieces);
             socket.emit('getPieces', {pieces: pieces});
@@ -169,6 +166,7 @@ const socketActions = (io, rooms, games, players) => {
             }
 
             socket.emit('sendUpdatedGameData', {
+                myNickName: player.nickname,
                 score: player.score.quantity,
                 level: game.level
             });
