@@ -9,12 +9,11 @@ import Dashboard from './Dashboard';
 import Room from './Room';
 import NotFound from './NotFound';
 
-export default function Router(props)
-{
+export default function Router(props) {
     return (
         <Switch>
             <Route exact path="/" component={InitSockets(props, Dashboard)}/>}/>
-            <Route exact path="/room/:game_id" component={InitSockets(props, Room)}/>
+            <Route exact path="/room/:id" component={InitSockets(props, Room)}/>
             <Route path="*" component={NotFound}/>
         </Switch>
     );
