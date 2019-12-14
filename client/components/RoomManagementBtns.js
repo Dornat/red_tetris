@@ -20,11 +20,11 @@ const RoomManagementBtns = (props) => {
     const onClickToDashboard = () => {
         const socket = props.socket;
         const data = {
-            game_id: props.game_id,
+            roomId: props.roomId,
             nickname: props.user
         };
 
-        socket.emit('leaveGame', data);
+        socket.emit('leaveGame', props.roomId, props.user);
         socket.on('leftGame', (response) => {
             if (response) {
                 props.history.push('/');
@@ -34,24 +34,18 @@ const RoomManagementBtns = (props) => {
 
     useEffect(() => {
         const socket = props.socket;
-        const game_id = props.game_id;
-
-        socket.emit('isGameStarted', game_id);
+        socket.emit('isGameStarted', props.roomId);
         socket.on('gameStatus', (response) => {
             if (response === undefined) {
                 props.history.push('/');
             }
         });
 
-        /**
-         * Does this work???
-         */
         socket.on('gameStarted', (response) => {
             console.log('in gameStarted socket');
 
-            if (response.game_id === props.game_id) {
+            if (response.roomId === props.roomId) {
                 setGameStarted(true);
-                props.startGameAction();
             }
         });
     }, []);

@@ -15,12 +15,21 @@ class Game {
         this.level = 1;
         this.isGameStarted = false;
         this.players = players;
+        this.gameOver = false;
     }
 
-    startGame() {
-        if (this.isGameStarted === false) {
-            this.isGameStarted = true;
-        }
+    /**
+     * Starts the game.
+     */
+    start() {
+        this.isGameStarted = true;
+    }
+
+    /**
+     * Finishes the game.
+     */
+    over() {
+        this.gameOver = true;
     }
 
     /**

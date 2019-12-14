@@ -6,7 +6,7 @@ import {
     JOIN_GAME,
 } from './types';
 
-export function createRoomAction(id) {
+export function createGameAction(id) {
     return {
         type: CREATE_GAME,
         id

@@ -27,6 +27,7 @@ const Room = (props) => {
     const MODAL_NO_SPACE = 2;
     const MODAL_ROOM_JOINED = 3;
     const MODAL_GAME_PAUSED = 4;
+    const MODAL_GAME_OVER = 5;
 
     const MSG_JOINED_GAME = 1;
     const MSG_PLAYER_ADDED = 2;
@@ -34,7 +35,7 @@ const Room = (props) => {
     const ERROR_GAME_NOT_FOUND = 4;
     const ERROR_NO_SPACE_AVAILABLE = 5;
 
-    const [roomId, setRoomId] = useState(props.room_id || null);
+    const [roomId, setRoomId] = useState(props.roomId || null);
     const [isGameExists, setGameExists] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [modal, setModal] = useState(null);
@@ -95,13 +96,13 @@ const Room = (props) => {
                 const locationState = props.location.state;
                 console.log('props', props);
 
-                let isGameCreator = false;
+                let isRoomCreator = false;
 
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
-                    isGameCreator = locationState.gameCreator;
+                    isRoomCreator = locationState.gameCreator;
                 }
 
-                console.log('isGameCreator', isGameCreator);
+                console.log('isGameCreator', isRoomCreator);
                 // TODO: FIX THIS!
                 // if (props.game_id === null) {
                 //     props.socket.emit('annulGame', {
@@ -110,7 +111,7 @@ const Room = (props) => {
                 //     props.history.push('/');
                 // }
 
-                if (isGameCreator) {
+                if (isRoomCreator) {
                     return {msg: MSG_GAME_CREATED};
                 }
                 //
@@ -178,12 +179,32 @@ const Room = (props) => {
             const opponent = data.find((player) => player.nickname !== props.user);
             setOpponent({nickname: opponent.nickname, isLeader: opponent.isLeader});
         });
+
+        props.socket.on('roomStatus', (data) => {
+            if (data === 'undefined') {
+                setModal(MODAL_GAME_OVER);
+                setIsOpen(true);
+            }
+        });
     }, []);
+
+    useEffect(() => {
+        console.log('modal', modal);
+    }, [modal]);
 
 
     const closeModalAndEnrollNewPlayerIntoTheGame = () => {
         setIsOpen(false);
         acceptPlayer(props.user, roomId);
+    };
+
+    const toDashBoard = () => {
+        props.socket.emit('leaveGame', props.roomId, props.user);
+        props.socket.on('leftGame', (response) => {
+            if (response) {
+                props.history.push('/');
+            }
+        });
     };
 
     const renderModalContent = () => {
@@ -204,6 +225,15 @@ const Room = (props) => {
         } else if (modal === MODAL_NO_SPACE) {
             return (
                 <h2>No space in room</h2>
+            );
+        } else if (modal === MODAL_GAME_OVER) {
+            return (
+                <div className="nes-dialog">
+                    <div className="nes-container is-centered">
+                        <h2>Game Over!</h2>
+                        <button className="nes-btn" onClick={toDashBoard}>Dashboard</button>
+                    </div>
+                </div>
             );
         }
     };
@@ -229,15 +259,13 @@ const Room = (props) => {
         );
     };
 
-    console.log('isGameEXISTS???', isGameExists);
-
     return isGameExists ? renderOnGame() : <Loader/>;
 };
 
 const mapStateToProps = (state) => {
     return {
         user: state.user.nickname,
-        room_id: state.room.id
+        roomId: state.room.id
     };
 };
 
