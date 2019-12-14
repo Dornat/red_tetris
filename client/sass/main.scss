@@ -457,3 +457,98 @@ button {
     cursor: pointer !important;
   }
 }
+
+.score__container
+{
+  margin: 0 10vw;
+}
+
+@media (max-width: 786px)
+{
+  .score__container
+  {
+    margin: 0 30px;
+  }
+}
+
+.score__table-wrap
+{
+  padding-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.score__head
+{
+  font-size: 24px;
+  font-weight: 900;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 50px;
+}
+
+
+@media (max-width: 786px)
+{
+  .score__head
+  {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 968px)
+{
+  .score__head {
+    font-size: 18px;
+  }
+}
+
+.score__table
+{
+  width: 100%;
+  background: #eceded;
+  border-radius: 15px;
+}
+
+.score__row
+{
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+}
+
+.score-table__head
+{
+  font-weight: 900;
+}
+
+.score__table
+{
+  .score__row:not(:first-child)
+  {
+    border-top: 1px solid #808080;
+  }
+}
+
+.paginator
+{
+  padding-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.paginator__row
+{
+  display: flex;
+  min-width: 300px;
+  justify-content: space-around;
+}
+
+.paginator__row
+{
+  .pagination__page-btn:not(:last-child)
+  {
+    margin-right: 15px;
+  }
+}

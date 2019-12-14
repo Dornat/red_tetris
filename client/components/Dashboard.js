@@ -84,7 +84,7 @@ const Dashboard = (props) => {
                             disabled={isCreateRoomBtnDisabled}>
                         Create a room
                     </button>
-                    <button type="button" className="nes-btn dashboard__btn">Score</button>
+                    <button type="button" className="nes-btn dashboard__btn" onClick={() => props.history.push('/score')}>Score</button>
                 </div>
             </div>
         </main>
