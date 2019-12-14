@@ -26,11 +26,11 @@ const Dashboard = (props) => {
                 props.socket.emit('createRoom', props.user);
                 setBtnDisability(true);
 
-                props.socket.on('roomCreated', (room_id) => {
-                    props.createRoomAction(room_id);
+                props.socket.on('roomCreated', (roomId) => {
+                    props.createRoomAction(roomId);
                     console.log('before history push');
                     props.history.push({
-                        pathname: '/room/' + room_id,
+                        pathname: '/room/' + roomId,
                         state: {
                             gameCreator: true
                         }

@@ -16,6 +16,7 @@ class Player {
         this.field = new Field();
         this.score = new Score();
         this.level = 1;
+        this.online = true;
     }
 }
 

@@ -6,7 +6,7 @@ import {useField} from "../hooks/useField";
 import {usePiece} from "../hooks/usePiece";
 import {useInterval} from "../hooks/useInterval";
 import {checkCollision} from "../utils/checkCollision";
-import {startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
+import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
 import NextPieceField from "./NextPieceField";
 import GameStats from './GameStats';
 import EnemyField from "./EnemyField";
@@ -42,19 +42,19 @@ const GameField = (props) => {
                 setDropTime(null);
             }
             if (piecesBuffer.length === 1) {
-                socket.emit('generatePieces', {id: props.game_id}); // inject pieces with new dose from server
+                socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
             }
 
             const coords = assembleCoordinatesForFillingFieldOnServer(piece);
-            socket.emit('updatePlayerField', {id: props.game_id, nickname: props.user, coords: coords});
+            socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
         }
     };
 
     const assembleCoordinatesForFillingFieldOnServer = piece => {
         const tetromino = piece.tetromino;
-        let variableCoords = JSON.parse(JSON.stringify(piece.position)); // important cloning of original object
+        let variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
         let coords = [];
 
         for (let i = 0; i < tetromino.length; i++) {
@@ -110,13 +110,13 @@ const GameField = (props) => {
     };
 
     const socket = props.socket;
-    const game_id = props.game_id;
+    const roomId = props.roomId;
 
     useEffect(() => {
-        if (pieces.length === 5) { // draw piece only for first piece in pieces array and only when array is full
-            updatePiecePosition({x: 0, y: 0, collided: true}); // true is important here
+        if (pieces.length === 5) { // Draw piece only for first piece in pieces array and only when array is full.
+            updatePiecePosition({x: 0, y: 0, collided: true}); // True is important here.
         }
-    }, [pieces]); // this fires every time when pieces is updated
+    }, [pieces]); // This fires every time when pieces are updated.
 
     useEffect(() => {
         if (pieces.length === 0 || pieces[0].shape === 0) {
@@ -126,17 +126,20 @@ const GameField = (props) => {
 
     useEffect(() => {
         socket.on('gameStarted', (response) => {
-            if (response.game_id === game_id) {
+            if (response.roomId === roomId) {
                 setGameLevel(1);
                 setGameStarted(true);
                 setDropTime(assembleDropTime());
+                props.createGameAction(response.gameId);
                 props.startGameAction();
-                socket.emit('generatePieces', {id: response.game_id});
+                socket.emit('generatePieces', props.roomId);
                 socket.on('getPieces', (data) => {
                     setPiecesBuffer(data.pieces);
                 });
             }
         });
+
+        console.log('GameField props', props);
 
         /**
          * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
@@ -151,6 +154,10 @@ const GameField = (props) => {
                 redrawOpponentField(data.field);
             }
             setGameLevel(data.level);
+        });
+
+        socket.on('isPlayerOnline', () => {
+            socket.emit('setPlayerOnline', props.user);
         });
     }, []);
 
@@ -202,6 +209,9 @@ const GameField = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        createGameAction: (id) => {
+            dispatch(createGameAction(id))
+        },
         startGameAction: () => {
             dispatch(startGameAction())
         },

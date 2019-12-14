@@ -33,8 +33,8 @@ const socketActions = (io, rooms, games, players) => {
         });
 
         /**
-         * Creates new room and adds it to global rooms array. The nickname is a name of the player who by design is a
-         * room leader.
+         * Creates new room and adds it to global rooms array. Adds player to global players array. The nickname is a
+         * name of the player who by design is a room leader.
          *
          * @param nickname
          */
@@ -43,7 +43,7 @@ const socketActions = (io, rooms, games, players) => {
                 const player = new Player(nickname);
                 const room = new Room(player);
                 rooms[room.id] = room;
-                console.log(rooms);
+                players[nickname] = player;
                 socket.emit('roomCreated', room.id);
                 socket.join(room.id);
             } else {
@@ -67,12 +67,12 @@ const socketActions = (io, rooms, games, players) => {
         /**
          * Creates new game in a given room.
          *
-         * @params roomId
+         * @param roomId
          */
         socket.on('createGame', (roomId) => {
             const room = rooms[roomId];
             room.instantiateAGame();
-            socket.emit('gameCreated', {roomId: roomId, gameId: room.game.id});
+            io.in(roomId).emit('gameCreated', {roomId: roomId, gameId: room.game.id});
         });
 
         // TODO description
@@ -103,22 +103,38 @@ const socketActions = (io, rooms, games, players) => {
             socket.join(game);
         });
 
-        // TODO description
+        /**
+         * Checks if game in the room has been started.
+         *
+         * @param roomId
+         */
         socket.on('isGameStarted', (roomId) => {
             if (typeof rooms[roomId] === 'undefined') {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
-                io.in(roomId).emit('roomStatus', {isGameStarted: rooms[roomId].game.isGameStarted})
+                io.in(roomId).emit('roomStatus', {
+                    isGameStarted: rooms[roomId].game
+                        ? rooms[roomId].game.isGameStarted
+                        : false
+                });
             }
         });
 
-        // TODO description
+        /**
+         * Starts game in a given room. If game in the room is not instantiated than create new game.
+         *
+         * @param roomId
+         */
         socket.on('startGameInRoom', (roomId) => {
-            if (typeof rooms[roomId] === 'undefined') {
+            const room = rooms[roomId];
+            if (typeof room === 'undefined') {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
-                rooms[roomId].game.startGame();
-                io.in(roomId).emit('gameStarted', {roomId: roomId, gameId: rooms[roomId].game.id});
+                if (room.game === null) {
+                    room.instantiateAGame();
+                }
+                room.game.start();
+                io.in(roomId).emit('gameStarted', {roomId: roomId, gameId: room.game.id});
             }
         });
 
@@ -149,18 +165,33 @@ const socketActions = (io, rooms, games, players) => {
             }
         });
 
-        // TODO description
-        socket.on('leaveGame', (data) => {
-            // TODO implementation
-            socket.emit('leftGame', result);
+        /**
+         * Removes the player from game and room.
+         *
+         * @param roomId
+         * @param nickname
+         */
+        socket.on('leaveGame', (roomId, nickname) => {
+            console.log('roomId', roomId);
+            console.log('nickname', nickname);
+            const room = rooms[roomId];
+            const player = room.getPlayerByNickname(nickname);
+            const isPlayerRemoved = room.removePlayer(player);
+            socket.emit('leftGame', isPlayerRemoved);
         });
 
-        // TODO description
+        /**
+         * Generates pieces.
+         */
         socket.on('generatePieces', (roomId) => {
-            const pieces = Game.generatePieces(5);
-            console.log('generating...');
-            console.log(pieces);
-            io.in(roomId).emit('getPieces', {pieces: pieces});
+            if (typeof rooms[roomId] === 'undefined') {
+                io.in(roomId).emit('roomStatus', 'undefined');
+            } else {
+                const pieces = Game.generatePieces(5);
+                console.log('generating...');
+                console.log(pieces);
+                io.in(roomId).emit('getPieces', {pieces: pieces});
+            }
         });
 
         /**
@@ -169,23 +200,52 @@ const socketActions = (io, rooms, games, players) => {
          * @param data
          */
         socket.on('updatePlayerField', (data) => {
-            if (typeof rooms[data.roomId] === 'undefined') {
+            io.in(data.roomId).emit('roomStatus', 'undefined');
+            const room = rooms[data.roomId];
+            if (typeof room === 'undefined') {
                 io.in(data.roomId).emit('roomStatus', 'undefined');
             } else {
-                const room = rooms[data.roomId];
                 const game = room.game;
-                const player = room.getPlayerByNickname(data.nickname);
+
+                if (game.gameOver) {
+                    delete rooms[data.roomId];
+                    return;
+                }
+
+                const player = players[data.nickname];
                 const cheater = game.managePiecePlacement(data.coords, player);
+
                 if (cheater === null) {
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
+                    console.log('\u001b[31mfireInTheHoleTheCheaterIsHere\u001b[0m');
                 }
+
+                console.log(player.field);
+
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,
                     score: player.score.quantity,
                     level: game.level
                 });
-                console.log('cheater', cheater);
+
+                player.online = false;
+                socket.emit('isPlayerOnline');
+                setTimeout(() => {
+                    if (player.online) {
+                        room.game.over();
+                    }
+                }, 5000);
             }
+        });
+
+
+        /**
+         * Sets online value of specific player to true.
+         *
+         * @param nickname
+         */
+        socket.on('setPlayerOnline', (nickname) => {
+            players[nickname].online = true;
         });
 
         // TODO description

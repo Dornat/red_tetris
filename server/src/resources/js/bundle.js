@@ -90,19 +90,19 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction, joinGameAction, startGameAction, setScoreAction, setPiecesAction */
+/*! exports provided: createGameAction, joinGameAction, startGameAction, setScoreAction, setPiecesAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGameAction", function() { return createGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "joinGameAction", function() { return joinGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPiecesAction", function() { return setPiecesAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
-function createRoomAction(id) {
+function createGameAction(id) {
   return {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["CREATE_GAME"],
     id: id
@@ -350,11 +350,11 @@ var Dashboard = function Dashboard(props) {
       props.socket.on('playerNameIsValid', function () {
         props.socket.emit('createRoom', props.user);
         setBtnDisability(true);
-        props.socket.on('roomCreated', function (room_id) {
-          props.createRoomAction(room_id);
+        props.socket.on('roomCreated', function (roomId) {
+          props.createRoomAction(roomId);
           console.log('before history push');
           props.history.push({
-            pathname: '/room/' + room_id,
+            pathname: '/room/' + roomId,
             state: {
               gameCreator: true
             }
@@ -736,9 +736,7 @@ var GameField = function GameField(props) {
       }
 
       if (piecesBuffer.length === 1) {
-        socket.emit('generatePieces', {
-          id: props.game_id
-        }); // inject pieces with new dose from server
+        socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
       } else {
         updatePiecePosition({
           x: 0,
@@ -749,7 +747,7 @@ var GameField = function GameField(props) {
 
       var coords = assembleCoordinatesForFillingFieldOnServer(piece);
       socket.emit('updatePlayerField', {
-        id: props.game_id,
+        roomId: props.roomId,
         nickname: props.user,
         coords: coords
       });
@@ -758,7 +756,7 @@ var GameField = function GameField(props) {
 
   var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesForFillingFieldOnServer(piece) {
     var tetromino = piece.tetromino;
-    var variableCoords = JSON.parse(JSON.stringify(piece.position)); // important cloning of original object
+    var variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
 
     var coords = [];
 
@@ -817,17 +815,17 @@ var GameField = function GameField(props) {
   };
 
   var socket = props.socket;
-  var game_id = props.game_id;
+  var roomId = props.roomId;
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (pieces.length === 5) {
-      // draw piece only for first piece in pieces array and only when array is full
+      // Draw piece only for first piece in pieces array and only when array is full.
       updatePiecePosition({
         x: 0,
         y: 0,
         collided: true
-      }); // true is important here
+      }); // True is important here.
     }
-  }, [pieces]); // this fires every time when pieces is updated
+  }, [pieces]); // This fires every time when pieces are updated.
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     if (pieces.length === 0 || pieces[0].shape === 0) {
@@ -836,19 +834,19 @@ var GameField = function GameField(props) {
   }, [piecesBuffer]);
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     socket.on('gameStarted', function (response) {
-      if (response.game_id === game_id) {
+      if (response.roomId === roomId) {
         setGameLevel(1);
         setGameStarted(true);
         setDropTime(assembleDropTime());
+        props.createGameAction(response.gameId);
         props.startGameAction();
-        socket.emit('generatePieces', {
-          id: response.game_id
-        });
+        socket.emit('generatePieces', props.roomId);
         socket.on('getPieces', function (data) {
           setPiecesBuffer(data.pieces);
         });
       }
     });
+    console.log('GameField props', props);
     /**
      * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
      * method handles proper update of score and opponent field.
@@ -866,6 +864,9 @@ var GameField = function GameField(props) {
       }
 
       setGameLevel(data.level);
+    });
+    socket.on('isPlayerOnline', function () {
+      socket.emit('setPlayerOnline', props.user);
     });
   }, []);
 
@@ -922,6 +923,9 @@ var GameField = function GameField(props) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
+    createGameAction: function createGameAction(id) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_8__["createGameAction"])(id));
+    },
     startGameAction: function startGameAction() {
       dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_8__["startGameAction"])());
     },
@@ -1295,13 +1299,14 @@ var Room = function Room(props) {
   var MODAL_NO_SPACE = 2;
   var MODAL_ROOM_JOINED = 3;
   var MODAL_GAME_PAUSED = 4;
+  var MODAL_GAME_OVER = 5;
   var MSG_JOINED_GAME = 1;
   var MSG_PLAYER_ADDED = 2;
   var MSG_GAME_CREATED = 3;
   var ERROR_GAME_NOT_FOUND = 4;
   var ERROR_NO_SPACE_AVAILABLE = 5;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(props.room_id || null),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(props.roomId || null),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState, 2),
       roomId = _useState2[0],
       setRoomId = _useState2[1];
@@ -1381,7 +1386,7 @@ var Room = function Room(props) {
       var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var locationState, isGameCreator;
+        var locationState, isRoomCreator;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -1389,13 +1394,13 @@ var Room = function Room(props) {
                 _context.prev = 0;
                 locationState = props.location.state;
                 console.log('props', props);
-                isGameCreator = false;
+                isRoomCreator = false;
 
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
-                  isGameCreator = locationState.gameCreator;
+                  isRoomCreator = locationState.gameCreator;
                 }
 
-                console.log('isGameCreator', isGameCreator); // TODO: FIX THIS!
+                console.log('isGameCreator', isRoomCreator); // TODO: FIX THIS!
                 // if (props.game_id === null) {
                 //     props.socket.emit('annulGame', {
                 //        nickname: props.user
@@ -1403,7 +1408,7 @@ var Room = function Room(props) {
                 //     props.history.push('/');
                 // }
 
-                if (!isGameCreator) {
+                if (!isRoomCreator) {
                   _context.next = 8;
                   break;
                 }
@@ -1501,11 +1506,29 @@ var Room = function Room(props) {
         isLeader: opponent.isLeader
       });
     });
+    props.socket.on('roomStatus', function (data) {
+      if (data === 'undefined') {
+        setModal(MODAL_GAME_OVER);
+        setIsOpen(true);
+      }
+    });
   }, []);
+  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
+    console.log('modal', modal);
+  }, [modal]);
 
   var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
     setIsOpen(false);
     acceptPlayer(props.user, roomId);
+  };
+
+  var toDashBoard = function toDashBoard() {
+    props.socket.emit('leaveGame', props.roomId, props.user);
+    props.socket.on('leftGame', function (response) {
+      if (response) {
+        props.history.push('/');
+      }
+    });
   };
 
   var renderModalContent = function renderModalContent() {
@@ -1521,6 +1544,15 @@ var Room = function Room(props) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game is paused");
     } else if (modal === MODAL_NO_SPACE) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No space in room");
+    } else if (modal === MODAL_GAME_OVER) {
+      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: "nes-dialog"
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: "nes-container is-centered"
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game Over!"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+        className: "nes-btn",
+        onClick: toDashBoard
+      }, "Dashboard")));
     }
   };
 
@@ -1548,14 +1580,13 @@ var Room = function Room(props) {
     })));
   };
 
-  console.log('isGameEXISTS???', isGameExists);
   return isGameExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_8__["default"], null);
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
     user: state.user.nickname,
-    room_id: state.room.id
+    roomId: state.room.id
   };
 };
 
@@ -1659,10 +1690,10 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
   var onClickToDashboard = function onClickToDashboard() {
     var socket = props.socket;
     var data = {
-      game_id: props.game_id,
+      roomId: props.roomId,
       nickname: props.user
     };
-    socket.emit('leaveGame', data);
+    socket.emit('leaveGame', props.roomId, props.user);
     socket.on('leftGame', function (response) {
       if (response) {
         props.history.push('/');
@@ -1672,23 +1703,17 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     var socket = props.socket;
-    var game_id = props.game_id;
-    socket.emit('isGameStarted', game_id);
+    socket.emit('isGameStarted', props.roomId);
     socket.on('gameStatus', function (response) {
       if (response === undefined) {
         props.history.push('/');
       }
     });
-    /**
-     * Does this work???
-     */
-
     socket.on('gameStarted', function (response) {
       console.log('in gameStarted socket');
 
-      if (response.game_id === props.game_id) {
+      if (response.roomId === props.roomId) {
         setGameStarted(true);
-        props.startGameAction();
       }
     });
   }, []);
