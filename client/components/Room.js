@@ -101,6 +101,7 @@ const Room = (props) => {
                     isGameCreator = locationState.gameCreator;
                 }
 
+                console.log('isGameCreator', isGameCreator);
                 // TODO: FIX THIS!
                 // if (props.game_id === null) {
                 //     props.socket.emit('annulGame', {
@@ -218,15 +219,17 @@ const Room = (props) => {
                     {renderModalContent()}
                 </ReactModal>
                 <div className="game__container">
-                    <GameField socket={props.socket} game_id={roomId} user={props.user} gameFieldRef={gameFieldRef}/>
+                    <GameField socket={props.socket} roomId={roomId} user={props.user} gameFieldRef={gameFieldRef}/>
                 </div>
                 <div className="room-management__container">
-                    <RoomManagement game_id={roomId} socket={props.socket} gameFieldRef={gameFieldRef}
+                    <RoomManagement roomId={roomId} socket={props.socket} gameFieldRef={gameFieldRef}
                                     opponent={opponent}/>
                 </div>
             </div>
         );
     };
+
+    console.log('isGameEXISTS???', isGameExists);
 
     return isGameExists ? renderOnGame() : <Loader/>;
 };

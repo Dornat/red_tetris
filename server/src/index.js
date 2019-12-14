@@ -29,11 +29,23 @@ const socketServer = http.Server(server.app);
 const io = socket(socketServer);
 
 /**
- * Global games object
- * @type {{}}
+ * Global games array.
+ *
+ * @type {Array}
  */
-const games = {};
-const rooms = {};
+const games = [];
+
+/**
+ * Global rooms array.
+ *
+ * @type {Array}
+ */
+const rooms = [];
+
+/**
+ * Global players array.
+ * @type {Array}
+ */
 const players = [];
 
 socketServer.listen(process.env.IO_SERVER_PORT);

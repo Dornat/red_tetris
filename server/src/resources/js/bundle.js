@@ -968,8 +968,8 @@ var GameLink = function GameLink(props) {
     className: "game-link__label label text-uppercase"
   }, "Invite link"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game__link"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.game_id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__["CopyToClipboard"], {
-    text: window.location.origin + "/room/" + props.game_id
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.roomId), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__["CopyToClipboard"], {
+    text: window.location.origin + "/room/" + props.roomId
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "invite-cpy__btn nes-btn is-primary"
   }, buttonLabel))));
@@ -1393,7 +1393,9 @@ var Room = function Room(props) {
 
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
                   isGameCreator = locationState.gameCreator;
-                } // TODO: FIX THIS!
+                }
+
+                console.log('isGameCreator', isGameCreator); // TODO: FIX THIS!
                 // if (props.game_id === null) {
                 //     props.socket.emit('annulGame', {
                 //        nickname: props.user
@@ -1401,9 +1403,8 @@ var Room = function Room(props) {
                 //     props.history.push('/');
                 // }
 
-
                 if (!isGameCreator) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
@@ -1411,16 +1412,16 @@ var Room = function Room(props) {
                   msg: MSG_GAME_CREATED
                 });
 
-              case 7:
-                _context.next = 13;
+              case 8:
+                _context.next = 14;
                 break;
 
-              case 9:
-                _context.prev = 9;
+              case 10:
+                _context.prev = 10;
                 _context.t0 = _context["catch"](0);
 
                 if (!(_context.t0.msg === ERROR_GAME_NOT_FOUND || _context.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context.next = 13;
+                  _context.next = 14;
                   break;
                 }
 
@@ -1428,12 +1429,12 @@ var Room = function Room(props) {
                   msg: _context.t0.msg
                 });
 
-              case 13:
+              case 14:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 9]]);
+        }, _callee, null, [[0, 10]]);
       }));
 
       return function handleJoining() {
@@ -1534,19 +1535,20 @@ var Room = function Room(props) {
       className: "game__container"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_5__["default"], {
       socket: props.socket,
-      game_id: roomId,
+      roomId: roomId,
       user: props.user,
       gameFieldRef: gameFieldRef
     })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "room-management__container"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      game_id: roomId,
+      roomId: roomId,
       socket: props.socket,
       gameFieldRef: gameFieldRef,
       opponent: opponent
     })));
   };
 
+  console.log('isGameEXISTS???', isGameExists);
   return isGameExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_8__["default"], null);
 };
 
@@ -1597,13 +1599,14 @@ var RoomManagement = function RoomManagement(props) {
     className: "room__management",
     onClick: setFocusToField
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    game_id: props.game_id
+    roomId: props.roomId
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GamePlayers__WEBPACK_IMPORTED_MODULE_3__["default"], {
     socket: props.socket,
     opponent: props.opponent
   })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_2__["default"], {
     socket: props.socket,
-    game_id: props.game_id
+    roomId: props.roomId,
+    isLeader: props.isLeader
   }));
 };
 
@@ -1646,8 +1649,7 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
 
   var onClickStartGame = function onClickStartGame() {
     var socket = props.socket;
-    var game_id = props.game_id;
-    socket.emit('startGame', game_id);
+    socket.emit('startGameInRoom', props.roomId);
   };
 
   var onClickPause = function onClickPause(e) {
@@ -1666,6 +1668,17 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
         props.history.push('/');
       }
     });
+  };
+
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    var socket = props.socket;
+    var game_id = props.game_id;
+    socket.emit('isGameStarted', game_id);
+    socket.on('gameStatus', function (response) {
+      if (response === undefined) {
+        props.history.push('/');
+      }
+    });
     /**
      * Does this work???
      */
@@ -1676,17 +1689,6 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
       if (response.game_id === props.game_id) {
         setGameStarted(true);
         props.startGameAction();
-      }
-    });
-  };
-
-  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
-    var socket = props.socket;
-    var game_id = props.game_id;
-    socket.emit('isGameStarted', game_id);
-    socket.on('gameStatus', function (response) {
-      if (response === undefined) {
-        props.history.push('/');
       }
     });
   }, []);
@@ -1725,8 +1727,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     user: state.user.nickname,
-    isGameStarted: state.game.isGameStarted,
-    isLeader: state.game.isLeader
+    isGameStarted: state.room.isGameStarted,
+    isLeader: state.room.isLeader
   };
 };
 

@@ -10,8 +10,7 @@ const RoomManagementBtns = (props) => {
 
     const onClickStartGame = () => {
         const socket = props.socket;
-        const game_id = props.game_id;
-        socket.emit('startGame', game_id);
+        socket.emit('startGameInRoom', props.roomId);
     };
 
     const onClickPause = (e) => {
@@ -31,18 +30,6 @@ const RoomManagementBtns = (props) => {
                 props.history.push('/');
             }
         });
-
-        /**
-         * Does this work???
-         */
-        socket.on('gameStarted', (response) => {
-            console.log('in gameStarted socket');
-
-            if (response.game_id === props.game_id) {
-                setGameStarted(true);
-                props.startGameAction();
-            }
-        });
     };
 
     useEffect(() => {
@@ -53,6 +40,18 @@ const RoomManagementBtns = (props) => {
         socket.on('gameStatus', (response) => {
             if (response === undefined) {
                 props.history.push('/');
+            }
+        });
+
+        /**
+         * Does this work???
+         */
+        socket.on('gameStarted', (response) => {
+            console.log('in gameStarted socket');
+
+            if (response.game_id === props.game_id) {
+                setGameStarted(true);
+                props.startGameAction();
             }
         });
     }, []);
@@ -87,8 +86,8 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user.nickname,
-        isGameStarted: state.game.isGameStarted,
-        isLeader: state.game.isLeader
+        isGameStarted: state.room.isGameStarted,
+        isLeader: state.room.isLeader
     }
 };
 

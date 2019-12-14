@@ -3,8 +3,8 @@ import Game from "./entity/Game";
 import Room from "./entity/Room";
 
 /**
- * Checks if given nickname exists in players array, if it is than returns false, else true.
- * 
+ * Checks if given nickname doesn't exist (is unique) in players array.
+ *
  * @param players
  * @param nickname
  * @returns {boolean}
@@ -19,7 +19,12 @@ export const isPlayerUnique = (players, nickname) => {
 
 const socketActions = (io, rooms, games, players) => {
     io.on('connection', (socket) => {
-        socket.on('isPlayerNameUnique', ({nickname}) => {
+        /**
+         * Checks whether the player nickname is occupied or not.
+         *
+         * @param nickname
+         */
+        socket.on('isPlayerNameUnique', (nickname) => {
             if (!isPlayerUnique(players, nickname)) {
                 socket.emit('playerNameOccupied');
             } else {
@@ -27,41 +32,50 @@ const socketActions = (io, rooms, games, players) => {
             }
         });
 
+        /**
+         * Creates new room and adds it to global rooms array. The nickname is a name of the player who by design is a
+         * room leader.
+         *
+         * @param nickname
+         */
         socket.on('createRoom', (nickname) => {
-            const player = new Player(nickname);
-            const room = new Room(player);
-
-            rooms[room.id] = room;
-            socket.emit('roomCreated', room.id);
-        });
-
-        socket.on('roomJoin', ({room_id, nickname}) => {
-            let player = new Player(nickname);
-            players.push(player);
-
-            if (rooms[room_id] !== undefined) {
-                rooms[room_id].addPlayer(player);
-            }
-
-            console.log('rooms', rooms);
-            socket.emit('joinedRoom');
-        });
-
-        socket.on('createGame', (playerName) => {
-            console.log('in createGame, playerName', playerName);
-            if (!isPlayerUnique(games, playerName)) {
+            if (isPlayerUnique(players, nickname)) {
+                const player = new Player(nickname);
+                const room = new Room(player);
+                rooms[room.id] = room;
+                console.log(rooms);
+                socket.emit('roomCreated', room.id);
+                socket.join(room.id);
+            } else {
                 socket.emit('playerNameOccupied');
-                return;
             }
-
-            let player = new Player(playerName);
-            let game = new Game(player);
-
-            games[game.id] = game;
-            players.push(player);
-            socket.emit('gameCreated', game.id);
         });
 
+        // TODO description
+        socket.on('joinRoom', ({roomId, nickname}) => {
+            if (rooms[roomId] !== undefined) {
+                const player = new Player(nickname);
+                players.push(player);
+                rooms[roomId].addPlayer(player);
+                console.log('rooms', rooms);
+                socket.emit('joinedRoom', {roomId: roomId, nickname: nickname});
+            } else {
+                socket.emit('failedToJoinRoom', {roomId: roomId, nickname: nickname})
+            }
+        });
+
+        /**
+         * Creates new game in a given room.
+         *
+         * @params roomId
+         */
+        socket.on('createGame', (roomId) => {
+            const room = rooms[roomId];
+            room.instantiateAGame();
+            socket.emit('gameCreated', {roomId: roomId, gameId: room.game.id});
+        });
+
+        // TODO description
         socket.on('annulGame', ({nickname}) => {
             let game_id, player = null;
 
@@ -83,98 +97,98 @@ const socketActions = (io, rooms, games, players) => {
             }
         });
 
+        // TODO description
         socket.on('join', (game) => {
             console.log('join', game);
             socket.join(game);
         });
 
-        socket.on('isGameStarted', (game_id) => {
-            if (games[game_id] === undefined) {
-                socket.emit('gameStatus', undefined);
+        // TODO description
+        socket.on('isGameStarted', (roomId) => {
+            if (typeof rooms[roomId] === 'undefined') {
+                io.in(roomId).emit('roomStatus', 'undefined');
+            } else {
+                io.in(roomId).emit('roomStatus', {isGameStarted: rooms[roomId].game.isGameStarted})
             }
-
-            if (games[game_id]) {
-                socket.emit('gameStatus', {isGameStarted: games[game_id].isGameStarted})
-            }
-
         });
 
-        socket.on('startGame', (game_id) => {
-            console.log('in startGame');
-            if (games[game_id] === undefined) {
-                socket.emit('gameStatus', undefined);
-            }
-
-            if (games[game_id]) {
-                games[game_id].startGame();
-                console.log('games[game_id]', games[game_id]);
-                io.in(game_id).emit('gameStarted', {game_id: game_id});
+        // TODO description
+        socket.on('startGameInRoom', (roomId) => {
+            if (typeof rooms[roomId] === 'undefined') {
+                io.in(roomId).emit('roomStatus', 'undefined');
+            } else {
+                rooms[roomId].game.startGame();
+                io.in(roomId).emit('gameStarted', {roomId: roomId, gameId: rooms[roomId].game.id});
             }
         });
 
         /**
-         * Only the leader can kick his opponent, so we need to know only gameId
+         * Kicks the player from room. Only the leader can kick his opponent, so we need to know only room id.
+         *
+         * @param roomId
          */
-        socket.on('kickPlayer', (gameId) => {
-            /** @param {Game} game */
-            let game = games[gameId];
-            let playerWasKicked = game.kickPlayer();
-
-            socket.emit('playerWasKicked', playerWasKicked);
+        socket.on('kickPlayer', (roomId) => {
+            io.in(roomId).emit('playerWasKicked', rooms[roomId].kickPlayer());
         });
 
-        socket.on('acceptPlayer', ({game_id, nickname}) => {
-            let game = games[game_id];
-            let newPlayer = new Player(nickname, false);
-            let playerWasAccepted = game.addPlayer(newPlayer);
+        // TODO description
+        socket.on('acceptPlayer', ({roomId, nickname}) => {
+            if (typeof rooms[roomId] === 'undefined') {
+                io.in(roomId).emit('roomStatus', 'undefined');
+            } else {
+                const room = rooms[roomId];
+                const newPlayer = new Player(nickname, false);
+                const playerWasAccepted = room.addPlayer(newPlayer);
 
-            socket.emit('playerWasAccepted', {
-                success: playerWasAccepted
-            });
+                io.in(roomId).emit('playerWasAccepted', {success: playerWasAccepted});
 
-            if (playerWasAccepted) {
-                io.in(game_id).emit('playersJoined', game.players);
+                if (playerWasAccepted) {
+                    io.in(roomId).emit('playerJoined', room.players);
+                }
+
             }
         });
 
+        // TODO description
         socket.on('leaveGame', (data) => {
-            let game_id = data.game_id;
-            let game = games[game_id];
-            let result = game.exitFromGame(data.nickname);
-
-            if (!games[game_id].players.length) {
-                delete games[game_id];
-            }
-
+            // TODO implementation
             socket.emit('leftGame', result);
         });
 
-        socket.on('generatePieces', () => {
+        // TODO description
+        socket.on('generatePieces', (roomId) => {
             const pieces = Game.generatePieces(5);
             console.log('generating...');
             console.log(pieces);
-            socket.emit('getPieces', {pieces: pieces});
+            io.in(roomId).emit('getPieces', {pieces: pieces});
         });
 
+        /**
+         * Updates player field and does piece management.
+         *
+         * @param data
+         */
         socket.on('updatePlayerField', (data) => {
-            let game = games[data.id];
-            let player = game.getPlayerByNickname(data.nickname);
-
-            let cheater = game.managePiecePlacement(data.coords, player);
-            if (cheater === null) {
-                socket.emit('fireInTheHoleTheCheaterIsHere');
+            if (typeof rooms[data.roomId] === 'undefined') {
+                io.in(data.roomId).emit('roomStatus', 'undefined');
+            } else {
+                const room = rooms[data.roomId];
+                const game = room.game;
+                const player = room.getPlayerByNickname(data.nickname);
+                const cheater = game.managePiecePlacement(data.coords, player);
+                if (cheater === null) {
+                    io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
+                }
+                io.in(data.roomId).emit('sendUpdatedGameData', {
+                    myNickName: player.nickname,
+                    score: player.score.quantity,
+                    level: game.level
+                });
+                console.log('cheater', cheater);
             }
-
-            socket.emit('sendUpdatedGameData', {
-                myNickName: player.nickname,
-                score: player.score.quantity,
-                level: game.level
-            });
-
-            console.log('cheater', cheater);
-            console.log('score', player.score);
         });
 
+        // TODO description
         socket.on('joinGame', (data) => {
             const game_id = data.game_id;
             const game = games[game_id];

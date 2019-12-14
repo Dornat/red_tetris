@@ -44,7 +44,7 @@ class Game {
      *
      * @param {array} coordinates
      * @param {Player} player
-     * @returns {number}
+     * @returns {null|number}
      */
     managePiecePlacement(coordinates, player) {
         const sweptRows = player.field.fillCoordinates(coordinates);
