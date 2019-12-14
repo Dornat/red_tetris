@@ -51,6 +51,7 @@ class Room {
     }
 
     /**
+     * Removes player from players array and promotes other player to leader if needed.
      *
      * @param {Player} player
      * @returns {boolean}
@@ -77,7 +78,7 @@ class Room {
             this.leader = player;
             player.isLeader = true;
         }
-        // demote previous leader
+        // Demote previous leader.
         for (let i = 0; i < this.players.length; i++) {
             if (futureLeaderIndex !== i) {
                 this.players[i].isLeader = false;
@@ -87,7 +88,7 @@ class Room {
     }
 
     /**
-     * Only the leader can kick his opponent.
+     * Kicks player from room. Only the leader can kick his opponent.
      *
      * @returns {boolean}
      */

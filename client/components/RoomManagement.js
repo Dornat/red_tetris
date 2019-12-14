@@ -12,10 +12,11 @@ const RoomManagement = (props) => {
     return (
         <div className="room__management" onClick={setFocusToField}>
             <div>
-                <GameLink game_id={props.game_id}/>
+                <GameLink roomId={props.roomId}/>
                 <GamePlayers socket={props.socket} opponent={props.opponent}/>
             </div>
-            <RoomManagementBtns socket={props.socket} game_id={props.game_id}/>
+
+            <RoomManagementBtns socket={props.socket} roomId={props.roomId} isLeader={props.isLeader}/>
         </div>
     );
 
