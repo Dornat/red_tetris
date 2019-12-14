@@ -1,6 +1,7 @@
 import Player from './entity/Player';
 import Game from './entity/Game';
 import Room from './entity/Room';
+import ScoreService from './service/ScoreService';
 
 const GENERATE_PIECES_AMOUNT = 5;
 
@@ -251,6 +252,28 @@ const socketActions = (io, rooms, games, players) => {
             const room = rooms[roomId];
             room.game.setOver();
             io.in(roomId).emit('gameOver');
+        });
+
+        socket.on('addScoreResult', ({nickname, score}) => {
+            const promise = ScoreService.addScoreResult({nickname, score});
+
+            promise.then(() => {
+               socket.emit('scoreResultAdded');
+            });
+        });
+
+        socket.on('getScoreResults', ({count, page}) => {
+            const promise = ScoreService.getScoreResults({count, page});
+
+            promise.then(({page, returned, items, total, pages}) => {
+                 socket.emit('scoreResults', {
+                     page: page,
+                     returned: returned,
+                     items: items,
+                     total: total,
+                     pages: pages
+                 });
+            });
         });
     });
 };

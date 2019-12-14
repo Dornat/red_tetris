@@ -17,7 +17,8 @@ class Database {
             const connection = await mongoose.connect(`mongodb://${this.uri}/${this.db_name}`, {
                 useNewUrlParser: true,
                 useCreateIndex: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                useFindAndModify: false
             });
 
             console.log("\x1b[35m", "*** Database connection established ***", '\x1b[0m')

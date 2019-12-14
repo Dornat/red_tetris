@@ -34,6 +34,7 @@ const GameField = (props) => {
     const [opponentField, setOpponentField] = useState(createField());
 
     const movePiece = direction => {
+
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
             updatePiecePosition({x: direction, y: 0});
         }
