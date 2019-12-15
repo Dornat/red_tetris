@@ -7,10 +7,6 @@ class Player {
      * @param {boolean} isLeader
      */
     constructor(nickname, isLeader = true) {
-        if (typeof isLeader === "undefined") {
-            isLeader = true;
-        }
-
         this.nickname = nickname;
         this.isLeader = isLeader;
         this.field = new Field();

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import Game from './Game';
+import Player from './Player';
 
 class Room {
     /**
@@ -7,7 +8,8 @@ class Room {
      */
     constructor(player) {
         this.id = crypto.randomBytes(4).toString('hex');
-        this.players = [player];
+        this.players = [];
+        this.players[player.nickname] = player;
         this.leader = player;
         this.game = null;
     }
@@ -20,17 +22,6 @@ class Room {
     }
 
     /**
-     * Update players array in game.
-     *
-     * @private
-     */
-    _updatePlayersInGame() {
-        if (this.game) {
-            this.game.players = this.players;
-        }
-    }
-
-    /**
      * Room can have two players only, if there is more return false and do nothing. Also check if passed player is a
      * leader, if so demote passed player. Demotion is needed because we assume that the room is already has one player
      * when it was created and this player is a leader.
@@ -38,53 +29,92 @@ class Room {
      * @param {Player} player
      */
     addPlayer(player) {
-        if (this.players.length > 1) {
+        if (Object.keys(this.players).length > 1) {
             return false
+        } else if (!Room.isPlayerUnique(this.players, player.nickname)) {
+            return false;
         }
-
         if (player.isLeader) {
             player.isLeader = false;
         }
-        this.players.push(player);
-        this._updatePlayersInGame();
+        this.players[player.nickname] = player;
         return true;
     }
+
+    /**
+     * Checks if given nickname doesn't exist (is unique) in players array.
+     *
+     * @param players
+     * @param nickname
+     * @returns {boolean}
+     */
+    static isPlayerUnique(players, nickname) {
+        return nickname in players === false;
+    };
 
     /**
      * Removes player from players array and promotes other player to leader if needed.
      *
-     * @param {Player} player
+     * @param {Player|string} player
      * @returns {boolean}
+     * @throws Error
+     * @throws TypeError
      */
     removePlayer(player) {
-        let playerIndex = this.players.indexOf(player);
-        if (playerIndex === -1) {
-            return false;
+        const playerToRemove = this.getPlayer(player);
+        if (playerToRemove.isLeader) {
+            delete this.players[playerToRemove.nickname];
+            const nickname = Object.keys(this.players)[0];
+            if (typeof nickname === 'undefined') { // There are no players left.
+                this.leader = null;
+            } else {
+                this.promoteToLeader(this.players[nickname]);
+            }
+        } else {
+            delete this.players[playerToRemove.nickname];
         }
-        this.players.splice(playerIndex, 1);
-        if (player.isLeader && this.players.length) {
-            this.promoteToLeader(this.players[0]);
-        }
-        this._updatePlayersInGame();
         return true;
     }
 
     /**
+     * Check if player is present in room.
+     *
+     * @param {Player|string} player
+     * @returns {boolean}
+     * @private
+     */
+    _isPlayerExists(player) {
+        if (player instanceof Player && player.nickname in this.players) {
+            return true;
+        } else return typeof player === 'string' && player in this.players;
+    }
+
+    /**
+     * Handles promotion of the player. It doesn't know whether an opponent exists, that's why it won't demote other
+     * leader.
+     *
      * @param {Player} player
      */
     promoteToLeader(player) {
-        const futureLeaderIndex = this.players.indexOf(player);
-        if (futureLeaderIndex !== -1) {
-            this.leader = player;
-            player.isLeader = true;
+        if (!this._isPlayerExists(player)) {
+            throw new Error('Player does not exist!');
         }
-        // Demote previous leader.
-        for (let i = 0; i < this.players.length; i++) {
-            if (futureLeaderIndex !== i) {
-                this.players[i].isLeader = false;
-            }
+        player.isLeader = true;
+        this.leader = this.players[player.nickname];
+    }
+
+    /**
+     * Reassigns leader role from one player to another.
+     *
+     * @param {Player} from
+     * @param {Player} to
+     */
+    reassignLeader(from, to) {
+        if (!this._isPlayerExists(from) || !this._isPlayerExists(to)) {
+            throw new Error('Player does not exist!');
         }
-        this._updatePlayersInGame();
+        from.isLeader = false;
+        this.promoteToLeader(to);
     }
 
     /**
@@ -93,39 +123,54 @@ class Room {
      * @returns {boolean}
      */
     kickPlayer() {
-        if (this.players.length > 1) {
-            for (let i = 0; i < this.players.length; i++) {
-                if (!this.players[i].isLeader) {
-                    this.removePlayer(this.players[i]);
-                    this._updatePlayersInGame();
-                    return true;
-                }
-            }
+        try {
+            const opponent = this.getMeMyOpponentUsingMyNickname(this.leader.nickname);
+            this.removePlayer(opponent);
+            return true;
+        } catch (e) {
+            return false;
         }
-        return false;
     }
 
     /**
-     * Fetches player by nickname.
+     * Gets player in players array using Player instance or nickname.
      *
-     * @param {string} nickname
+     * @param {Player|string} player
+     * @returns {Player}
+     * @throws Error
+     * @throws TypeError
      */
-    getPlayerByNickname(nickname) {
-        return this.players.find(player => player.nickname === nickname);
+    getPlayer(player) {
+        if (this._isPlayerExists(player)) {
+            if (player instanceof Player) {
+                return this.players[player.nickname];
+            } else if (typeof player === 'string') {
+                return this.players[player];
+            }
+        }
+        throw new Error('Player does not exist!');
     }
 
     /**
      * Fetches opponent using my nickname.
      *
-     * @param myNickname
-     * @returns {null|T}
+     * @param {string} myNickname
+     * @returns {Player}
      */
     getMeMyOpponentUsingMyNickname(myNickname) {
-        if (this.players.length > 1) {
-            return this.players.find((player) => player.nickname !== myNickname);
-        } else {
-            return null;
+        if (this._isPlayerExists(myNickname)) {
+            if (Object.keys(this.players).length > 1) {
+                const playerNames = Object.keys(this.players);
+                for (let i = 0; i < playerNames.length; i++) {
+                    if (playerNames[i] !== myNickname) {
+                        return this.players[playerNames[i]];
+                    }
+                }
+            } else {
+                throw new Error('Opponent does not exist!');
+            }
         }
+        throw new Error('Player does not exist!');
     }
 }
 
