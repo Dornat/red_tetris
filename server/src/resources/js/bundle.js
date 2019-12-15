@@ -1547,12 +1547,10 @@ var Room = function Room(props) {
     } else if (modal === MODAL_GAME_OVER) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
-        className: "nes-container is-centered"
       }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game Over!"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
         className: "nes-btn",
         onClick: toDashBoard
-      }, "Dashboard")));
+      }, "Dashboard"));
     }
   };
 

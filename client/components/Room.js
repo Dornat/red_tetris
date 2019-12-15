@@ -229,10 +229,8 @@ const Room = (props) => {
         } else if (modal === MODAL_GAME_OVER) {
             return (
                 <div className="nes-dialog">
-                    <div className="nes-container is-centered">
-                        <h2>Game Over!</h2>
-                        <button className="nes-btn" onClick={toDashBoard}>Dashboard</button>
-                    </div>
+                    <h2>Game Over!</h2>
+                    <button className="nes-btn" onClick={toDashBoard}>Dashboard</button>
                 </div>
             );
         }

@@ -2,21 +2,6 @@ import Player from "./entity/Player";
 import Game from "./entity/Game";
 import Room from "./entity/Room";
 
-/**
- * Checks if given nickname doesn't exist (is unique) in players array.
- *
- * @param players
- * @param nickname
- * @returns {boolean}
- */
-export const isPlayerUnique = (players, nickname) => {
-    let player = players.some((player) => {
-        return player.nickname === nickname;
-    });
-
-    return player === false;
-};
-
 const socketActions = (io, rooms, games, players) => {
     io.on('connection', (socket) => {
         /**
@@ -39,7 +24,7 @@ const socketActions = (io, rooms, games, players) => {
          * @param nickname
          */
         socket.on('createRoom', (nickname) => {
-            if (isPlayerUnique(players, nickname)) {
+            if (Room.isPlayerUnique(players, nickname)) {
                 const player = new Player(nickname);
                 const room = new Room(player);
                 rooms[room.id] = room;
@@ -175,9 +160,19 @@ const socketActions = (io, rooms, games, players) => {
             console.log('roomId', roomId);
             console.log('nickname', nickname);
             const room = rooms[roomId];
-            const player = room.getPlayerByNickname(nickname);
-            const isPlayerRemoved = room.removePlayer(player);
-            socket.emit('leftGame', isPlayerRemoved);
+            console.log('room', room);
+            if (typeof room === 'undefined') {
+                console.log('players[nickname]', players[nickname]);
+                if (players[nickname]) {
+                    delete players[nickname];
+                }
+                socket.emit('leftGame', true);
+            } else {
+                const player = room.getPlayer(nickname);
+                const isPlayerRemoved = room.removePlayer(player);
+                console.log('room', room);
+                socket.emit('leftGame', isPlayerRemoved);
+            }
         });
 
         /**
