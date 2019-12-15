@@ -10,7 +10,7 @@ const socketActions = (io, rooms, games, players) => {
          * @param nickname
          */
         socket.on('isPlayerNameUnique', (nickname) => {
-            if (!isPlayerUnique(players, nickname)) {
+            if (!Room.isPlayerUnique(players, nickname)) {
                 socket.emit('playerNameOccupied');
             } else {
                 socket.emit('playerNameIsValid');
@@ -157,21 +157,21 @@ const socketActions = (io, rooms, games, players) => {
          * @param nickname
          */
         socket.on('leaveGame', (roomId, nickname) => {
-            console.log('roomId', roomId);
-            console.log('nickname', nickname);
             const room = rooms[roomId];
-            console.log('room', room);
             if (typeof room === 'undefined') {
-                console.log('players[nickname]', players[nickname]);
                 if (players[nickname]) {
                     delete players[nickname];
                 }
-                socket.emit('leftGame', true);
+                io.in(roomId).emit('leftGame', {player: nickname, left: true});
             } else {
-                const player = room.getPlayer(nickname);
-                const isPlayerRemoved = room.removePlayer(player);
+                const isPlayerRemoved = room.removePlayer(nickname);
+                delete players[nickname];
+                if (Object.keys(room.players).length < 1) {
+                    delete rooms[room.id];
+                    io.in(roomId).emit('roomStatus', 'undefined');
+                }
                 console.log('room', room);
-                socket.emit('leftGame', isPlayerRemoved);
+                io.in(roomId).emit('leftGame', {player: nickname, left: isPlayerRemoved});
             }
         });
 
