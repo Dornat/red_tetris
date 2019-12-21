@@ -6,7 +6,7 @@ import {withRouter} from 'react-router-dom';
 import Loader from './Loader';
 import ReactModal from 'react-modal';
 import JoinGame from './Form/JoinGame';
-import {joinGameAction} from "../actions/gameActions";
+import {joinRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction} from "../actions/roomActions";
 
 const modalStyles = {
     content: {
@@ -29,183 +29,189 @@ const Room = (props) => {
     const MODAL_GAME_PAUSED = 4;
     const MODAL_GAME_OVER = 5;
 
-    const MSG_JOINED_GAME = 1;
+    const MSG_JOINED_ROOM = 1;
     const MSG_PLAYER_ADDED = 2;
     const MSG_GAME_CREATED = 3;
-    const ERROR_GAME_NOT_FOUND = 4;
+    const ERROR_ROOM_NOT_FOUND = 4;
     const ERROR_NO_SPACE_AVAILABLE = 5;
 
     const [roomId, setRoomId] = useState(props.roomId || null);
-    const [isGameExists, setGameExists] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isRoomExists, setRoomExists] = useState(false);
+    const [isModalOpened, setIsModalOpened] = useState(false);
     const [modal, setModal] = useState(null);
     const [opponent, setOpponent] = useState(null);
 
     const gameFieldRef = useRef(null);
 
-    const canJoinTheGame = (game_id) => {
-        props.socket.emit('join', game_id);
-        props.socket.emit('joinGame', {game_id: game_id});
-        props.joinGameAction(game_id);
-
+    /**
+     * Checks if somebody can join the room.
+     *
+     * @param roomId
+     * @returns {Promise<*>}
+     */
+    const canJoinRoom = async (roomId) => {
         return new Promise((resolve, reject) => {
-            props.socket.on('gameJoined', (response) => {
+            props.socket.emit('canJoinRoom', roomId);
+            props.socket.on('canJoinRoom', (response) => {
                 if (response.success) {
-                    resolve({
-                        opponent: response.data.opponent,
-                        msg: MSG_JOINED_GAME
-                    });
+                    resolve({msg: MSG_JOINED_ROOM});
                 }
-                reject({
-                    msg: ERROR_GAME_NOT_FOUND
-                });
+                reject({msg: ERROR_ROOM_NOT_FOUND});
             });
         });
     };
 
-    const acceptPlayer = (user, game_id) => {
-        props.socket.emit('acceptPlayer', {
-            game_id: game_id,
-            nickname: user
-        });
-
+    /**
+     * Adds player to specific room.
+     *
+     * @param roomId
+     * @param nickname
+     * @returns {Promise<*>}
+     */
+    const acceptPlayer = async (roomId, nickname) => {
         return new Promise((resolve, reject) => {
+            props.socket.emit('acceptPlayer', roomId, nickname);
             props.socket.on('playerWasAccepted', (response) => {
+                console.log('in acceptPlayer, response', response);
                 if (response.success) {
-                    resolve({
-                        success: response.success,
-                        msg: MSG_PLAYER_ADDED
-                    });
+                    resolve({msg: MSG_PLAYER_ADDED});
                 }
-
-                reject({
-                    success: response.success,
-                    msg: ERROR_NO_SPACE_AVAILABLE
-                });
+                reject({msg: ERROR_NO_SPACE_AVAILABLE}); // It also can be that the player nickname is not unique.
             });
         });
     };
 
     useEffect(() => {
-        // props.socket.emit('acceptPlayer', {nickname: props.user});
-    }, []);
-
-    useEffect(() => {
+        console.log('in Room component, props', props);
         const handleJoining = async () => {
             try {
                 const locationState = props.location.state;
                 console.log('props', props);
+                console.log('match room id', props.match.params.id);
 
                 let isRoomCreator = false;
-
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
                     isRoomCreator = locationState.gameCreator;
                 }
-
-                console.log('isGameCreator', isRoomCreator);
-                // TODO: FIX THIS!
-                // if (props.game_id === null) {
-                //     props.socket.emit('annulGame', {
-                //        nickname: props.user
-                //     });
-                //     props.history.push('/');
-                // }
-
                 if (isRoomCreator) {
                     return {msg: MSG_GAME_CREATED};
                 }
-                //
-                // const canJoinGame = await canJoinTheGame(game_id);
-                //
-                // setOpponent(canJoinGame.opponent);
-                //
-                // if (props.user) {
-                //     const accepted = await acceptPlayer(props.user, game_id);
-                //
-                //     if (accepted.success) {
-                //         return {msg: accepted.msg}
-                //     }
-                // } else {
-                //     return {msg: canJoinGame.msg}
-                // }
+
+                /**
+                 * We can reach this place only when somebody joining the room using url.
+                 */
+                const roomIdFromUrl = props.match.params.id;
+                console.log('roomId', roomIdFromUrl);
+                if (roomIdFromUrl === null) {
+                    props.history.push('/'); // Should never reach here.
+                }
+
+                const joined = await canJoinRoom(roomIdFromUrl);
+                props.socket.emit('join', roomIdFromUrl);
+                setRoomId(roomIdFromUrl);
+
+                if (props.user) {
+                    const accepted = await acceptPlayer(roomIdFromUrl, props.user);
+                    props.joinRoomAction(roomIdFromUrl);
+                    return {msg: accepted.msg};
+                } else {
+                    return {msg: joined.msg};
+                }
             } catch (e) {
-                if (e.msg === ERROR_GAME_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
+                console.log('e', e);
+                if (e.msg === ERROR_ROOM_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
                     return {msg: e.msg};
                 }
             }
         };
 
-        handleJoining().then((res) => {
-            if (typeof res === "undefined") {
-                return;
-            }
-
-            const msg = res.msg;
-
+        handleJoining().then(result => {
+            console.log('in handleJoining, result', result);
+            const msg = result.msg;
             switch (msg) {
                 case MSG_GAME_CREATED: {
-                    setGameExists(true);
+                    console.log('MSG_GAME_CREATED');
+                    setRoomExists(true);
                     break;
                 }
                 case MSG_PLAYER_ADDED: {
-                    setGameExists(true);
+                    console.log('MSG_PLAYER_ADDED');
+                    setRoomExists(true);
                     break;
                 }
-                case MSG_JOINED_GAME: {
-                    setGameExists(true);
+                case MSG_JOINED_ROOM: {
+                    console.log('MSG_JOINED_ROOM');
+                    setRoomExists(true);
                     setModal(MODAL_ROOM_JOINED);
-                    setIsOpen(true);
+                    setIsModalOpened(true);
                     break;
                 }
-                case ERROR_GAME_NOT_FOUND: {
+                case ERROR_ROOM_NOT_FOUND: {
+                    console.log('ERROR_ROOM_NOT_FOUND');
                     setModal(MODAL_NO_ROOM);
-                    setIsOpen(true);
-                    setGameExists(true);
+                    setIsModalOpened(true);
+                    setRoomExists(true);
                     break;
                 }
                 case ERROR_NO_SPACE_AVAILABLE: {
+                    console.log('ERROR_NO_SPACE_AVAILABLE');
                     setModal(MODAL_NO_SPACE);
-                    setIsOpen(true);
-                    setGameExists(true);
+                    setIsModalOpened(true);
+                    setRoomExists(true);
                     break;
                 }
                 default: {
                     break;
                 }
             }
+        }, error => {
+            console.log('error', error);
+        }).catch(reason => {
+            console.log('error reason', reason);
         });
 
-        props.socket.on('playersJoined', (data) => {
-            const opponent = data.find((player) => player.nickname !== props.user);
-            setOpponent({nickname: opponent.nickname, isLeader: opponent.isLeader});
+        props.socket.on('playerJoined', (players) => {
+            const opponent = Object.values(players).find(player => player.nickname !== props.user);
+            props.setOpponentAction(opponent);
+            console.log('in playerJoined, props', props);
         });
 
         props.socket.on('roomStatus', (data) => {
             if (data === 'undefined') {
                 setModal(MODAL_GAME_OVER);
-                setIsOpen(true);
+                setIsModalOpened(true);
+            }
+        });
+
+        props.socket.on('leftGame', (response) => {
+            console.log('in Room, leftGame response', response);
+            if (response.player === props.user) {
+                props.history.push('/');
+            } else {
+                console.log('in else of leftGame socket, props', props);
+                console.log('opponent', opponent);
+                if (props.opponent.isLeader) {
+                    props.setLeaderAction(true);
+                    props.removeOpponentAction();
+                }
             }
         });
     }, []);
 
-    useEffect(() => {
-        console.log('modal', modal);
-    }, [modal]);
-
-
     const closeModalAndEnrollNewPlayerIntoTheGame = () => {
-        setIsOpen(false);
-        acceptPlayer(props.user, roomId);
-    };
-
-    const toDashBoard = () => {
-        props.socket.emit('leaveGame', props.roomId, props.user);
-        props.socket.on('leftGame', (response) => {
-            if (response) {
-                props.history.push('/');
-            }
+        acceptPlayer(roomId, props.user).then(result => {
+            console.log('acceptPlayer result', result);
+            setRoomExists(true);
+            setIsModalOpened(false);
+        }).catch(reason => {
+            setIsModalOpened(true);
+            setModal(MODAL_NO_SPACE);
         });
     };
+
+    const toDashBoard = () => props.socket.emit('leaveGame', props.roomId, props.user);
+
+    const straightToDashboard = () => props.history.push('/');
 
     const renderModalContent = () => {
         if (modal === MODAL_ROOM_JOINED) {
@@ -216,21 +222,29 @@ const Room = (props) => {
             );
         } else if (modal === MODAL_NO_ROOM) {
             return (
-                <h2>No such room</h2>
+                <div className="nes-dialog">
+                    <h2>No such room</h2>
+                    <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                </div>
             );
         } else if (modal === MODAL_GAME_PAUSED) {
             return (
-                <h2>Game is paused</h2>
+                <div className="nes-dialog">
+                    <h2>Game is paused</h2>
+                </div>
             );
         } else if (modal === MODAL_NO_SPACE) {
             return (
-                <h2>No space in room</h2>
+                <div className="nes-dialog">
+                    <h2>No space in room</h2>
+                    <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                </div>
             );
         } else if (modal === MODAL_GAME_OVER) {
             return (
                 <div className="nes-dialog">
                     <h2>Game Over!</h2>
-                    <button className="nes-btn" onClick={toDashBoard}>Dashboard</button>
+                    <button className="nes-btn" onClick={toDashBoard}>To Dashboard</button>
                 </div>
             );
         }
@@ -240,7 +254,7 @@ const Room = (props) => {
         return (
             <div className="row">
                 <ReactModal
-                    isOpen={isOpen}
+                    isOpen={isModalOpened}
                     style={modalStyles}
                     contentLabel="Example Modal"
                 >
@@ -257,20 +271,33 @@ const Room = (props) => {
         );
     };
 
-    return isGameExists ? renderOnGame() : <Loader/>;
+    return isRoomExists ? renderOnGame() : <Loader/>;
 };
 
 const mapStateToProps = (state) => {
+    console.log('in Room mapStateToProps, state', state);
     return {
         user: state.user.nickname,
-        roomId: state.room.id
+        roomId: state.room.id,
+        isLeader: state.room.isLeader,
+        opponentNickname: state.room.opponent ? state.room.opponent.nickname : null,
+        opponentIsLeader: state.room.opponent ? state.room.opponent.isLeader : null
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        joinGameAction: (gameId) => {
-            dispatch(joinGameAction(gameId))
+        joinRoomAction: (roomId, isLeader) => {
+            dispatch(joinRoomAction(roomId, isLeader))
+        },
+        setLeaderAction: (isLeader) => {
+            dispatch(setLeaderAction(isLeader))
+        },
+        setOpponentAction: (opponent) => {
+            dispatch(setOpponentAction(opponent))
+        },
+        removeOpponentAction: () => {
+            dispatch(removeOpponentAction())
         }
     };
 };

@@ -29,24 +29,27 @@ const socketServer = http.Server(server.app);
 const io = socket(socketServer);
 
 /**
+ * In JS we can't store key => value pairs in arrays.
+ *
  * Global games array.
  *
- * @type {Array}
+ * @type {{}}
  */
-const games = [];
+const games = {};
 
 /**
  * Global rooms array.
  *
- * @type {Array}
+ * @type {{}}
  */
-const rooms = [];
+const rooms = {};
 
 /**
  * Global players array.
- * @type {Array}
+ *
+ * @type {{}}
  */
-const players = [];
+const players = {};
 
 socketServer.listen(process.env.IO_SERVER_PORT);
 
