@@ -17,33 +17,12 @@ const RoomManagementBtns = (props) => {
         console.log('PAUSE');
     };
 
-    const onClickToDashboard = () => {
-        const socket = props.socket;
-        const data = {
-            roomId: props.roomId,
-            nickname: props.user
-        };
-
-        socket.emit('leaveGame', props.roomId, props.user);
-        socket.on('leftGame', (response) => {
-            if (response) {
-                props.history.push('/');
-            }
-        });
-    };
+    const toDashboard = () => props.socket.emit('leaveGame', props.roomId, props.user);
 
     useEffect(() => {
         const socket = props.socket;
         socket.emit('isGameStarted', props.roomId);
-        socket.on('gameStatus', (response) => {
-            if (response === undefined) {
-                props.history.push('/');
-            }
-        });
-
         socket.on('gameStarted', (response) => {
-            console.log('in gameStarted socket');
-
             if (response.roomId === props.roomId) {
                 setGameStarted(true);
             }
@@ -57,13 +36,13 @@ const RoomManagementBtns = (props) => {
                     ? <button className="nes-btn" onClick={onClickPause}>Pause</button>
                     : <button className="nes-btn" onClick={onClickStartGame}>Start</button>
                 }
-                <button className="nes-btn" onClick={onClickToDashboard}>Dashboard</button>
+                <button className="nes-btn" onClick={toDashboard}>Dashboard</button>
             </div>
         );
     } else {
         return (
             <div className="room-management__btns">
-                <button className="nes-btn" onClick={onClickToDashboard}>Dashboard</button>
+                <button className="nes-btn" onClick={toDashboard}>Dashboard</button>
             </div>
         );
     }

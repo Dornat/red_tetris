@@ -8,7 +8,7 @@ class Room {
      */
     constructor(player) {
         this.id = crypto.randomBytes(4).toString('hex');
-        this.players = [];
+        this.players = {}; // In JS we can't store key => value pairs in arrays.
         this.players[player.nickname] = player;
         this.leader = player;
         this.game = null;

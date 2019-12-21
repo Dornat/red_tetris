@@ -2,9 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 
 const GamePlayers = (props) => {
-
     const [hidden, setHidden] = useState(false);
-    const [opponent, setOpponent] = useState(null);
 
     /**
      * @param {object} player: {nickname, isLeader}
@@ -35,23 +33,21 @@ const GamePlayers = (props) => {
         });
     }, []);
 
-    useEffect(() => {
-        setOpponent(props.opponent);
-    }, [props.opponent]);
-
     return (
         <div className="game__players" style={hidden ? {display: 'none'} : {display: 'block'}}>
             <h3 className="game-players__title">Players</h3>
             {renderNickname({nickname: props.nickname, isLeader: props.isLeader})}
-            {opponent ? renderNickname(opponent) : ''}
+            {props.opponent ? renderNickname(props.opponent) : ''}
         </div>
     )
 };
 
 const mapStateToProps = (state) => {
+    console.log('state', state);
     return {
         nickname: state.user.nickname,
-        isLeader: state.game.isLeader
+        isLeader: state.room.isLeader,
+        opponent: state.room.opponent
     };
 };
 

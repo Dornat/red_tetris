@@ -138,12 +138,16 @@ function setPiecesAction(pieces) {
 /*!********************************!*\
   !*** ./actions/roomActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction */
+/*! exports provided: createRoomAction, joinRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createRoomAction", function() { return createRoomAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "joinRoomAction", function() { return joinRoomAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setLeaderAction", function() { return setLeaderAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setOpponentAction", function() { return setOpponentAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeOpponentAction", function() { return removeOpponentAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function createRoomAction(id) {
@@ -154,6 +158,29 @@ function createRoomAction(id) {
     isLeader: isLeader
   };
 }
+function joinRoomAction(id) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["JOIN_ROOM"],
+    id: id
+  };
+}
+function setLeaderAction(isLeader) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_LEADER"],
+    isLeader: isLeader
+  };
+}
+function setOpponentAction(opponent) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_OPPONENT"],
+    opponent: opponent
+  };
+}
+function removeOpponentAction() {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["REMOVE_OPPONENT"]
+  };
+}
 
 /***/ }),
 
@@ -161,7 +188,7 @@ function createRoomAction(id) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, JOIN_GAME, CREATE_ROOM */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -173,6 +200,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PIECES", function() { return SET_PIECES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JOIN_GAME", function() { return JOIN_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_ROOM", function() { return CREATE_ROOM; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JOIN_ROOM", function() { return JOIN_ROOM; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_LEADER", function() { return SET_LEADER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_OPPONENT", function() { return SET_OPPONENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REMOVE_OPPONENT", function() { return REMOVE_OPPONENT; });
 var SET_USER = "SET_USER";
 var CREATE_GAME = "CREATE_GAME";
 var START_GAME = "START_GAME";
@@ -180,6 +211,10 @@ var SET_SCORE = "SET_SCORE";
 var SET_PIECES = "SET_PIECES";
 var JOIN_GAME = "JOIN_GAME";
 var CREATE_ROOM = "CREATE_ROOM";
+var JOIN_ROOM = "JOIN_ROOM";
+var SET_LEADER = "SET_LEADER";
+var SET_OPPONENT = "SET_OPPONENT";
+var REMOVE_OPPONENT = "REMOVE_OPPONENT";
 
 /***/ }),
 
@@ -351,16 +386,14 @@ var Dashboard = function Dashboard(props) {
         props.socket.emit('createRoom', props.user);
         setBtnDisability(true);
         props.socket.on('roomCreated', function (roomId) {
+          props.socket.emit('join', roomId);
           props.createRoomAction(roomId);
-          console.log('before history push');
           props.history.push({
             pathname: '/room/' + roomId,
             state: {
               gameCreator: true
             }
-          }); // props.socket.emit('roomJoin', {room_id: room_id, nickname: props.user});
-          // props.socket.on('joinedRoom', () => {
-          // });
+          });
         });
       });
       props.socket.on('playerNameOccupied', function () {
@@ -1006,11 +1039,6 @@ var GamePlayers = function GamePlayers(props) {
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState, 2),
       hidden = _useState2[0],
       setHidden = _useState2[1];
-
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(null),
-      _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
-      opponent = _useState4[0],
-      setOpponent = _useState4[1];
   /**
    * @param {object} player: {nickname, isLeader}
    */
@@ -1041,9 +1069,6 @@ var GamePlayers = function GamePlayers(props) {
       handleDisplay();
     });
   }, []);
-  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
-    setOpponent(props.opponent);
-  }, [props.opponent]);
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "game__players",
     style: hidden ? {
@@ -1056,13 +1081,15 @@ var GamePlayers = function GamePlayers(props) {
   }, "Players"), renderNickname({
     nickname: props.nickname,
     isLeader: props.isLeader
-  }), opponent ? renderNickname(opponent) : '');
+  }), props.opponent ? renderNickname(props.opponent) : '');
 };
 
 var mapStateToProps = function mapStateToProps(state) {
+  console.log('state', state);
   return {
     nickname: state.user.nickname,
-    isLeader: state.game.isLeader
+    isLeader: state.room.isLeader,
+    opponent: state.room.opponent
   };
 };
 
@@ -1268,7 +1295,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
 /* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _Form_JoinGame__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Form/JoinGame */ "./components/Form/JoinGame.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
 
 
 
@@ -1300,10 +1327,10 @@ var Room = function Room(props) {
   var MODAL_ROOM_JOINED = 3;
   var MODAL_GAME_PAUSED = 4;
   var MODAL_GAME_OVER = 5;
-  var MSG_JOINED_GAME = 1;
+  var MSG_JOINED_ROOM = 1;
   var MSG_PLAYER_ADDED = 2;
   var MSG_GAME_CREATED = 3;
-  var ERROR_GAME_NOT_FOUND = 4;
+  var ERROR_ROOM_NOT_FOUND = 4;
   var ERROR_NO_SPACE_AVAILABLE = 5;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(props.roomId || null),
@@ -1313,13 +1340,13 @@ var Room = function Room(props) {
 
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState3, 2),
-      isGameExists = _useState4[0],
-      setGameExists = _useState4[1];
+      isRoomExists = _useState4[0],
+      setRoomExists = _useState4[1];
 
   var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
       _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState5, 2),
-      isOpen = _useState6[0],
-      setIsOpen = _useState6[1];
+      isModalOpened = _useState6[0],
+      setIsModalOpened = _useState6[1];
 
   var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(null),
       _useState8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState7, 2),
@@ -1332,162 +1359,245 @@ var Room = function Room(props) {
       setOpponent = _useState10[1];
 
   var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(null);
+  /**
+   * Checks if somebody can join the room.
+   *
+   * @param roomId
+   * @returns {Promise<*>}
+   */
 
-  var canJoinTheGame = function canJoinTheGame(game_id) {
-    props.socket.emit('join', game_id);
-    props.socket.emit('joinGame', {
-      game_id: game_id
-    });
-    props.joinGameAction(game_id);
-    return new Promise(function (resolve, reject) {
-      props.socket.on('gameJoined', function (response) {
-        if (response.success) {
-          resolve({
-            opponent: response.data.opponent,
-            msg: MSG_JOINED_GAME
-          });
+  var canJoinRoom =
+  /*#__PURE__*/
+  function () {
+    var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+    /*#__PURE__*/
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(roomId) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              return _context.abrupt("return", new Promise(function (resolve, reject) {
+                props.socket.emit('canJoinRoom', roomId);
+                props.socket.on('canJoinRoom', function (response) {
+                  if (response.success) {
+                    resolve({
+                      msg: MSG_JOINED_ROOM
+                    });
+                  }
+
+                  reject({
+                    msg: ERROR_ROOM_NOT_FOUND
+                  });
+                });
+              }));
+
+            case 1:
+            case "end":
+              return _context.stop();
+          }
         }
+      }, _callee);
+    }));
 
-        reject({
-          msg: ERROR_GAME_NOT_FOUND
-        });
-      });
-    });
-  };
+    return function canJoinRoom(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  /**
+   * Adds player to specific room.
+   *
+   * @param roomId
+   * @param nickname
+   * @returns {Promise<*>}
+   */
 
-  var acceptPlayer = function acceptPlayer(user, game_id) {
-    props.socket.emit('acceptPlayer', {
-      game_id: game_id,
-      nickname: user
-    });
-    return new Promise(function (resolve, reject) {
-      props.socket.on('playerWasAccepted', function (response) {
-        if (response.success) {
-          resolve({
-            success: response.success,
-            msg: MSG_PLAYER_ADDED
-          });
+
+  var acceptPlayer =
+  /*#__PURE__*/
+  function () {
+    var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+    /*#__PURE__*/
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(roomId, nickname) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              return _context2.abrupt("return", new Promise(function (resolve, reject) {
+                props.socket.emit('acceptPlayer', roomId, nickname);
+                props.socket.on('playerWasAccepted', function (response) {
+                  console.log('in acceptPlayer, response', response);
+
+                  if (response.success) {
+                    resolve({
+                      msg: MSG_PLAYER_ADDED
+                    });
+                  }
+
+                  reject({
+                    msg: ERROR_NO_SPACE_AVAILABLE
+                  }); // It also can be that the player nickname is not unique.
+                });
+              }));
+
+            case 1:
+            case "end":
+              return _context2.stop();
+          }
         }
+      }, _callee2);
+    }));
 
-        reject({
-          success: response.success,
-          msg: ERROR_NO_SPACE_AVAILABLE
-        });
-      });
-    });
-  };
+    return function acceptPlayer(_x2, _x3) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
 
-  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {// props.socket.emit('acceptPlayer', {nickname: props.user});
-  }, []);
   Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
+    console.log('in Room component, props', props);
+
     var handleJoining =
     /*#__PURE__*/
     function () {
-      var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+      var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
       /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var locationState, isRoomCreator;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var locationState, isRoomCreator, roomIdFromUrl, joined, accepted;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context.prev = 0;
+                _context3.prev = 0;
                 locationState = props.location.state;
                 console.log('props', props);
+                console.log('match room id', props.match.params.id);
                 isRoomCreator = false;
 
                 if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
                   isRoomCreator = locationState.gameCreator;
                 }
 
-                console.log('isGameCreator', isRoomCreator); // TODO: FIX THIS!
-                // if (props.game_id === null) {
-                //     props.socket.emit('annulGame', {
-                //        nickname: props.user
-                //     });
-                //     props.history.push('/');
-                // }
-
                 if (!isRoomCreator) {
-                  _context.next = 8;
+                  _context3.next = 8;
                   break;
                 }
 
-                return _context.abrupt("return", {
+                return _context3.abrupt("return", {
                   msg: MSG_GAME_CREATED
                 });
 
               case 8:
-                _context.next = 14;
-                break;
+                /**
+                 * We can reach this place only when somebody joining the room using url.
+                 */
+                roomIdFromUrl = props.match.params.id;
+                console.log('roomId', roomIdFromUrl);
 
-              case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](0);
+                if (roomIdFromUrl === null) {
+                  props.history.push('/'); // Should never reach here.
+                }
 
-                if (!(_context.t0.msg === ERROR_GAME_NOT_FOUND || _context.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context.next = 14;
+                _context3.next = 13;
+                return canJoinRoom(roomIdFromUrl);
+
+              case 13:
+                joined = _context3.sent;
+                props.socket.emit('join', roomIdFromUrl);
+                setRoomId(roomIdFromUrl);
+
+                if (!props.user) {
+                  _context3.next = 24;
                   break;
                 }
 
-                return _context.abrupt("return", {
-                  msg: _context.t0.msg
+                _context3.next = 19;
+                return acceptPlayer(roomIdFromUrl, props.user);
+
+              case 19:
+                accepted = _context3.sent;
+                props.joinRoomAction(roomIdFromUrl);
+                return _context3.abrupt("return", {
+                  msg: accepted.msg
                 });
 
-              case 14:
+              case 24:
+                return _context3.abrupt("return", {
+                  msg: joined.msg
+                });
+
+              case 25:
+                _context3.next = 32;
+                break;
+
+              case 27:
+                _context3.prev = 27;
+                _context3.t0 = _context3["catch"](0);
+                console.log('e', _context3.t0);
+
+                if (!(_context3.t0.msg === ERROR_ROOM_NOT_FOUND || _context3.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
+                  _context3.next = 32;
+                  break;
+                }
+
+                return _context3.abrupt("return", {
+                  msg: _context3.t0.msg
+                });
+
+              case 32:
               case "end":
-                return _context.stop();
+                return _context3.stop();
             }
           }
-        }, _callee, null, [[0, 10]]);
+        }, _callee3, null, [[0, 27]]);
       }));
 
       return function handleJoining() {
-        return _ref.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       };
     }();
 
-    handleJoining().then(function (res) {
-      if (typeof res === "undefined") {
-        return;
-      }
-
-      var msg = res.msg;
+    handleJoining().then(function (result) {
+      console.log('in handleJoining, result', result);
+      var msg = result.msg;
 
       switch (msg) {
         case MSG_GAME_CREATED:
           {
-            setGameExists(true);
+            console.log('MSG_GAME_CREATED');
+            setRoomExists(true);
             break;
           }
 
         case MSG_PLAYER_ADDED:
           {
-            setGameExists(true);
+            console.log('MSG_PLAYER_ADDED');
+            setRoomExists(true);
             break;
           }
 
-        case MSG_JOINED_GAME:
+        case MSG_JOINED_ROOM:
           {
-            setGameExists(true);
+            console.log('MSG_JOINED_ROOM');
+            setRoomExists(true);
             setModal(MODAL_ROOM_JOINED);
-            setIsOpen(true);
+            setIsModalOpened(true);
             break;
           }
 
-        case ERROR_GAME_NOT_FOUND:
+        case ERROR_ROOM_NOT_FOUND:
           {
+            console.log('ERROR_ROOM_NOT_FOUND');
             setModal(MODAL_NO_ROOM);
-            setIsOpen(true);
-            setGameExists(true);
+            setIsModalOpened(true);
+            setRoomExists(true);
             break;
           }
 
         case ERROR_NO_SPACE_AVAILABLE:
           {
+            console.log('ERROR_NO_SPACE_AVAILABLE');
             setModal(MODAL_NO_SPACE);
-            setIsOpen(true);
-            setGameExists(true);
+            setIsModalOpened(true);
+            setRoomExists(true);
             break;
           }
 
@@ -1496,39 +1606,58 @@ var Room = function Room(props) {
             break;
           }
       }
+    }, function (error) {
+      console.log('error', error);
+    })["catch"](function (reason) {
+      console.log('error reason', reason);
     });
-    props.socket.on('playersJoined', function (data) {
-      var opponent = data.find(function (player) {
+    props.socket.on('playerJoined', function (players) {
+      var opponent = Object.values(players).find(function (player) {
         return player.nickname !== props.user;
       });
-      setOpponent({
-        nickname: opponent.nickname,
-        isLeader: opponent.isLeader
-      });
+      props.setOpponentAction(opponent);
+      console.log('in playerJoined, props', props);
     });
     props.socket.on('roomStatus', function (data) {
       if (data === 'undefined') {
         setModal(MODAL_GAME_OVER);
-        setIsOpen(true);
+        setIsModalOpened(true);
+      }
+    });
+    props.socket.on('leftGame', function (response) {
+      console.log('in Room, leftGame response', response);
+
+      if (response.player === props.user) {
+        props.history.push('/');
+      } else {
+        console.log('in else of leftGame socket, props', props);
+        console.log('opponent', opponent);
+
+        if (props.opponent.isLeader) {
+          props.setLeaderAction(true);
+          props.removeOpponentAction();
+        }
       }
     });
   }, []);
-  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
-    console.log('modal', modal);
-  }, [modal]);
 
   var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
-    setIsOpen(false);
-    acceptPlayer(props.user, roomId);
+    acceptPlayer(roomId, props.user).then(function (result) {
+      console.log('acceptPlayer result', result);
+      setRoomExists(true);
+      setIsModalOpened(false);
+    })["catch"](function (reason) {
+      setIsModalOpened(true);
+      setModal(MODAL_NO_SPACE);
+    });
   };
 
   var toDashBoard = function toDashBoard() {
-    props.socket.emit('leaveGame', props.roomId, props.user);
-    props.socket.on('leftGame', function (response) {
-      if (response) {
-        props.history.push('/');
-      }
-    });
+    return props.socket.emit('leaveGame', props.roomId, props.user);
+  };
+
+  var straightToDashboard = function straightToDashboard() {
+    return props.history.push('/');
   };
 
   var renderModalContent = function renderModalContent() {
@@ -1539,18 +1668,30 @@ var Room = function Room(props) {
         onClick: closeModalAndEnrollNewPlayerIntoTheGame
       }));
     } else if (modal === MODAL_NO_ROOM) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No such room");
+      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: "nes-dialog"
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No such room"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+        className: "nes-btn",
+        onClick: straightToDashboard
+      }, "To Dashboard"));
     } else if (modal === MODAL_GAME_PAUSED) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game is paused");
+      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: "nes-dialog"
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game is paused"));
     } else if (modal === MODAL_NO_SPACE) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No space in room");
+      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+        className: "nes-dialog"
+      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No space in room"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+        className: "nes-btn",
+        onClick: straightToDashboard
+      }, "To Dashboard"));
     } else if (modal === MODAL_GAME_OVER) {
       return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
         className: "nes-dialog"
       }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game Over!"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
         className: "nes-btn",
         onClick: toDashBoard
-      }, "Dashboard"));
+      }, "To Dashboard"));
     }
   };
 
@@ -1558,7 +1699,7 @@ var Room = function Room(props) {
     return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "row"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_modal__WEBPACK_IMPORTED_MODULE_9___default.a, {
-      isOpen: isOpen,
+      isOpen: isModalOpened,
       style: modalStyles,
       contentLabel: "Example Modal"
     }, renderModalContent()), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
@@ -1578,20 +1719,33 @@ var Room = function Room(props) {
     })));
   };
 
-  return isGameExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_8__["default"], null);
+  return isRoomExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_8__["default"], null);
 };
 
 var mapStateToProps = function mapStateToProps(state) {
+  console.log('in Room mapStateToProps, state', state);
   return {
     user: state.user.nickname,
-    roomId: state.room.id
+    roomId: state.room.id,
+    isLeader: state.room.isLeader,
+    opponentNickname: state.room.opponent ? state.room.opponent.nickname : null,
+    opponentIsLeader: state.room.opponent ? state.room.opponent.isLeader : null
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    joinGameAction: function joinGameAction(gameId) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_11__["joinGameAction"])(gameId));
+    joinRoomAction: function joinRoomAction(roomId, isLeader) {
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_11__["joinRoomAction"])(roomId, isLeader));
+    },
+    setLeaderAction: function setLeaderAction(isLeader) {
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_11__["setLeaderAction"])(isLeader));
+    },
+    setOpponentAction: function setOpponentAction(opponent) {
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_11__["setOpponentAction"])(opponent));
+    },
+    removeOpponentAction: function removeOpponentAction() {
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_11__["removeOpponentAction"])());
     }
   };
 };
@@ -1685,31 +1839,14 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
     console.log('PAUSE');
   };
 
-  var onClickToDashboard = function onClickToDashboard() {
-    var socket = props.socket;
-    var data = {
-      roomId: props.roomId,
-      nickname: props.user
-    };
-    socket.emit('leaveGame', props.roomId, props.user);
-    socket.on('leftGame', function (response) {
-      if (response) {
-        props.history.push('/');
-      }
-    });
+  var toDashboard = function toDashboard() {
+    return props.socket.emit('leaveGame', props.roomId, props.user);
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     var socket = props.socket;
     socket.emit('isGameStarted', props.roomId);
-    socket.on('gameStatus', function (response) {
-      if (response === undefined) {
-        props.history.push('/');
-      }
-    });
     socket.on('gameStarted', function (response) {
-      console.log('in gameStarted socket');
-
       if (response.roomId === props.roomId) {
         setGameStarted(true);
       }
@@ -1727,14 +1864,14 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
       onClick: onClickStartGame
     }, "Start"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
       className: "nes-btn",
-      onClick: onClickToDashboard
+      onClick: toDashboard
     }, "Dashboard"));
   } else {
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "room-management__btns"
     }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
       className: "nes-btn",
-      onClick: onClickToDashboard
+      onClick: toDashboard
     }, "Dashboard"));
   }
 };
@@ -54714,6 +54851,29 @@ var initialState = {
       return _objectSpread({}, state, {
         id: action.id,
         isLeader: action.isLeader
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["JOIN_ROOM"]:
+      return _objectSpread({}, state, {
+        id: action.id,
+        isLeader: false,
+        isGameStarted: false,
+        score: 0
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_LEADER"]:
+      return _objectSpread({}, state, {
+        isLeader: action.isLeader
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_OPPONENT"]:
+      return _objectSpread({}, state, {
+        opponent: action.opponent
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["REMOVE_OPPONENT"]:
+      return _objectSpread({}, state, {
+        opponent: null
       });
 
     default:

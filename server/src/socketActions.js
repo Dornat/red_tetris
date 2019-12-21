@@ -36,16 +36,14 @@ const socketActions = (io, rooms, games, players) => {
             }
         });
 
-        // TODO description
-        socket.on('joinRoom', ({roomId, nickname}) => {
-            if (rooms[roomId] !== undefined) {
-                const player = new Player(nickname);
-                players.push(player);
-                rooms[roomId].addPlayer(player);
-                console.log('rooms', rooms);
-                socket.emit('joinedRoom', {roomId: roomId, nickname: nickname});
+        /**
+         * Checks if somebody can join the room.
+         */
+        socket.on('canJoinRoom', (roomId) => {
+            if (typeof rooms[roomId] !== 'undefined') {
+                socket.emit('canJoinRoom', {success: true});
             } else {
-                socket.emit('failedToJoinRoom', {roomId: roomId, nickname: nickname})
+                socket.emit('canJoinRoom', {success: false});
             }
         });
 
@@ -61,31 +59,32 @@ const socketActions = (io, rooms, games, players) => {
         });
 
         // TODO description
-        socket.on('annulGame', ({nickname}) => {
-            let game_id, player = null;
-
-            for (let id in games) {
-
-                let gamePlayers = games[id].players;
-
-                player = gamePlayers.some((player) => {
-                    return player.nickname === nickname;
-                });
-
-                if (player) {
-                    game_id = id;
-                }
-            }
-
-            if (game_id && games[game_id] !== undefined) {
-                delete (games[game_id]);
-            }
+        socket.on('annulGame', (nickname) => {
+            // let game_id, player = null;
+            //
+            // for (let id in games) {
+            //     if (games.hasOwnProperty(id)) {
+            //         let gamePlayers = games[id].players;
+            //         player = gamePlayers.some((player) => {
+            //             return player.nickname === nickname;
+            //         });
+            //         if (player) {
+            //             game_id = id;
+            //         }
+            //     }
+            // }
+            //
+            // if (game_id && games[game_id] !== undefined) {
+            //     delete (games[game_id]);
+            // }
         });
 
-        // TODO description
-        socket.on('join', (game) => {
-            console.log('join', game);
-            socket.join(game);
+        /**
+         * Joins player to specific room in socket.io.
+         */
+        socket.on('join', (roomId) => {
+            console.log('join', roomId);
+            socket.join(roomId);
         });
 
         /**
@@ -132,21 +131,26 @@ const socketActions = (io, rooms, games, players) => {
             io.in(roomId).emit('playerWasKicked', rooms[roomId].kickPlayer());
         });
 
-        // TODO description
-        socket.on('acceptPlayer', ({roomId, nickname}) => {
+        /**
+         * Adds player to specific room.
+         *
+         * @param roomId
+         * @param nickname
+         */
+        socket.on('acceptPlayer', (roomId, nickname) => {
             if (typeof rooms[roomId] === 'undefined') {
-                io.in(roomId).emit('roomStatus', 'undefined');
+                io.in(roomId).emit('roomStatus', 'undefined'); // Should never reach here.
             } else {
                 const room = rooms[roomId];
                 const newPlayer = new Player(nickname, false);
                 const playerWasAccepted = room.addPlayer(newPlayer);
+                players[nickname] = newPlayer;
 
                 io.in(roomId).emit('playerWasAccepted', {success: playerWasAccepted});
 
                 if (playerWasAccepted) {
                     io.in(roomId).emit('playerJoined', room.players);
                 }
-
             }
         });
 
@@ -164,13 +168,13 @@ const socketActions = (io, rooms, games, players) => {
                 }
                 io.in(roomId).emit('leftGame', {player: nickname, left: true});
             } else {
+                console.log('leaveGame socket, in else');
                 const isPlayerRemoved = room.removePlayer(nickname);
                 delete players[nickname];
                 if (Object.keys(room.players).length < 1) {
                     delete rooms[room.id];
                     io.in(roomId).emit('roomStatus', 'undefined');
                 }
-                console.log('room', room);
                 io.in(roomId).emit('leftGame', {player: nickname, left: isPlayerRemoved});
             }
         });

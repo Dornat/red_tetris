@@ -21,30 +21,25 @@ const Dashboard = (props) => {
             setError(true);
         } else {
             props.socket.emit('isPlayerNameUnique', {nickname: props.user});
-
             props.socket.on('playerNameIsValid', () => {
                 props.socket.emit('createRoom', props.user);
                 setBtnDisability(true);
-
                 props.socket.on('roomCreated', (roomId) => {
+                    props.socket.emit('join', roomId);
                     props.createRoomAction(roomId);
-                    console.log('before history push');
                     props.history.push({
                         pathname: '/room/' + roomId,
                         state: {
                             gameCreator: true
                         }
                     });
-                    // props.socket.emit('roomJoin', {room_id: room_id, nickname: props.user});
-                    // props.socket.on('joinedRoom', () => {
-                    // });
                 });
             });
 
             props.socket.on('playerNameOccupied', () => {
-               setBtnDisability(false);
-               setNicknameError(true);
-               setError(true);
+                setBtnDisability(false);
+                setNicknameError(true);
+                setError(true);
             });
         }
     };
@@ -73,7 +68,7 @@ const Dashboard = (props) => {
                     </div>
                 </div>
                 <div className="dashboard__section dashboard__menu d-flex-col">
-                    { renderNicknameError() }
+                    {renderNicknameError()}
                     <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}
                             disabled={isCreateRoomBtnDisabled}>
                         Create a room
