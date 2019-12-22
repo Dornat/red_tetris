@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 
 const GamePlayers = (props) => {
     const [hidden, setHidden] = useState(false);
@@ -39,11 +40,10 @@ const GamePlayers = (props) => {
             {renderNickname({nickname: props.nickname, isLeader: props.isLeader})}
             {props.opponent ? renderNickname(props.opponent) : ''}
         </div>
-    )
+    );
 };
 
 const mapStateToProps = (state) => {
-    console.log('state', state);
     return {
         nickname: state.user.nickname,
         isLeader: state.room.isLeader,
@@ -52,3 +52,9 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(GamePlayers);
+
+GamePlayers.propTypes = {
+    nickname: PropTypes.string,
+    isLeader: PropTypes.bool,
+    opponent: PropTypes.object,
+};

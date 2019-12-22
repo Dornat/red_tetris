@@ -23,19 +23,19 @@ export function joinGameAction(id) {
 export function startGameAction() {
     return {
         type: START_GAME
-    }
+    };
 }
 
 export function setScoreAction(score) {
     return {
         type: SET_SCORE,
         score
-    }
+    };
 }
 
 export function setPiecesAction(pieces) {
     return {
         type: SET_PIECES,
         pieces
-    }
+    };
 }

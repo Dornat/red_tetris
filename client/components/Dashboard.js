@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import FormNickname from "./Form/FormNickname";
-import {createRoomAction} from "../actions/roomActions";
-import {connect} from "react-redux";
+import FormNickname from './Form/FormNickname';
+import {createRoomAction} from '../actions/roomActions';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const Dashboard = (props) => {
 
@@ -15,6 +16,8 @@ const Dashboard = (props) => {
     });
 
     const createRoom = () => {
+        // Very important to remove all listeners from socket to avoid recursion.
+        props.socket.removeAllListeners();
         setValues({user: props.user});
 
         if (!props.user) {
@@ -25,7 +28,7 @@ const Dashboard = (props) => {
                 props.socket.emit('createRoom', props.user);
                 setBtnDisability(true);
                 props.socket.on('roomCreated', (roomId) => {
-                    props.socket.emit('join', roomId);
+                    props.socket.emit('join', roomId, props.user);
                     props.createRoomAction(roomId);
                     props.history.push({
                         pathname: '/room/' + roomId,
@@ -54,7 +57,7 @@ const Dashboard = (props) => {
         if (nicknameError) {
             return (
                 <p className="form__error">The selected nickname is occupied</p>
-            )
+            );
         }
     };
 
@@ -77,22 +80,28 @@ const Dashboard = (props) => {
                 </div>
             </div>
         </main>
-    )
+    );
 };
 
 const mapStateToProps = (state) => {
     return {
         user: state.user.nickname
-    }
+    };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         createRoomAction: (user) => {
-            dispatch(createRoomAction(user))
+            dispatch(createRoomAction(user));
         }
-    }
-
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Dashboard));
+
+Dashboard.propTypes = {
+    user: PropTypes.string,
+    createRoomAction: PropTypes.func,
+    socket: PropTypes.object,
+    history: PropTypes.object,
+};

@@ -2,6 +2,7 @@ import React from 'react';
 import GameLink from './GameLink';
 import RoomManagementBtns from './RoomManagementBtns';
 import GamePlayers from './GamePlayers';
+import PropTypes from 'prop-types';
 
 const RoomManagement = (props) => {
 
@@ -16,10 +17,16 @@ const RoomManagement = (props) => {
                 <GamePlayers socket={props.socket} opponent={props.opponent}/>
             </div>
 
-            <RoomManagementBtns socket={props.socket} roomId={props.roomId} isLeader={props.isLeader}/>
+            <RoomManagementBtns socket={props.socket} roomId={props.roomId}/>
         </div>
     );
-
 };
 
 export default RoomManagement;
+
+RoomManagement.propTypes = {
+    roomId: PropTypes.string,
+    socket: PropTypes.object,
+    opponent: PropTypes.object,
+    gameFieldRef: PropTypes.object,
+};

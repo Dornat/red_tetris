@@ -1,6 +1,10 @@
-import Player from "./entity/Player";
-import Game from "./entity/Game";
-import Room from "./entity/Room";
+import Player from './entity/Player';
+import Game from './entity/Game';
+import Room from './entity/Room';
+
+const logDate = () => {
+    return (new Date()).toISOString().slice(0, -5);
+};
 
 const socketActions = (io, rooms, games, players) => {
     io.on('connection', (socket) => {
@@ -28,7 +32,9 @@ const socketActions = (io, rooms, games, players) => {
                 const player = new Player(nickname);
                 const room = new Room(player);
                 rooms[room.id] = room;
+                console.log(`[${logDate()}] Room '${room.id}' was added to global rooms array`);
                 players[nickname] = player;
+                console.log(`[${logDate()}] Player '${nickname}' was added to global players array`);
                 socket.emit('roomCreated', room.id);
                 socket.join(room.id);
             } else {
@@ -55,6 +61,7 @@ const socketActions = (io, rooms, games, players) => {
         socket.on('createGame', (roomId) => {
             const room = rooms[roomId];
             room.instantiateAGame();
+            console.log(`[${logDate()}] The game has been instantiated in Room '${roomId}'`);
             io.in(roomId).emit('gameCreated', {roomId: roomId, gameId: room.game.id});
         });
 
@@ -82,9 +89,9 @@ const socketActions = (io, rooms, games, players) => {
         /**
          * Joins player to specific room in socket.io.
          */
-        socket.on('join', (roomId) => {
-            console.log('join', roomId);
+        socket.on('join', (roomId, nickname = 'Guest') => {
             socket.join(roomId);
+            console.log(`[${logDate()}] Player '${nickname}' has joined the room '${roomId}'`);
         });
 
         /**
@@ -116,8 +123,10 @@ const socketActions = (io, rooms, games, players) => {
             } else {
                 if (room.game === null) {
                     room.instantiateAGame();
+                    console.log(`[${logDate()}] The game has been instantiated in Room '${roomId}'`);
                 }
                 room.game.start();
+                console.log(`[${logDate()}] The game has been started in Room '${roomId}'`);
                 io.in(roomId).emit('gameStarted', {roomId: roomId, gameId: room.game.id});
             }
         });
@@ -129,6 +138,7 @@ const socketActions = (io, rooms, games, players) => {
          */
         socket.on('kickPlayer', (roomId) => {
             io.in(roomId).emit('playerWasKicked', rooms[roomId].kickPlayer());
+            console.log(`[${logDate()}] Player was kicked from Room '${roomId}'`);
         });
 
         /**
@@ -144,13 +154,15 @@ const socketActions = (io, rooms, games, players) => {
                 const room = rooms[roomId];
                 const newPlayer = new Player(nickname, false);
                 const playerWasAccepted = room.addPlayer(newPlayer);
-                players[nickname] = newPlayer;
 
                 io.in(roomId).emit('playerWasAccepted', {success: playerWasAccepted});
 
                 if (playerWasAccepted) {
+                    players[nickname] = newPlayer;
+                    console.log(`[${logDate()}] Player '${nickname}' was added to global players array`);
                     io.in(roomId).emit('playerJoined', room.players);
                 }
+                console.log(`[${logDate()}] Player '${nickname}' was${playerWasAccepted ? '' : ' not'} accepted to room '${roomId}'`);
             }
         });
 
@@ -163,19 +175,26 @@ const socketActions = (io, rooms, games, players) => {
         socket.on('leaveGame', (roomId, nickname) => {
             const room = rooms[roomId];
             if (typeof room === 'undefined') {
+                let isLeader = false;
                 if (players[nickname]) {
+                    isLeader = players[nickname].isLeader;
                     delete players[nickname];
+                    console.log(`[${logDate()}] Player '${nickname}' was removed from global players array`);
                 }
-                io.in(roomId).emit('leftGame', {player: nickname, left: true});
+                io.in(roomId).emit('leftGame', {player: nickname, isLeader: isLeader, left: true});
+                console.log(`[${logDate()}] Player '${nickname}' has left the room '${roomId}'`);
             } else {
-                console.log('leaveGame socket, in else');
+                const isLeader = players[nickname].isLeader;
                 const isPlayerRemoved = room.removePlayer(nickname);
                 delete players[nickname];
+                console.log(`[${logDate()}] Player '${nickname}' was removed from global players array`);
                 if (Object.keys(room.players).length < 1) {
                     delete rooms[room.id];
+                    console.log(`[${logDate()}] Room '${room.id}' was removed from global rooms array`);
                     io.in(roomId).emit('roomStatus', 'undefined');
                 }
-                io.in(roomId).emit('leftGame', {player: nickname, left: isPlayerRemoved});
+                io.in(roomId).emit('leftGame', {player: nickname, isLeader: isLeader, left: isPlayerRemoved});
+                console.log(`[${logDate()}] Player '${nickname}' has left the room '${roomId}'`);
             }
         });
 
@@ -187,7 +206,6 @@ const socketActions = (io, rooms, games, players) => {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
                 const pieces = Game.generatePieces(5);
-                console.log('generating...');
                 console.log(pieces);
                 io.in(roomId).emit('getPieces', {pieces: pieces});
             }
@@ -215,8 +233,8 @@ const socketActions = (io, rooms, games, players) => {
                 const cheater = game.managePiecePlacement(data.coords, player);
 
                 if (cheater === null) {
-                    io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                     console.log('\u001b[31mfireInTheHoleTheCheaterIsHere\u001b[0m');
+                    io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                 }
 
                 console.log(player.field);
@@ -237,7 +255,6 @@ const socketActions = (io, rooms, games, players) => {
             }
         });
 
-
         /**
          * Sets online value of specific player to true.
          *
@@ -245,25 +262,6 @@ const socketActions = (io, rooms, games, players) => {
          */
         socket.on('setPlayerOnline', (nickname) => {
             players[nickname].online = true;
-        });
-
-        // TODO description
-        socket.on('joinGame', (data) => {
-            const game_id = data.game_id;
-            const game = games[game_id];
-
-            if (typeof game === "undefined") {
-                socket.emit('gameJoined', {success: false});
-            } else {
-                const player = game.players[0];
-
-                io.in(game_id).emit('gameJoined', {
-                    success: true,
-                    data: {
-                        opponent: {nickname: player.nickname, isLeader: player.isLeader}
-                    }
-                });
-            }
         });
     });
 };
