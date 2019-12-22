@@ -1,4 +1,4 @@
-import {CREATE_ROOM, JOIN_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT} from "./types";
+import {CREATE_ROOM, JOIN_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT} from './types';
 
 export function createRoomAction(id, isLeader = true) {
     return {

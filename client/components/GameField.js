@@ -2,15 +2,16 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import Field from './Field';
 
-import {useField} from "../hooks/useField";
-import {usePiece} from "../hooks/usePiece";
-import {useInterval} from "../hooks/useInterval";
-import {checkCollision} from "../utils/checkCollision";
-import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from "../actions/gameActions";
-import NextPieceField from "./NextPieceField";
+import {useField} from '../hooks/useField';
+import {usePiece} from '../hooks/usePiece';
+import {useInterval} from '../hooks/useInterval';
+import {checkCollision} from '../utils/checkCollision';
+import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from '../actions/gameActions';
+import NextPieceField from './NextPieceField';
 import GameStats from './GameStats';
-import EnemyField from "./EnemyField";
-import {createField} from "../utils/createField";
+import EnemyField from './EnemyField';
+import {createField} from '../utils/createField';
+import PropTypes from 'prop-types';
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -139,14 +140,11 @@ const GameField = (props) => {
             }
         });
 
-        console.log('GameField props', props);
-
         /**
          * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
          * method handles proper update of score and opponent field.
          */
         socket.on('sendUpdatedGameData', (data) => {
-            console.log('sendUpdatedGameData', data);
             if (data.myNickName === props.user) {
                 props.setScoreAction(data.score);
             }
@@ -173,12 +171,10 @@ const GameField = (props) => {
     };
 
     useEffect(() => {
-        console.log('useEffect props after score changed', props);
     }, [props.score]);
 
     useEffect(() => {
         setDropTime(assembleDropTime());
-        console.log('the level is', gameLevel);
     }, [gameLevel]); // this fires every time when game level is changed
 
     useInterval(() => {
@@ -210,24 +206,37 @@ const GameField = (props) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         createGameAction: (id) => {
-            dispatch(createGameAction(id))
+            dispatch(createGameAction(id));
         },
         startGameAction: () => {
-            dispatch(startGameAction())
+            dispatch(startGameAction());
         },
         setScoreAction: (score) => {
-            dispatch(setScoreAction(score))
+            dispatch(setScoreAction(score));
         },
         setPiecesAction: (pieces) => {
-            dispatch(setPiecesAction(pieces))
+            dispatch(setPiecesAction(pieces));
         }
-    }
+    };
 };
 
 const mapStateToProps = (state) => {
     return {
         score: state.game.score || null
-    }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameField);
+
+GameField.propTypes = {
+    roomId: PropTypes.string,
+    user: PropTypes.string,
+    score: PropTypes.number,
+    createGameAction: PropTypes.func,
+    startGameAction: PropTypes.func,
+    setScoreAction: PropTypes.func,
+    setPiecesAction: PropTypes.func,
+    socket: PropTypes.object,
+    history: PropTypes.object,
+    gameFieldRef: PropTypes.object,
+};

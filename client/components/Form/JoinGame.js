@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
 import FormNickname from './FormNickname';
+import PropTypes from 'prop-types';
+import React, {useState} from 'react';
 
 const JoinGame = ({onClick}) => {
     const [isError, setError] = useState(false);
@@ -22,7 +23,11 @@ const JoinGame = ({onClick}) => {
                 </button>
             </div>
         </div>
-    )
+    );
 };
 
 export default JoinGame;
+
+JoinGame.propTypes = {
+    onClick: PropTypes.func
+};

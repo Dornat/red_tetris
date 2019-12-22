@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {startGameAction} from "../actions/gameActions";
+import {startGameAction} from '../actions/gameActions';
 
 const RoomManagementBtns = (props) => {
-
     const [isGameStarted, setGameStarted] = useState(props.isGameStarted || false);
-    const [isLeader, setLeader] = useState(props.isLeader || false);
 
     const onClickStartGame = () => {
         const socket = props.socket;
@@ -29,7 +27,7 @@ const RoomManagementBtns = (props) => {
         });
     }, []);
 
-    if (isLeader) {
+    if (props.isLeader) {
         return (
             <div className="room-management__btns">
                 {isGameStarted
@@ -51,9 +49,9 @@ const RoomManagementBtns = (props) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         startGameAction: () => {
-            dispatch(startGameAction())
+            dispatch(startGameAction());
         }
-    }
+    };
 };
 
 const mapStateToProps = (state) => {
@@ -61,7 +59,7 @@ const mapStateToProps = (state) => {
         user: state.user.nickname,
         isGameStarted: state.room.isGameStarted,
         isLeader: state.room.isLeader
-    }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RoomManagementBtns));

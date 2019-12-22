@@ -1,12 +1,13 @@
 import React, {useEffect, useState, useRef} from 'react';
-import RoomManagement from './RoomManagement'
-import GameField from './GameField'
+import PropTypes from 'prop-types';
+import RoomManagement from './RoomManagement';
+import GameField from './GameField';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import Loader from './Loader';
 import ReactModal from 'react-modal';
 import JoinGame from './Form/JoinGame';
-import {joinRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction} from "../actions/roomActions";
+import {joinRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction} from '../actions/roomActions';
 
 const modalStyles = {
     content: {
@@ -72,7 +73,6 @@ const Room = (props) => {
         return new Promise((resolve, reject) => {
             props.socket.emit('acceptPlayer', roomId, nickname);
             props.socket.on('playerWasAccepted', (response) => {
-                console.log('in acceptPlayer, response', response);
                 if (response.success) {
                     resolve({msg: MSG_PLAYER_ADDED});
                 }
@@ -82,15 +82,11 @@ const Room = (props) => {
     };
 
     useEffect(() => {
-        console.log('in Room component, props', props);
         const handleJoining = async () => {
             try {
                 const locationState = props.location.state;
-                console.log('props', props);
-                console.log('match room id', props.match.params.id);
-
                 let isRoomCreator = false;
-                if (typeof locationState !== "undefined" && typeof locationState.gameCreator !== "undefined") {
+                if (typeof locationState !== 'undefined' && typeof locationState.gameCreator !== 'undefined') {
                     isRoomCreator = locationState.gameCreator;
                 }
                 if (isRoomCreator) {
@@ -101,24 +97,23 @@ const Room = (props) => {
                  * We can reach this place only when somebody joining the room using url.
                  */
                 const roomIdFromUrl = props.match.params.id;
-                console.log('roomId', roomIdFromUrl);
                 if (roomIdFromUrl === null) {
                     props.history.push('/'); // Should never reach here.
                 }
 
                 const joined = await canJoinRoom(roomIdFromUrl);
-                props.socket.emit('join', roomIdFromUrl);
                 setRoomId(roomIdFromUrl);
 
                 if (props.user) {
+                    props.socket.emit('join', roomIdFromUrl, props.user);
                     const accepted = await acceptPlayer(roomIdFromUrl, props.user);
-                    props.joinRoomAction(roomIdFromUrl);
+                    props.joinRoomAction(roomIdFromUrl, false);
                     return {msg: accepted.msg};
                 } else {
+                    props.socket.emit('join', roomIdFromUrl);
                     return {msg: joined.msg};
                 }
             } catch (e) {
-                console.log('e', e);
                 if (e.msg === ERROR_ROOM_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
                     return {msg: e.msg};
                 }
@@ -126,7 +121,6 @@ const Room = (props) => {
         };
 
         handleJoining().then(result => {
-            console.log('in handleJoining, result', result);
             const msg = result.msg;
             switch (msg) {
                 case MSG_GAME_CREATED: {
@@ -137,6 +131,7 @@ const Room = (props) => {
                 case MSG_PLAYER_ADDED: {
                     console.log('MSG_PLAYER_ADDED');
                     setRoomExists(true);
+                    props.setLeaderAction(false);
                     break;
                 }
                 case MSG_JOINED_ROOM: {
@@ -165,45 +160,33 @@ const Room = (props) => {
                 }
             }
         }, error => {
-            console.log('error', error);
+            // TODO
         }).catch(reason => {
-            console.log('error reason', reason);
+            // TODO
         });
 
         props.socket.on('playerJoined', (players) => {
             const opponent = Object.values(players).find(player => player.nickname !== props.user);
             props.setOpponentAction(opponent);
-            console.log('in playerJoined, props', props);
-        });
-
-        props.socket.on('roomStatus', (data) => {
-            if (data === 'undefined') {
-                setModal(MODAL_GAME_OVER);
-                setIsModalOpened(true);
-            }
         });
 
         props.socket.on('leftGame', (response) => {
-            console.log('in Room, leftGame response', response);
             if (response.player === props.user) {
                 props.history.push('/');
             } else {
-                console.log('in else of leftGame socket, props', props);
-                console.log('opponent', opponent);
-                if (props.opponent.isLeader) {
+                if (response.isLeader && (props.isLeader === false || typeof props.isLeader === 'undefined')) {
                     props.setLeaderAction(true);
-                    props.removeOpponentAction();
                 }
             }
+            props.removeOpponentAction();
         });
     }, []);
 
     const closeModalAndEnrollNewPlayerIntoTheGame = () => {
-        acceptPlayer(roomId, props.user).then(result => {
-            console.log('acceptPlayer result', result);
+        acceptPlayer(roomId, props.user).then(() => {
             setRoomExists(true);
             setIsModalOpened(false);
-        }).catch(reason => {
+        }).catch(() => {
             setIsModalOpened(true);
             setModal(MODAL_NO_SPACE);
         });
@@ -275,31 +258,43 @@ const Room = (props) => {
 };
 
 const mapStateToProps = (state) => {
-    console.log('in Room mapStateToProps, state', state);
     return {
         user: state.user.nickname,
         roomId: state.room.id,
         isLeader: state.room.isLeader,
-        opponentNickname: state.room.opponent ? state.room.opponent.nickname : null,
-        opponentIsLeader: state.room.opponent ? state.room.opponent.isLeader : null
+        opponent: state.room.opponent,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         joinRoomAction: (roomId, isLeader) => {
-            dispatch(joinRoomAction(roomId, isLeader))
+            dispatch(joinRoomAction(roomId, isLeader));
         },
         setLeaderAction: (isLeader) => {
-            dispatch(setLeaderAction(isLeader))
+            dispatch(setLeaderAction(isLeader));
         },
         setOpponentAction: (opponent) => {
-            dispatch(setOpponentAction(opponent))
+            dispatch(setOpponentAction(opponent));
         },
         removeOpponentAction: () => {
-            dispatch(removeOpponentAction())
+            dispatch(removeOpponentAction());
         }
     };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Room));
+
+Room.propTypes = {
+    roomId: PropTypes.string,
+    user: PropTypes.string,
+    isLeader: PropTypes.bool,
+    joinRoomAction: PropTypes.func,
+    setLeaderAction: PropTypes.func,
+    setOpponentAction: PropTypes.func,
+    removeOpponentAction: PropTypes.func,
+    socket: PropTypes.object,
+    history: PropTypes.object,
+    match: PropTypes.object,
+    location: PropTypes.object,
+};
