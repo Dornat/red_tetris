@@ -7,8 +7,7 @@ const RoomManagementBtns = (props) => {
     const [isGameStarted, setGameStarted] = useState(props.isGameStarted || false);
 
     const onClickStartGame = () => {
-        const socket = props.socket;
-        socket.emit('startGameInRoom', props.roomId);
+        props.socket.emit('startGameInRoom', props.roomId);
     };
 
     const onClickPause = (e) => {
@@ -58,7 +57,8 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.nickname,
         isGameStarted: state.room.isGameStarted,
-        isLeader: state.room.isLeader
+        isLeader: state.room.isLeader,
+        roomId: state.room.id
     };
 };
 

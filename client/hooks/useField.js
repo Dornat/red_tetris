@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {createField} from "../utils/createField";
+import {createField} from '../utils/createField';
 
 export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, props) => {
     const [field, setField] = useState(createField());
@@ -26,7 +26,7 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, pro
                 row => {
                     return row.map(
                         cell => (cell[1] === 'empty' ? [0, 'empty'] : cell)
-                    )
+                    );
                 }
             );
 
@@ -37,9 +37,9 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, pro
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
                             `${piece.collided ? 'filled' : 'empty'}`
-                        ]
+                        ];
                     }
-                })
+                });
             });
 
             /**

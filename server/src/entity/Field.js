@@ -36,6 +36,7 @@ class Field {
      * @returns {null|number}
      */
     fillCoordinates(coordinates) {
+        // TODO The bug sneaked in here. Find it! It's related to cheating.
         if (this.coordinatesAreFillable(coordinates)) {
             for (let i = 0; i < coordinates.length; i++) {
                 this.matrix[coordinates[i][0]][coordinates[i][1]] = 1;

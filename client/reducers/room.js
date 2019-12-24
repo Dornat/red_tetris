@@ -1,5 +1,5 @@
 import {
-    CREATE_ROOM, JOIN_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT,
+    CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT,
 } from '../actions/types';
 
 const initialState = {
@@ -21,6 +21,11 @@ export default (state = initialState, action = {}) => {
                 isLeader: false,
                 isGameStarted: false,
                 score: 0
+            };
+        case SET_ROOM:
+            return {
+                ...state,
+                id: action.roomId
             };
         case SET_LEADER:
             return {

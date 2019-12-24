@@ -67,31 +67,25 @@ const socketActions = (io, rooms, games, players) => {
 
         // TODO description
         socket.on('annulGame', (nickname) => {
-            // let game_id, player = null;
-            //
-            // for (let id in games) {
-            //     if (games.hasOwnProperty(id)) {
-            //         let gamePlayers = games[id].players;
-            //         player = gamePlayers.some((player) => {
-            //             return player.nickname === nickname;
-            //         });
-            //         if (player) {
-            //             game_id = id;
-            //         }
-            //     }
-            // }
-            //
-            // if (game_id && games[game_id] !== undefined) {
-            //     delete (games[game_id]);
-            // }
+            // TODO Answer me why do we need this one?
         });
 
         /**
          * Joins player to specific room in socket.io.
          */
         socket.on('join', (roomId, nickname = 'Guest') => {
+            const room = rooms[roomId];
             socket.join(roomId);
-            console.log(`[${logDate()}] Player '${nickname}' has joined the room '${roomId}'`);
+            if (typeof room !== 'undefined') {
+                console.log(`[${logDate()}] Player '${nickname}' has joined the room '${roomId}'`);
+            } else {
+                if (players[nickname]) {
+                    delete players[nickname];
+                    console.log(`[${logDate()}] Player '${nickname}' was removed from global players array`);
+                }
+                io.in(roomId).emit('leftGame', {player: nickname, left: true});
+                console.log(`[${logDate()}] Player '${nickname}' failed to join the room '${roomId}' and left`);
+            }
         });
 
         /**
@@ -217,7 +211,6 @@ const socketActions = (io, rooms, games, players) => {
          * @param data
          */
         socket.on('updatePlayerField', (data) => {
-            io.in(data.roomId).emit('roomStatus', 'undefined');
             const room = rooms[data.roomId];
             if (typeof room === 'undefined') {
                 io.in(data.roomId).emit('roomStatus', 'undefined');
@@ -225,6 +218,7 @@ const socketActions = (io, rooms, games, players) => {
                 const game = room.game;
 
                 if (game.gameOver) {
+                    console.log('the game is over man');
                     delete rooms[data.roomId];
                     return;
                 }
@@ -242,26 +236,10 @@ const socketActions = (io, rooms, games, players) => {
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,
                     score: player.score.quantity,
-                    level: game.level
+                    level: game.level,
+                    field: player.field.matrix
                 });
-
-                player.online = false;
-                socket.emit('isPlayerOnline');
-                setTimeout(() => {
-                    if (player.online) {
-                        room.game.over();
-                    }
-                }, 5000);
             }
-        });
-
-        /**
-         * Sets online value of specific player to true.
-         *
-         * @param nickname
-         */
-        socket.on('setPlayerOnline', (nickname) => {
-            players[nickname].online = true;
         });
     });
 };
