@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import Field from './Field';
-
-import {useField} from '../hooks/useField';
-import {usePiece} from '../hooks/usePiece';
-import {useInterval} from '../hooks/useInterval';
-import {checkCollision} from '../utils/checkCollision';
-import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from '../actions/gameActions';
-import NextPieceField from './NextPieceField';
-import GameStats from './GameStats';
 import EnemyField from './EnemyField';
-import {createField} from '../utils/createField';
+import Field from './Field';
+import GameStats from './GameStats';
+import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
+import React, {useState, useEffect} from 'react';
+import {checkCollision} from '../utils/checkCollision';
+import {connect} from 'react-redux';
+import {createField} from '../utils/createField';
+import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from '../actions/gameActions';
+import {useField} from '../hooks/useField';
+import {useInterval} from '../hooks/useInterval';
+import {usePiece} from '../hooks/usePiece';
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -42,6 +41,7 @@ const GameField = (props) => {
                 setGameOver(true);
                 setDropTime(null);
             }
+            console.log('piecesBuffer', piecesBuffer, piecesBuffer.length);
             if (piecesBuffer.length === 1) {
                 socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
@@ -49,6 +49,7 @@ const GameField = (props) => {
             }
 
             const coords = assembleCoordinatesForFillingFieldOnServer(piece);
+            console.log('reached updatePlayerField');
             socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
         }
     };
@@ -135,7 +136,12 @@ const GameField = (props) => {
                 props.startGameAction();
                 socket.emit('generatePieces', props.roomId);
                 socket.on('getPieces', (data) => {
-                    setPiecesBuffer(data.pieces);
+                    console.log('data.pieces', data.pieces);
+                    if (piecesBuffer[0].shape === 0) {
+                        setPiecesBuffer(data.pieces);
+                    } else {
+                        setPiecesBuffer([...piecesBuffer, ...data.pieces]);
+                    }
                 });
             }
         });
@@ -145,6 +151,7 @@ const GameField = (props) => {
          * method handles proper update of score and opponent field.
          */
         socket.on('sendUpdatedGameData', (data) => {
+            console.log('in sendUpdatedGameData, data', data);
             if (data.myNickName === props.user) {
                 props.setScoreAction(data.score);
             }
@@ -153,14 +160,12 @@ const GameField = (props) => {
             }
             setGameLevel(data.level);
         });
-
-        socket.on('isPlayerOnline', () => {
-            socket.emit('setPlayerOnline', props.user);
-        });
     }, []);
 
     const redrawOpponentField = (matrix) => {
+        console.log('matrix', matrix);
         let newField = createField();
+        console.log('newField', newField);
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 newField[i][j] = matrix[i][j] === 1 ? ['J', 'filled'] : [0, 'empty'];
@@ -222,7 +227,9 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        score: state.game.score || null
+        score: state.game.score || null,
+        user: state.user.nickname,
+        roomId: state.room.id
     };
 };
 

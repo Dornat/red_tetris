@@ -1,13 +1,9 @@
 import Server from './Server';
 import Database from './Database';
 import dotenv from 'dotenv';
-import * as path from 'path';
 import http from 'http';
 import socket from 'socket.io';
 import socketActions from './socketActions.js';
-
-import Game from './entity/Game';
-import Player from './entity/Player';
 
 // For .env file to work
 dotenv.config();

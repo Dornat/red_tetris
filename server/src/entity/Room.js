@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 import Game from './Game';
 import Player from './Player';
 
@@ -30,7 +30,7 @@ class Room {
      */
     addPlayer(player) {
         if (Object.keys(this.players).length > 1) {
-            return false
+            return false;
         } else if (!Room.isPlayerUnique(this.players, player.nickname)) {
             return false;
         }
@@ -50,7 +50,7 @@ class Room {
      */
     static isPlayerUnique(players, nickname) {
         return nickname in players === false;
-    };
+    }
 
     /**
      * Removes player from players array and promotes other player to leader if needed.

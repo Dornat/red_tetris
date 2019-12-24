@@ -6,7 +6,7 @@ export const createField = (rowsAmount = ROWS_AMOUNT, columnAmount = COLUMN_AMOU
     return Array.from(
         Array(rowsAmount),
         () => {
-            return new Array(columnAmount).fill([0, 'empty'])
+            return new Array(columnAmount).fill([0, 'empty']);
         }
     );
 };

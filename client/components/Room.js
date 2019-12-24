@@ -7,7 +7,13 @@ import {withRouter} from 'react-router-dom';
 import Loader from './Loader';
 import ReactModal from 'react-modal';
 import JoinGame from './Form/JoinGame';
-import {joinRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction} from '../actions/roomActions';
+import {
+    joinRoomAction,
+    setRoomAction,
+    setLeaderAction,
+    setOpponentAction,
+    removeOpponentAction
+} from '../actions/roomActions';
 
 const modalStyles = {
     content: {
@@ -89,14 +95,20 @@ const Room = (props) => {
                 if (typeof locationState !== 'undefined' && typeof locationState.gameCreator !== 'undefined') {
                     isRoomCreator = locationState.gameCreator;
                 }
+                const roomIdFromUrl = props.match.params.id;
+                // When creator refreshes the page he needs to return to the room that he's created recently.
+                if (props.roomId === null && props.isLeader == null && isRoomCreator) {
+                    props.socket.emit('join', roomIdFromUrl, props.user);
+                    props.setRoomAction(roomIdFromUrl);
+                    props.setLeaderAction(true);
+                }
                 if (isRoomCreator) {
                     return {msg: MSG_GAME_CREATED};
                 }
 
                 /**
-                 * We can reach this place only when somebody joining the room using url.
+                 * We can reach this place only when somebody joined the room using url.
                  */
-                const roomIdFromUrl = props.match.params.id;
                 if (roomIdFromUrl === null) {
                     props.history.push('/'); // Should never reach here.
                 }
@@ -171,6 +183,7 @@ const Room = (props) => {
         });
 
         props.socket.on('leftGame', (response) => {
+            console.log('in leftGame socket, response', response);
             if (response.player === props.user) {
                 props.history.push('/');
             } else {
@@ -244,7 +257,7 @@ const Room = (props) => {
                     {renderModalContent()}
                 </ReactModal>
                 <div className="game__container">
-                    <GameField socket={props.socket} roomId={roomId} user={props.user} gameFieldRef={gameFieldRef}/>
+                    <GameField socket={props.socket} gameFieldRef={gameFieldRef}/>
                 </div>
                 <div className="room-management__container">
                     <RoomManagement roomId={roomId} socket={props.socket} gameFieldRef={gameFieldRef}
@@ -271,6 +284,9 @@ const mapDispatchToProps = (dispatch) => {
         joinRoomAction: (roomId, isLeader) => {
             dispatch(joinRoomAction(roomId, isLeader));
         },
+        setRoomAction: (roomId) => {
+            dispatch(setRoomAction(roomId));
+        },
         setLeaderAction: (isLeader) => {
             dispatch(setLeaderAction(isLeader));
         },
@@ -290,6 +306,7 @@ Room.propTypes = {
     user: PropTypes.string,
     isLeader: PropTypes.bool,
     joinRoomAction: PropTypes.func,
+    setRoomAction: PropTypes.func,
     setLeaderAction: PropTypes.func,
     setOpponentAction: PropTypes.func,
     removeOpponentAction: PropTypes.func,

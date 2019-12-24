@@ -1,4 +1,4 @@
-import tetrominoes from '../constants/Tetrominoes'
+import tetrominoes from '../constants/Tetrominoes';
 
 class Piece {
     constructor() {
