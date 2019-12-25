@@ -14,28 +14,26 @@ const saveNicknameToLocalStorage = state => {
 
         const serializedState = JSON.stringify(lsState);
         localStorage.setItem('state', serializedState);
-    }
-    catch(e) {
+    } catch (e) {
         console.log(e);
     }
 };
 
-const loadFormLocalStorage = () => {
+const loadFromLocalStorage = () => {
     try {
-      const serializedState = localStorage.getItem('state');
+        const serializedState = localStorage.getItem('state');
 
-      if (serializedState === null) {
-          return undefined;
-      }
-      return JSON.parse(serializedState);
-    }
-    catch(e) {
+        if (serializedState === null) {
+            return undefined;
+        }
+        return JSON.parse(serializedState);
+    } catch (e) {
         console.log(e);
         return undefined;
     }
 };
 
-const persistedState = loadFormLocalStorage();
+const persistedState = loadFromLocalStorage();
 
 const store = createStore(
     rootReducer,
