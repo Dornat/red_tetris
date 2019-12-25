@@ -1,5 +1,10 @@
 import {
-    CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT,
+    CREATE_ROOM,
+    JOIN_ROOM,
+    SET_ROOM,
+    SET_LEADER,
+    SET_OPPONENT,
+    REMOVE_OPPONENT,
 } from '../actions/types';
 
 const initialState = {

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {createField} from '../utils/createField';
 
-export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, props) => {
+export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, setPiecesAction) => {
     const [field, setField] = useState(createField());
     const [rowsCleared, setRowsCleared] = useState(0);
 
@@ -51,14 +51,14 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, pro
                     setPieces(piecesBuffer);
                     resetPiece(piecesBuffer[0].shape);
                     piecesBuffer.shift();
-                    props.setPiecesAction(piecesBuffer[0].shape);
+                    setPiecesAction(piecesBuffer[0].shape);
                 } else {
                     resetPiece(pieces[0].shape);
                     pieces.shift();
                     if (pieces.length === 0) {
-                        props.setPiecesAction(piecesBuffer[0].shape);
+                        setPiecesAction(piecesBuffer[0].shape);
                     } else {
-                        props.setPiecesAction(pieces[0].shape);
+                        setPiecesAction(pieces[0].shape);
                     }
                 }
                 return sweepRows(newField);

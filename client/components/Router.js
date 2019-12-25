@@ -12,7 +12,7 @@ import NotFound from './NotFound';
 export default function Router(props) {
     return (
         <Switch>
-            <Route exact path="/" component={InitSockets(props, Dashboard)}/>}/>
+            <Route exact path="/" component={InitSockets(props, Dashboard)}/>
             <Route exact path="/room/:id" component={InitSockets(props, Room)}/>
             <Route path="*" component={NotFound}/>
         </Switch>

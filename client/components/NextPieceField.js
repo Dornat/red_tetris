@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {createField} from "../utils/createField";
 import Field from './Field';
-import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import React, {useState, useEffect} from 'react';
 import tetrominoes from '../utils/TetrominoesScheme';
+import {connect} from 'react-redux';
+import {createField} from '../utils/createField';
 
 const NextPieceField = (props) => {
     const [piece, setPiece] = useState({
@@ -31,7 +32,7 @@ const NextPieceField = (props) => {
             // clear field from the previous render
             const newField = prevField.map(
                 row => {
-                    return row.map(() => [0, 'empty'])
+                    return row.map(() => [0, 'empty']);
                 }
             );
 
@@ -42,9 +43,9 @@ const NextPieceField = (props) => {
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
                             `${piece.collided ? 'filled' : 'empty'}`
-                        ]
+                        ];
                     }
-                })
+                });
             });
 
             return newField;
@@ -65,7 +66,11 @@ const NextPieceField = (props) => {
 const mapStateToProps = (state) => {
     return {
         pieces: state.game.pieces
-    }
+    };
 };
 
 export default connect(mapStateToProps, null)(NextPieceField);
+
+NextPieceField.propTypes = {
+    pieces: PropTypes.string
+};

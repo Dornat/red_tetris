@@ -3,8 +3,9 @@ import {
     START_GAME,
     SET_SCORE,
     SET_PIECES,
+    SET_LEVEL,
     JOIN_GAME,
-} from '../actions/types'
+} from '../actions/types';
 
 const initialState = {
     id: null,
@@ -44,9 +45,14 @@ export default (state = initialState, action = {}) => {
                 ...state,
                 pieces: action.pieces
             };
+        case SET_LEVEL:
+            return {
+                ...state,
+                level: action.level
+            };
         default: {
             return state;
         }
     }
-}
+};
 

@@ -7,10 +7,16 @@ import React, {useState, useEffect} from 'react';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
-import {createGameAction, startGameAction, setScoreAction, setPiecesAction} from '../actions/gameActions';
 import {useField} from '../hooks/useField';
 import {useInterval} from '../hooks/useInterval';
 import {usePiece} from '../hooks/usePiece';
+import {
+    createGameAction,
+    startGameAction,
+    setScoreAction,
+    setPiecesAction,
+    setLevelAction
+} from '../actions/gameActions';
 
 const GameField = (props) => {
     const DROPTIME_MULTIPLIER = 142;
@@ -19,11 +25,10 @@ const GameField = (props) => {
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
     const [isGameStarted, setGameStarted] = useState(false);
-    const [gameLevel, setGameLevel] = useState(null);
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
-    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props);
+    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setPiecesAction);
     const [opponentField, setOpponentField] = useState(createField());
 
     const movePiece = direction => {
@@ -40,17 +45,16 @@ const GameField = (props) => {
                 console.log('GAME OVER!!!');
                 setGameOver(true);
                 setDropTime(null);
+                return;
             }
-            console.log('piecesBuffer', piecesBuffer, piecesBuffer.length);
             if (piecesBuffer.length === 1) {
-                socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
+                props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
             }
 
             const coords = assembleCoordinatesForFillingFieldOnServer(piece);
-            console.log('reached updatePlayerField');
-            socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
+            props.socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
         }
     };
 
@@ -104,15 +108,12 @@ const GameField = (props) => {
     };
 
     const assembleDropTime = () => {
-        let dropTime = DROPTIME_BASE - (gameLevel * DROPTIME_MULTIPLIER);
+        let dropTime = DROPTIME_BASE - ((props.level == null ? 1 : props.level) * DROPTIME_MULTIPLIER);
         if (dropTime < 42) {
             dropTime = 42;
         }
         return dropTime;
     };
-
-    const socket = props.socket;
-    const roomId = props.roomId;
 
     useEffect(() => {
         if (pieces.length === 5) { // Draw piece only for first piece in pieces array and only when array is full.
@@ -127,16 +128,16 @@ const GameField = (props) => {
     }, [piecesBuffer]);
 
     useEffect(() => {
-        socket.on('gameStarted', (response) => {
-            if (response.roomId === roomId) {
-                setGameLevel(1);
+        props.socket.on('gameStarted', (response) => {
+            if (response.roomId === props.roomId) {
+                props.setLevelAction(1);
+                props.setScoreAction(0);
                 setGameStarted(true);
-                setDropTime(assembleDropTime());
                 props.createGameAction(response.gameId);
                 props.startGameAction();
-                socket.emit('generatePieces', props.roomId);
-                socket.on('getPieces', (data) => {
-                    console.log('data.pieces', data.pieces);
+                setDropTime(assembleDropTime());
+                props.socket.emit('generatePieces', props.roomId);
+                props.socket.on('getPieces', (data) => {
                     if (piecesBuffer[0].shape === 0) {
                         setPiecesBuffer(data.pieces);
                     } else {
@@ -150,22 +151,23 @@ const GameField = (props) => {
          * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
          * method handles proper update of score and opponent field.
          */
-        socket.on('sendUpdatedGameData', (data) => {
-            console.log('in sendUpdatedGameData, data', data);
+        props.socket.on('sendUpdatedGameData', (data) => {
             if (data.myNickName === props.user) {
                 props.setScoreAction(data.score);
             }
             if (data.myNickName !== props.user) {
                 redrawOpponentField(data.field);
             }
-            setGameLevel(data.level);
+            console.log('props, data.level', props, data.level);
+            if (props.level !== data.level) {
+                props.setLevelAction(data.level);
+                setDropTime(assembleDropTime());
+            }
         });
     }, []);
 
     const redrawOpponentField = (matrix) => {
-        console.log('matrix', matrix);
         let newField = createField();
-        console.log('newField', newField);
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 newField[i][j] = matrix[i][j] === 1 ? ['J', 'filled'] : [0, 'empty'];
@@ -174,13 +176,6 @@ const GameField = (props) => {
 
         setOpponentField(newField);
     };
-
-    useEffect(() => {
-    }, [props.score]);
-
-    useEffect(() => {
-        setDropTime(assembleDropTime());
-    }, [gameLevel]); // this fires every time when game level is changed
 
     useInterval(() => {
         drop();
@@ -193,7 +188,7 @@ const GameField = (props) => {
             <div className="game-field__area">
                 <div className="game-field__body">
                     <div className="game-field__col">
-                        <GameStats score={props.score || 0} level={gameLevel}/>
+                        <GameStats/>
                     </div>
                     <div className="game-field__col field__border">
                         <Field field={field}/>
@@ -206,6 +201,16 @@ const GameField = (props) => {
             </div>
         </div>
     );
+};
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user.nickname,
+        roomId: state.room.id,
+        score: state.game.score,
+        level: state.game.level,
+        state: state
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -221,15 +226,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         setPiecesAction: (pieces) => {
             dispatch(setPiecesAction(pieces));
+        },
+        setLevelAction: (level) => {
+            dispatch(setLevelAction(level));
         }
-    };
-};
-
-const mapStateToProps = (state) => {
-    return {
-        score: state.game.score || null,
-        user: state.user.nickname,
-        roomId: state.room.id
     };
 };
 
@@ -239,10 +239,12 @@ GameField.propTypes = {
     roomId: PropTypes.string,
     user: PropTypes.string,
     score: PropTypes.number,
+    level: PropTypes.number,
     createGameAction: PropTypes.func,
     startGameAction: PropTypes.func,
     setScoreAction: PropTypes.func,
     setPiecesAction: PropTypes.func,
+    setLevelAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
     gameFieldRef: PropTypes.object,

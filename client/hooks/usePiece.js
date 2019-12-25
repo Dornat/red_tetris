@@ -1,7 +1,7 @@
 import {useState, useCallback} from 'react';
 import tetrominoes from '../utils/TetrominoesScheme';
-import {COLUMN_AMOUNT} from "../utils/createField";
-import {checkCollision} from "../utils/checkCollision";
+import {COLUMN_AMOUNT} from '../utils/createField';
+import {checkCollision} from '../utils/checkCollision';
 
 export const usePiece = (tetromino) => {
     const [piece, setPiece] = useState({
@@ -16,13 +16,13 @@ export const usePiece = (tetromino) => {
     const rotate = (tetrominoMatrix, direction) => {
         // make the rows to become columns
         const rotatedTetromino = tetrominoMatrix.map((_, index) => {
-            return tetrominoMatrix.map(column => column[index])
+            return tetrominoMatrix.map(column => column[index]);
         });
 
         // reverse each row to get a rotated matrix
         if (direction > 0) {
             return rotatedTetromino.map(row => {
-                return row.reverse()
+                return row.reverse();
             });
         }
         return rotatedTetromino.reverse();
@@ -63,7 +63,7 @@ export const usePiece = (tetromino) => {
                 },
                 collided
             })
-        )
+        );
     };
 
     /**
