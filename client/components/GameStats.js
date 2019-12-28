@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 
 const GameStats = (props) => {
     const shouldShowStats = () => {
-        console.log('GameStats props', props);
         if (props.level !== null && props.score !== null) {
             return {
                 display: 'block'

@@ -15,7 +15,7 @@ class Game {
         this.level = 1;
         this.isGameStarted = false;
         this.players = players;
-        this.gameOver = false;
+        this.over = false;
     }
 
     /**
@@ -28,8 +28,8 @@ class Game {
     /**
      * Finishes the game.
      */
-    over() {
-        this.gameOver = true;
+    setOver() {
+        this.over = true;
     }
 
     /**
@@ -71,8 +71,10 @@ class Game {
      */
     _manageLevel() {
         let accumulatedScore = 0;
-        for (let i = 0; i < this.players.length; i++) {
-            accumulatedScore += this.players[i].score.quantity;
+        for (let key in this.players){
+            if(this.players.hasOwnProperty(key)){
+                accumulatedScore += this.players[key].score.quantity;
+            }
         }
 
         if ((accumulatedScore / LEVEL_MEDIAN) > this.level) {

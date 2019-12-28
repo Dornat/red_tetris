@@ -1,4 +1,4 @@
-import {CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT} from './types';
+import {CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL} from './types';
 
 export function createRoomAction(id, isLeader = true) {
     return {
@@ -39,5 +39,12 @@ export function setOpponentAction(opponent) {
 export function removeOpponentAction() {
     return {
         type: REMOVE_OPPONENT
+    };
+}
+
+export function setModalAction(modal) {
+    return {
+        type: SET_MODAL,
+        modal: modal
     };
 }

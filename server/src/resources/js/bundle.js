@@ -145,7 +145,7 @@ function setLevelAction(level) {
 /*!********************************!*\
   !*** ./actions/roomActions.js ***!
   \********************************/
-/*! exports provided: createRoomAction, joinRoomAction, setRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction */
+/*! exports provided: createRoomAction, joinRoomAction, setRoomAction, setLeaderAction, setOpponentAction, removeOpponentAction, setModalAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -156,6 +156,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setLeaderAction", function() { return setLeaderAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setOpponentAction", function() { return setOpponentAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeOpponentAction", function() { return removeOpponentAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setModalAction", function() { return setModalAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function createRoomAction(id) {
@@ -195,6 +196,12 @@ function removeOpponentAction() {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["REMOVE_OPPONENT"]
   };
 }
+function setModalAction(modal) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_MODAL"],
+    modal: modal
+  };
+}
 
 /***/ }),
 
@@ -202,7 +209,7 @@ function removeOpponentAction() {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -220,6 +227,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_LEADER", function() { return SET_LEADER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_OPPONENT", function() { return SET_OPPONENT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REMOVE_OPPONENT", function() { return REMOVE_OPPONENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_MODAL", function() { return SET_MODAL; });
 var SET_USER = 'SET_USER';
 var CREATE_GAME = 'CREATE_GAME';
 var START_GAME = 'START_GAME';
@@ -233,6 +241,7 @@ var SET_ROOM = 'SET_ROOM';
 var SET_LEADER = 'SET_LEADER';
 var SET_OPPONENT = 'SET_OPPONENT';
 var REMOVE_OPPONENT = 'REMOVE_OPPONENT';
+var SET_MODAL = 'SET_MODAL';
 
 /***/ }),
 
@@ -352,14 +361,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Form_FormNickname__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Form/FormNickname */ "./components/Form/FormNickname.js");
-/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
+/* harmony import */ var _Form_FormNickname__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Form/FormNickname */ "./components/Form/FormNickname.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 
 
 
@@ -370,22 +379,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Dashboard = function Dashboard(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState, 2),
       isError = _useState2[0],
       setError = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState3, 2),
       isCreateRoomBtnDisabled = _useState4[0],
       setBtnDisability = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState5, 2),
       nicknameError = _useState6[0],
       setNicknameError = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_2__["useState"])({
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])({
     user: props.user || ''
   }),
       _useState8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState7, 2),
@@ -433,32 +442,37 @@ var Dashboard = function Dashboard(props) {
 
   var renderNicknameError = function renderNicknameError() {
     if (nicknameError) {
-      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", {
+      return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("p", {
         className: "form__error"
       }, "The selected nickname is occupied");
     }
   };
 
-  return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+  Object(react__WEBPACK_IMPORTED_MODULE_4__["useEffect"])(function () {
+    return function () {
+      props.socket.removeAllListeners();
+    };
+  }, []);
+  return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "flex_centered"
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "dashboard__section"
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "col"
-  }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_Form_FormNickname__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_Form_FormNickname__WEBPACK_IMPORTED_MODULE_2__["default"], {
     form: form,
     isError: isError,
     setError: setError,
     setValues: setValues,
     onChange: onChange
-  }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+  }))), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "dashboard__section dashboard__menu d-flex-col"
-  }, renderNicknameError(), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+  }, renderNicknameError(), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn",
     onClick: createRoom,
     disabled: isCreateRoomBtnDisabled
-  }, "Create a room"), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
+  }, "Create a room"), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn"
   }, "Score"))));
@@ -470,20 +484,20 @@ var mapStateToProps = function mapStateToProps(state) {
   };
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     createRoomAction: function createRoomAction(user) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_4__["createRoomAction"])(user));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_6__["createRoomAction"])(user));
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_5__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_6__["withRouter"])(Dashboard)));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_5__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_7__["withRouter"])(Dashboard)));
 Dashboard.propTypes = {
-  user: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.string,
-  createRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.func,
-  socket: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.object,
-  history: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.object
+  user: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.string,
+  createRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.func,
+  socket: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.object,
+  history: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.object
 };
 
 /***/ }),
@@ -712,13 +726,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
-/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
-/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
-/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/gameFieldHelpers */ "./utils/gameFieldHelpers.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
+/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+
 
 
 
@@ -736,8 +752,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var GameField = function GameField(props) {
-  var DROPTIME_MULTIPLIER = 142;
-  var DROPTIME_BASE = 1000;
+  var DROP_TIME_BASE = 725;
+  var DROP_TIME_MULTIPLIER = 0.85;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])([{
     shape: 0
@@ -768,25 +784,25 @@ var GameField = function GameField(props) {
       gameOver = _useState10[0],
       setGameOver = _useState10[1];
 
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_13__["usePiece"])(0),
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_14__["usePiece"])(0),
       _usePiece2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_usePiece, 4),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
       resetPiece = _usePiece2[2],
       pieceRotate = _usePiece2[3];
 
-  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_11__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setPiecesAction),
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_12__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setPiecesAction),
       _useField2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useField, 2),
       field = _useField2[0],
       setField = _useField2[1];
 
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_10__["createField"])()),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])()),
       _useState12 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState11, 2),
       opponentField = _useState12[0],
       setOpponentField = _useState12[1];
 
   var movePiece = function movePiece(direction) {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
       x: direction,
       y: 0
     })) {
@@ -798,7 +814,7 @@ var GameField = function GameField(props) {
   };
 
   var drop = function drop() {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_8__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_9__["checkCollision"])(piece, field, {
       x: 0,
       y: 1
     })) {
@@ -808,10 +824,12 @@ var GameField = function GameField(props) {
         collided: false
       });
     } else {
+      setDropTime(assembleDropTime());
+
       if (piece.position.y < 1) {
-        console.log('GAME OVER!!!');
         setGameOver(true);
         setDropTime(null);
+        props.socket.emit('gameOver', props.roomId);
         return;
       }
 
@@ -822,39 +840,16 @@ var GameField = function GameField(props) {
           x: 0,
           y: 0,
           collided: true
+        }); // Maybe we need to move this two lines outside of else statement.
+
+        var coords = Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["assembleCoordinatesForFillingFieldOnServer"])(piece);
+        props.socket.emit('updatePlayerField', {
+          roomId: props.roomId,
+          nickname: props.user,
+          coords: coords
         });
       }
-
-      var coords = assembleCoordinatesForFillingFieldOnServer(piece);
-      props.socket.emit('updatePlayerField', {
-        roomId: props.roomId,
-        nickname: props.user,
-        coords: coords
-      });
     }
-  };
-
-  var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesForFillingFieldOnServer(piece) {
-    var tetromino = piece.tetromino;
-    var variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
-
-    var coords = [];
-
-    for (var i = 0; i < tetromino.length; i++) {
-      variableCoords.x = piece.position.x;
-
-      for (var j = 0; j < tetromino[i].length; j++) {
-        if (tetromino[i][j] !== 0) {
-          coords.push([variableCoords.y, variableCoords.x]);
-        }
-
-        variableCoords.x += 1;
-      }
-
-      variableCoords.y += 1;
-    }
-
-    return coords;
   };
 
   var keyReleased = function keyReleased(e) {
@@ -878,20 +873,18 @@ var GameField = function GameField(props) {
         movePiece(1);
       } else if (e.keyCode === 74 || e.keyCode === 40) {
         dropPiece();
-      } else if (e.keyCode === 38) {
+      } else if (e.keyCode === 38 || e.keyCode === 75) {
         pieceRotate(field, 1);
+      } else if (e.keyCode === 32) {
+        setDropTime(1);
       }
     }
   };
 
   var assembleDropTime = function assembleDropTime() {
-    var dropTime = DROPTIME_BASE - (props.level == null ? 1 : props.level) * DROPTIME_MULTIPLIER;
-
-    if (dropTime < 42) {
-      dropTime = 42;
-    }
-
-    return dropTime;
+    var level = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var l = level ? level : props.level ? props.level : 1;
+    return DROP_TIME_BASE * Math.pow(DROP_TIME_MULTIPLIER, l) + l;
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
@@ -920,18 +913,18 @@ var GameField = function GameField(props) {
         props.startGameAction();
         setDropTime(assembleDropTime());
         props.socket.emit('generatePieces', props.roomId);
-        props.socket.on('getPieces', function (data) {
-          if (piecesBuffer[0].shape === 0) {
-            setPiecesBuffer(data.pieces);
-          } else {
-            setPiecesBuffer([].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(piecesBuffer), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(data.pieces)));
-          }
-        });
+      }
+    });
+    props.socket.on('getPieces', function (data) {
+      if (piecesBuffer[0].shape === 0) {
+        setPiecesBuffer(data.pieces);
+      } else {
+        setPiecesBuffer([].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(piecesBuffer), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(data.pieces)));
       }
     });
     /**
      * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
-     * method handles proper update of score and opponent field.
+     * method handles proper update of score, level and opponent field.
      */
 
     props.socket.on('sendUpdatedGameData', function (data) {
@@ -943,17 +936,23 @@ var GameField = function GameField(props) {
         redrawOpponentField(data.field);
       }
 
-      console.log('props, data.level', props, data.level);
-
-      if (props.level !== data.level) {
-        props.setLevelAction(data.level);
-        setDropTime(assembleDropTime());
-      }
+      props.setLevelAction(data.level);
+      setDropTime(assembleDropTime(data.level));
     });
+    props.socket.on('gameOver', function () {
+      setGameOver(true);
+      setDropTime(null);
+    });
+    return function () {
+      props.socket.removeAllListeners();
+      props.setScoreAction(0);
+      props.setLevelAction(1);
+      props.setPiecesAction('0');
+    };
   }, []);
 
   var redrawOpponentField = function redrawOpponentField(matrix) {
-    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_10__["createField"])();
+    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])();
 
     for (var i = 0; i < matrix.length; i++) {
       for (var j = 0; j < matrix[i].length; j++) {
@@ -964,7 +963,7 @@ var GameField = function GameField(props) {
     setOpponentField(newField);
   };
 
-  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_12__["useInterval"])(function () {
+  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_13__["useInterval"])(function () {
     drop();
   }, dropTime);
   return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
@@ -981,7 +980,7 @@ var GameField = function GameField(props) {
     className: "game-field__body"
   }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "game-field__col"
-  }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_GameStats__WEBPACK_IMPORTED_MODULE_4__["default"], null)), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
+  }, isGameStarted ? react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_GameStats__WEBPACK_IMPORTED_MODULE_4__["default"], null) : ''), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "game-field__col field__border"
   }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_Field__WEBPACK_IMPORTED_MODULE_3__["default"], {
     field: field
@@ -997,32 +996,31 @@ var mapStateToProps = function mapStateToProps(state) {
     user: state.user.nickname,
     roomId: state.room.id,
     score: state.game.score,
-    level: state.game.level,
-    state: state
+    level: state.game.level
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     createGameAction: function createGameAction(id) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_14__["createGameAction"])(id));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["createGameAction"])(id));
     },
     startGameAction: function startGameAction() {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_14__["startGameAction"])());
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["startGameAction"])());
     },
     setScoreAction: function setScoreAction(score) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_14__["setScoreAction"])(score));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setScoreAction"])(score));
     },
     setPiecesAction: function setPiecesAction(pieces) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_14__["setPiecesAction"])(pieces));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setPiecesAction"])(pieces));
     },
     setLevelAction: function setLevelAction(level) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_14__["setLevelAction"])(level));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setLevelAction"])(level));
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_9__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_10__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
 GameField.propTypes = {
   roomId: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
   user: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
@@ -1141,9 +1139,10 @@ var GamePlayers = function GamePlayers(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     handleDisplay();
-    window.addEventListener('resize', function (e) {
-      handleDisplay();
-    });
+    window.addEventListener('resize', handleDisplay);
+    return function () {
+      window.removeEventListener('resize', handleDisplay);
+    };
   }, []);
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "game__players",
@@ -1197,8 +1196,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var GameStats = function GameStats(props) {
   var shouldShowStats = function shouldShowStats() {
-    console.log('GameStats props', props);
-
     if (props.level !== null && props.score !== null) {
       return {
         display: 'block'
@@ -1440,30 +1437,20 @@ var Room = function Room(props) {
   var ERROR_ROOM_NOT_FOUND = 4;
   var ERROR_NO_SPACE_AVAILABLE = 5;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(props.roomId || null),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState, 2),
-      roomId = _useState2[0],
-      setRoomId = _useState2[1];
+      isRoomExists = _useState2[0],
+      setRoomExists = _useState2[1];
 
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState3, 2),
-      isRoomExists = _useState4[0],
-      setRoomExists = _useState4[1];
+      isModalOpened = _useState4[0],
+      setIsModalOpened = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(null),
       _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState5, 2),
-      isModalOpened = _useState6[0],
-      setIsModalOpened = _useState6[1];
-
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(null),
-      _useState8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState7, 2),
-      modal = _useState8[0],
-      setModal = _useState8[1];
-
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(null),
-      _useState10 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState9, 2),
-      opponent = _useState10[0],
-      setOpponent = _useState10[1];
+      modal = _useState6[0],
+      setModal = _useState6[1];
 
   var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(null);
   /**
@@ -1607,7 +1594,7 @@ var Room = function Room(props) {
 
               case 11:
                 joined = _context3.sent;
-                setRoomId(roomIdFromUrl);
+                props.setRoomAction(roomIdFromUrl);
 
                 if (!props.user) {
                   _context3.next = 22;
@@ -1722,8 +1709,6 @@ var Room = function Room(props) {
       props.setOpponentAction(opponent);
     });
     props.socket.on('leftGame', function (response) {
-      console.log('in leftGame socket, response', response);
-
       if (response.player === props.user) {
         props.history.push('/');
       } else {
@@ -1734,10 +1719,17 @@ var Room = function Room(props) {
 
       props.removeOpponentAction();
     });
+    props.socket.on('gameOver', function () {
+      setModal(MODAL_GAME_OVER);
+      setIsModalOpened(true);
+    });
+    return function () {
+      props.socket.removeAllListeners();
+    };
   }, []);
 
   var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
-    acceptPlayer(roomId, props.user).then(function () {
+    acceptPlayer(props.roomId, props.user).then(function () {
       setRoomExists(true);
       setIsModalOpened(false);
     })["catch"](function () {
@@ -1804,10 +1796,8 @@ var Room = function Room(props) {
     })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
       className: "room-management__container"
     }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      roomId: roomId,
       socket: props.socket,
-      gameFieldRef: gameFieldRef,
-      opponent: opponent
+      gameFieldRef: gameFieldRef
     })));
   };
 
@@ -2209,9 +2199,9 @@ function useInterval(callback, delay) {
   }, [callback]); // Set up the interval.
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    function tick() {
+    var tick = function tick() {
       savedCallback.current();
-    }
+    };
 
     if (delay !== null) {
       var id = setInterval(tick, delay);
@@ -55073,6 +55063,11 @@ var initialState = {
         opponent: null
       });
 
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_MODAL"]:
+      return _objectSpread({}, state, {
+        modal: action.modal
+      });
+
     default:
       {
         return state;
@@ -55332,6 +55327,41 @@ var createField = function createField() {
   return Array.from(Array(rowsAmount), function () {
     return new Array(columnAmount).fill([0, 'empty']);
   });
+};
+
+/***/ }),
+
+/***/ "./utils/gameFieldHelpers.js":
+/*!***********************************!*\
+  !*** ./utils/gameFieldHelpers.js ***!
+  \***********************************/
+/*! exports provided: assembleCoordinatesForFillingFieldOnServer */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assembleCoordinatesForFillingFieldOnServer", function() { return assembleCoordinatesForFillingFieldOnServer; });
+var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesForFillingFieldOnServer(piece) {
+  var tetromino = piece.tetromino;
+  var variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
+
+  var coords = [];
+
+  for (var i = 0; i < tetromino.length; i++) {
+    variableCoords.x = piece.position.x;
+
+    for (var j = 0; j < tetromino[i].length; j++) {
+      if (tetromino[i][j] !== 0) {
+        coords.push([variableCoords.y, variableCoords.x]);
+      }
+
+      variableCoords.x += 1;
+    }
+
+    variableCoords.y += 1;
+  }
+
+  return coords;
 };
 
 /***/ }),
