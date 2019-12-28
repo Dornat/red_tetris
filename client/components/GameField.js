@@ -4,6 +4,7 @@ import GameStats from './GameStats';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
+import {assembleCoordinatesForFillingFieldOnServer} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
@@ -19,8 +20,8 @@ import {
 } from '../actions/gameActions';
 
 const GameField = (props) => {
-    const DROPTIME_MULTIPLIER = 142;
-    const DROPTIME_BASE = 1000;
+    const DROP_TIME_BASE = 725;
+    const DROP_TIME_MULTIPLIER = 0.85;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
@@ -41,43 +42,22 @@ const GameField = (props) => {
         if (!checkCollision(piece, field, {x: 0, y: 1})) {
             updatePiecePosition({x: 0, y: 1, collided: false});
         } else {
+            setDropTime(assembleDropTime());
             if (piece.position.y < 1) {
-                console.log('GAME OVER!!!');
                 setGameOver(true);
                 setDropTime(null);
+                props.socket.emit('gameOver', props.roomId);
                 return;
             }
             if (piecesBuffer.length === 1) {
                 props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
+                // Maybe we need to move this two lines outside of else statement.
+                const coords = assembleCoordinatesForFillingFieldOnServer(piece);
+                props.socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
             }
-
-            const coords = assembleCoordinatesForFillingFieldOnServer(piece);
-            props.socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
         }
-    };
-
-    const assembleCoordinatesForFillingFieldOnServer = piece => {
-        const tetromino = piece.tetromino;
-        let variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
-        let coords = [];
-
-        for (let i = 0; i < tetromino.length; i++) {
-            variableCoords.x = piece.position.x;
-            for (let j = 0; j < tetromino[i].length; j++) {
-                if (tetromino[i][j] !== 0) {
-                    coords.push([
-                        variableCoords.y,
-                        variableCoords.x
-                    ]);
-                }
-                variableCoords.x += 1;
-            }
-            variableCoords.y += 1;
-        }
-
-        return coords;
     };
 
     const keyReleased = (e) => {
@@ -101,18 +81,17 @@ const GameField = (props) => {
                 movePiece(1);
             } else if (e.keyCode === 74 || e.keyCode === 40) {
                 dropPiece();
-            } else if (e.keyCode === 38) {
+            } else if (e.keyCode === 38 || e.keyCode === 75) {
                 pieceRotate(field, 1);
+            } else if (e.keyCode === 32) {
+                setDropTime(1);
             }
         }
     };
 
-    const assembleDropTime = () => {
-        let dropTime = DROPTIME_BASE - ((props.level == null ? 1 : props.level) * DROPTIME_MULTIPLIER);
-        if (dropTime < 42) {
-            dropTime = 42;
-        }
-        return dropTime;
+    const assembleDropTime = (level = null) => {
+        const l = level ? level : (props.level ? props.level : 1);
+        return DROP_TIME_BASE * Math.pow(DROP_TIME_MULTIPLIER, l) + l;
     };
 
     useEffect(() => {
@@ -137,19 +116,20 @@ const GameField = (props) => {
                 props.startGameAction();
                 setDropTime(assembleDropTime());
                 props.socket.emit('generatePieces', props.roomId);
-                props.socket.on('getPieces', (data) => {
-                    if (piecesBuffer[0].shape === 0) {
-                        setPiecesBuffer(data.pieces);
-                    } else {
-                        setPiecesBuffer([...piecesBuffer, ...data.pieces]);
-                    }
-                });
+            }
+        });
+
+        props.socket.on('getPieces', (data) => {
+            if (piecesBuffer[0].shape === 0) {
+                setPiecesBuffer(data.pieces);
+            } else {
+                setPiecesBuffer([...piecesBuffer, ...data.pieces]);
             }
         });
 
         /**
          * When the piece is placed then updated data is sent for every player in game. So the logic that lies in this
-         * method handles proper update of score and opponent field.
+         * method handles proper update of score, level and opponent field.
          */
         props.socket.on('sendUpdatedGameData', (data) => {
             if (data.myNickName === props.user) {
@@ -158,12 +138,21 @@ const GameField = (props) => {
             if (data.myNickName !== props.user) {
                 redrawOpponentField(data.field);
             }
-            console.log('props, data.level', props, data.level);
-            if (props.level !== data.level) {
-                props.setLevelAction(data.level);
-                setDropTime(assembleDropTime());
-            }
+            props.setLevelAction(data.level);
+            setDropTime(assembleDropTime(data.level));
         });
+
+        props.socket.on('gameOver', () => {
+            setGameOver(true);
+            setDropTime(null);
+        });
+
+        return () => {
+            props.socket.removeAllListeners();
+            props.setScoreAction(0);
+            props.setLevelAction(1);
+            props.setPiecesAction('0');
+        };
     }, []);
 
     const redrawOpponentField = (matrix) => {
@@ -188,7 +177,7 @@ const GameField = (props) => {
             <div className="game-field__area">
                 <div className="game-field__body">
                     <div className="game-field__col">
-                        <GameStats/>
+                        {isGameStarted ? <GameStats/> : ''}
                     </div>
                     <div className="game-field__col field__border">
                         <Field field={field}/>
@@ -208,8 +197,7 @@ const mapStateToProps = (state) => {
         user: state.user.nickname,
         roomId: state.room.id,
         score: state.game.score,
-        level: state.game.level,
-        state: state
+        level: state.game.level
     };
 };
 

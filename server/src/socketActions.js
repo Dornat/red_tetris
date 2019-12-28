@@ -217,7 +217,7 @@ const socketActions = (io, rooms, games, players) => {
             } else {
                 const game = room.game;
 
-                if (game.gameOver) {
+                if (game.over) {
                     console.log('the game is over man');
                     delete rooms[data.roomId];
                     return;
@@ -231,8 +231,6 @@ const socketActions = (io, rooms, games, players) => {
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                 }
 
-                console.log(player.field);
-
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,
                     score: player.score.quantity,
@@ -240,6 +238,17 @@ const socketActions = (io, rooms, games, players) => {
                     field: player.field.matrix
                 });
             }
+        });
+
+        /**
+         * Makes the game over on server and notifies players about it.
+         *
+         * @param roomId
+         */
+        socket.on('gameOver', (roomId) => {
+            const room = rooms[roomId];
+            room.game.setOver();
+            io.in(roomId).emit('gameOver');
         });
     });
 };

@@ -42,11 +42,9 @@ const Room = (props) => {
     const ERROR_ROOM_NOT_FOUND = 4;
     const ERROR_NO_SPACE_AVAILABLE = 5;
 
-    const [roomId, setRoomId] = useState(props.roomId || null);
     const [isRoomExists, setRoomExists] = useState(false);
     const [isModalOpened, setIsModalOpened] = useState(false);
     const [modal, setModal] = useState(null);
-    const [opponent, setOpponent] = useState(null);
 
     const gameFieldRef = useRef(null);
 
@@ -114,7 +112,7 @@ const Room = (props) => {
                 }
 
                 const joined = await canJoinRoom(roomIdFromUrl);
-                setRoomId(roomIdFromUrl);
+                props.setRoomAction(roomIdFromUrl);
 
                 if (props.user) {
                     props.socket.emit('join', roomIdFromUrl, props.user);
@@ -183,7 +181,6 @@ const Room = (props) => {
         });
 
         props.socket.on('leftGame', (response) => {
-            console.log('in leftGame socket, response', response);
             if (response.player === props.user) {
                 props.history.push('/');
             } else {
@@ -193,10 +190,19 @@ const Room = (props) => {
             }
             props.removeOpponentAction();
         });
+
+        props.socket.on('gameOver', () => {
+            setModal(MODAL_GAME_OVER);
+            setIsModalOpened(true);
+        });
+
+        return () => {
+            props.socket.removeAllListeners();
+        };
     }, []);
 
     const closeModalAndEnrollNewPlayerIntoTheGame = () => {
-        acceptPlayer(roomId, props.user).then(() => {
+        acceptPlayer(props.roomId, props.user).then(() => {
             setRoomExists(true);
             setIsModalOpened(false);
         }).catch(() => {
@@ -260,8 +266,7 @@ const Room = (props) => {
                     <GameField socket={props.socket} gameFieldRef={gameFieldRef}/>
                 </div>
                 <div className="room-management__container">
-                    <RoomManagement roomId={roomId} socket={props.socket} gameFieldRef={gameFieldRef}
-                                    opponent={opponent}/>
+                    <RoomManagement socket={props.socket} gameFieldRef={gameFieldRef}/>
                 </div>
             </div>
         );

@@ -28,10 +28,10 @@ const GamePlayers = (props) => {
 
     useEffect(() => {
         handleDisplay();
-
-        window.addEventListener('resize', function (e) {
-            handleDisplay();
-        });
+        window.addEventListener('resize', handleDisplay);
+        return () => {
+            window.removeEventListener('resize', handleDisplay);
+        };
     }, []);
 
     return (

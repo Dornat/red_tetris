@@ -11,3 +11,4 @@ export const SET_ROOM = 'SET_ROOM';
 export const SET_LEADER = 'SET_LEADER';
 export const SET_OPPONENT = 'SET_OPPONENT';
 export const REMOVE_OPPONENT = 'REMOVE_OPPONENT';
+export const SET_MODAL = 'SET_MODAL';

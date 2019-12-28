@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
 import FormNickname from './Form/FormNickname';
-import {createRoomAction} from '../actions/roomActions';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
+import {createRoomAction} from '../actions/roomActions';
+import {withRouter} from 'react-router-dom';
 
 const Dashboard = (props) => {
 
@@ -61,6 +61,12 @@ const Dashboard = (props) => {
         }
     };
 
+    useEffect(() => {
+        return () => {
+            props.socket.removeAllListeners();
+        };
+    }, []);
+
     return (
         <main>
             <div className="flex_centered">
@@ -89,7 +95,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
     return {
         createRoomAction: (user) => {
             dispatch(createRoomAction(user));

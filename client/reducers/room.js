@@ -5,6 +5,7 @@ import {
     SET_LEADER,
     SET_OPPONENT,
     REMOVE_OPPONENT,
+    SET_MODAL,
 } from '../actions/types';
 
 const initialState = {
@@ -46,6 +47,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 opponent: null
+            };
+        case SET_MODAL:
+            return {
+                ...state,
+                modal: action.modal
             };
         default: {
             return state;
