@@ -19,3 +19,37 @@ export const assembleCoordinatesForFillingFieldOnServer = piece => {
 
     return coords;
 };
+
+export const fieldDebug = field => {
+    let table = 'c\\r||';
+    for (let j = 0; j < field[0].length; j++) {
+        table += `${j}|`;
+    }
+    table += '\n';
+    for (let i = 0; i < field.length; i++) {
+        if (i < 10) {
+            table += '  ';
+        } else {
+            table += ' ';
+        }
+        table += `${i}||`;
+        for (let j = 0; j < field[i].length; j++) {
+            table += `${field[i][j][0]}|`;
+        }
+        table += '\n';
+    }
+    console.log(table);
+};
+
+export const piecesDebug = (pieces, message = null) => {
+    let object = '';
+
+    for (let i = 0; i < pieces.length; i++) {
+        object += `{${pieces[i].shape}}`;
+    }
+    if (message !== null) {
+        console.log(message, object);
+    } else {
+        console.log(object);
+    }
+};

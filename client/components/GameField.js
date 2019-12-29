@@ -4,7 +4,7 @@ import GameStats from './GameStats';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
-import {assembleCoordinatesForFillingFieldOnServer} from '../utils/gameFieldHelpers';
+import {assembleCoordinatesForFillingFieldOnServer, piecesDebug} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
@@ -15,7 +15,7 @@ import {
     createGameAction,
     startGameAction,
     setScoreAction,
-    setPiecesAction,
+    setNextPieceAction,
     setLevelAction
 } from '../actions/gameActions';
 
@@ -29,7 +29,7 @@ const GameField = (props) => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
-    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setPiecesAction);
+    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction);
     const [opponentField, setOpponentField] = useState(createField());
 
     const movePiece = direction => {
@@ -50,11 +50,13 @@ const GameField = (props) => {
                 return;
             }
             if (piecesBuffer.length === 1) {
+                piecesDebug(piecesBuffer, 'in if (piecesBuffer.length == 1), piecesBuffer');
                 props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
                 // Maybe we need to move this two lines outside of else statement.
                 const coords = assembleCoordinatesForFillingFieldOnServer(piece);
+                console.log('coords', coords);
                 props.socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
             }
         }
@@ -95,14 +97,16 @@ const GameField = (props) => {
     };
 
     useEffect(() => {
-        if (pieces.length === 5) { // Draw piece only for first piece in pieces array and only when array is full.
-            updatePiecePosition({x: 0, y: 0, collided: true}); // True is important here.
+        // TODO CAUTION! There is a bug here somewhere.
+        if (pieces.length === 5) { // Draw piece only for the first piece in pieces array and only when array is full.
+            console.log('in useEffect with if(pieces.length === 5)');
+            updatePiecePosition({x: 0, y: 0, collided: true}); // True is important here. Why?
         }
     }, [pieces]); // This fires every time when pieces are updated.
 
     useEffect(() => {
         if (pieces.length === 0 || pieces[0].shape === 0) {
-            setPieces(piecesBuffer);
+            setPieces(piecesBuffer.slice(0, 5));
         }
     }, [piecesBuffer]);
 
@@ -123,6 +127,7 @@ const GameField = (props) => {
             if (piecesBuffer[0].shape === 0) {
                 setPiecesBuffer(data.pieces);
             } else {
+                console.log('in getPieces socket, piecesBuffer, data.pieces', piecesBuffer, data.pieces);
                 setPiecesBuffer([...piecesBuffer, ...data.pieces]);
             }
         });
@@ -151,7 +156,7 @@ const GameField = (props) => {
             props.socket.removeAllListeners();
             props.setScoreAction(0);
             props.setLevelAction(1);
-            props.setPiecesAction('0');
+            props.setNextPieceAction(null);
         };
     }, []);
 
@@ -196,6 +201,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.nickname,
         roomId: state.room.id,
+        isLeader: state.room.isLeader,
         score: state.game.score,
         level: state.game.level
     };
@@ -212,8 +218,8 @@ const mapDispatchToProps = (dispatch) => {
         setScoreAction: (score) => {
             dispatch(setScoreAction(score));
         },
-        setPiecesAction: (pieces) => {
-            dispatch(setPiecesAction(pieces));
+        setNextPieceAction: (nextPiece) => {
+            dispatch(setNextPieceAction(nextPiece));
         },
         setLevelAction: (level) => {
             dispatch(setLevelAction(level));
@@ -226,12 +232,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(GameField);
 GameField.propTypes = {
     roomId: PropTypes.string,
     user: PropTypes.string,
+    isLeader: PropTypes.bool,
     score: PropTypes.number,
     level: PropTypes.number,
     createGameAction: PropTypes.func,
     startGameAction: PropTypes.func,
     setScoreAction: PropTypes.func,
-    setPiecesAction: PropTypes.func,
+    setNextPieceAction: PropTypes.func,
     setLevelAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,

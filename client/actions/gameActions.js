@@ -2,7 +2,7 @@ import {
     CREATE_GAME,
     START_GAME,
     SET_SCORE,
-    SET_PIECES,
+    SET_NEXT_PIECE,
     SET_LEVEL,
     JOIN_GAME,
 } from './types';
@@ -34,10 +34,10 @@ export function setScoreAction(score) {
     };
 }
 
-export function setPiecesAction(pieces) {
+export function setNextPieceAction(nextPiece) {
     return {
-        type: SET_PIECES,
-        pieces: pieces
+        type: SET_NEXT_PIECE,
+        nextPiece: nextPiece
     };
 }
 

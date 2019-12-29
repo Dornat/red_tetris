@@ -22,10 +22,10 @@ const NextPieceField = (props) => {
                 x: 1, // to position the piece in the middle of game field
                 y: 1
             },
-            tetromino: tetrominoes[props.pieces === null ? 0 : props.pieces].shape,
+            tetromino: tetrominoes[props.nextPiece === null ? 0 : props.nextPiece].shape,
             collided: true
         });
-    }, [props.pieces]);
+    }, [props.nextPiece]);
 
     useEffect(() => {
         const updateField = prevField => {
@@ -65,12 +65,12 @@ const NextPieceField = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        pieces: state.game.pieces
+        nextPiece: state.game.nextPiece
     };
 };
 
 export default connect(mapStateToProps, null)(NextPieceField);
 
 NextPieceField.propTypes = {
-    pieces: PropTypes.string
+    nextPiece: PropTypes.string
 };

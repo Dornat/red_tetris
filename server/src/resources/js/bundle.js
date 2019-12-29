@@ -90,7 +90,7 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createGameAction, joinGameAction, startGameAction, setScoreAction, setPiecesAction, setLevelAction */
+/*! exports provided: createGameAction, joinGameAction, startGameAction, setScoreAction, setNextPieceAction, setLevelAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -99,7 +99,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "joinGameAction", function() { return joinGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startGameAction", function() { return startGameAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPiecesAction", function() { return setPiecesAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNextPieceAction", function() { return setNextPieceAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setLevelAction", function() { return setLevelAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
@@ -126,10 +126,10 @@ function setScoreAction(score) {
     score: score
   };
 }
-function setPiecesAction(pieces) {
+function setNextPieceAction(nextPiece) {
   return {
-    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_PIECES"],
-    pieces: pieces
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_NEXT_PIECE"],
+    nextPiece: nextPiece
   };
 }
 function setLevelAction(level) {
@@ -209,7 +209,7 @@ function setModalAction(modal) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_PIECES, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_NEXT_PIECE, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -218,7 +218,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_GAME", function() { return CREATE_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "START_GAME", function() { return START_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SCORE", function() { return SET_SCORE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PIECES", function() { return SET_PIECES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_NEXT_PIECE", function() { return SET_NEXT_PIECE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_LEVEL", function() { return SET_LEVEL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JOIN_GAME", function() { return JOIN_GAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_ROOM", function() { return CREATE_ROOM; });
@@ -232,7 +232,7 @@ var SET_USER = 'SET_USER';
 var CREATE_GAME = 'CREATE_GAME';
 var START_GAME = 'START_GAME';
 var SET_SCORE = 'SET_SCORE';
-var SET_PIECES = 'SET_PIECES';
+var SET_NEXT_PIECE = 'SET_NEXT_PIECE';
 var SET_LEVEL = 'SET_LEVEL';
 var JOIN_GAME = 'JOIN_GAME';
 var CREATE_ROOM = 'CREATE_ROOM';
@@ -791,7 +791,7 @@ var GameField = function GameField(props) {
       resetPiece = _usePiece2[2],
       pieceRotate = _usePiece2[3];
 
-  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_12__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setPiecesAction),
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_12__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction),
       _useField2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useField, 2),
       field = _useField2[0],
       setField = _useField2[1];
@@ -834,6 +834,7 @@ var GameField = function GameField(props) {
       }
 
       if (piecesBuffer.length === 1) {
+        Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["piecesDebug"])(piecesBuffer, 'in if (piecesBuffer.length == 1), piecesBuffer');
         props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
       } else {
         updatePiecePosition({
@@ -843,6 +844,7 @@ var GameField = function GameField(props) {
         }); // Maybe we need to move this two lines outside of else statement.
 
         var coords = Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["assembleCoordinatesForFillingFieldOnServer"])(piece);
+        console.log('coords', coords);
         props.socket.emit('updatePlayerField', {
           roomId: props.roomId,
           nickname: props.user,
@@ -888,19 +890,21 @@ var GameField = function GameField(props) {
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
+    // TODO CAUTION! There is a bug here somewhere.
     if (pieces.length === 5) {
-      // Draw piece only for first piece in pieces array and only when array is full.
+      // Draw piece only for the first piece in pieces array and only when array is full.
+      console.log('in useEffect with if(pieces.length === 5)');
       updatePiecePosition({
         x: 0,
         y: 0,
         collided: true
-      }); // True is important here.
+      }); // True is important here. Why?
     }
   }, [pieces]); // This fires every time when pieces are updated.
 
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
     if (pieces.length === 0 || pieces[0].shape === 0) {
-      setPieces(piecesBuffer);
+      setPieces(piecesBuffer.slice(0, 5));
     }
   }, [piecesBuffer]);
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
@@ -919,6 +923,7 @@ var GameField = function GameField(props) {
       if (piecesBuffer[0].shape === 0) {
         setPiecesBuffer(data.pieces);
       } else {
+        console.log('in getPieces socket, piecesBuffer, data.pieces', piecesBuffer, data.pieces);
         setPiecesBuffer([].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(piecesBuffer), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(data.pieces)));
       }
     });
@@ -947,7 +952,7 @@ var GameField = function GameField(props) {
       props.socket.removeAllListeners();
       props.setScoreAction(0);
       props.setLevelAction(1);
-      props.setPiecesAction('0');
+      props.setNextPieceAction(null);
     };
   }, []);
 
@@ -995,6 +1000,7 @@ var mapStateToProps = function mapStateToProps(state) {
   return {
     user: state.user.nickname,
     roomId: state.room.id,
+    isLeader: state.room.isLeader,
     score: state.game.score,
     level: state.game.level
   };
@@ -1011,8 +1017,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     setScoreAction: function setScoreAction(score) {
       dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setScoreAction"])(score));
     },
-    setPiecesAction: function setPiecesAction(pieces) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setPiecesAction"])(pieces));
+    setNextPieceAction: function setNextPieceAction(nextPiece) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setNextPieceAction"])(nextPiece));
     },
     setLevelAction: function setLevelAction(level) {
       dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setLevelAction"])(level));
@@ -1024,12 +1030,13 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 GameField.propTypes = {
   roomId: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
   user: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
+  isLeader: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.bool,
   score: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.number,
   level: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.number,
   createGameAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   startGameAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   setScoreAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
-  setPiecesAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  setNextPieceAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   setLevelAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   socket: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
   history: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
@@ -1305,10 +1312,10 @@ var NextPieceField = function NextPieceField(props) {
         // to position the piece in the middle of game field
         y: 1
       },
-      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__["default"][props.pieces === null ? 0 : props.pieces].shape,
+      tetromino: _utils_TetrominoesScheme__WEBPACK_IMPORTED_MODULE_4__["default"][props.nextPiece === null ? 0 : props.nextPiece].shape,
       collided: true
     });
-  }, [props.pieces]);
+  }, [props.nextPiece]);
   Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
     var updateField = function updateField(prevField) {
       // clear field from the previous render
@@ -1339,13 +1346,13 @@ var NextPieceField = function NextPieceField(props) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    pieces: state.game.pieces
+    nextPiece: state.game.nextPiece
   };
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_5__["connect"])(mapStateToProps, null)(NextPieceField));
 NextPieceField.propTypes = {
-  pieces: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string
+  nextPiece: prop_types__WEBPACK_IMPORTED_MODULE_2___default.a.string
 };
 
 /***/ }),
@@ -2092,10 +2099,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/gameFieldHelpers */ "./utils/gameFieldHelpers.js");
 
 
 
-var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPieces, setPiecesAction) {
+
+var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPieces, setNextPieceAction) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_2__["createField"])()),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState, 2),
       field = _useState2[0],
@@ -2140,31 +2149,55 @@ var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPie
             newField[y + piece.position.y][x + piece.position.x] = [value, "".concat(piece.collided ? 'filled' : 'empty')];
           }
         });
-      });
+      }); // TODO Fix the bug. Should be here somewhere!
+
       /**
        * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
-       * to another and of course for seamless usage in future block.
+       * to another one and of course for seamless usage in next piece block.
        */
+      // console.log('piece', piece);
+      // console.log('pieces, piecesBuffer', pieces, piecesBuffer);
 
       if (piece.collided) {
+        // console.log('in if (piece.collided)');
         if (pieces.length === 0) {
-          setPieces(piecesBuffer);
+          console.log('IN IF (PIECES.LENGTH === 0)');
           resetPiece(piecesBuffer[0].shape);
           piecesBuffer.shift();
-          setPiecesAction(piecesBuffer[0].shape);
+          setPieces(piecesBuffer);
+          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(pieces, 'pieces');
+          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(piecesBuffer, 'piecesBuffer');
+          console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+          setNextPieceAction(piecesBuffer[0].shape);
         } else {
+          console.log('IN ELSE');
           resetPiece(pieces[0].shape);
           pieces.shift();
+          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(pieces, 'pieces');
+          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(piecesBuffer, 'piecesBuffer');
 
           if (pieces.length === 0) {
-            setPiecesAction(piecesBuffer[0].shape);
+            console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
+            console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+            setNextPieceAction(piecesBuffer[0].shape);
           } else {
-            setPiecesAction(pieces[0].shape);
+            console.log('IN ELSE IN ELSE');
+            console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
+            setNextPieceAction(pieces[0].shape);
           }
         }
 
-        return sweepRows(newField);
-      }
+        var swept = sweepRows(newField); // console.log('field with sweptRows');
+        // console.log('pieces', pieces);
+        // fieldDebug(swept);
+
+        return swept;
+      } // console.log('pieces', pieces);
+      // for (let i = 0; i < pieces.length; i++) {
+      //     console.log(pieces[i]);
+      // }
+      // fieldDebug(newField);
+
 
       return newField;
     };
@@ -2297,9 +2330,11 @@ var usePiece = function usePiece(tetromino) {
     setPiece(pieceClone);
   };
   /**
-   * @param x
-   * @param y
-   * @param collided
+   * Updates piece position on field.
+   *
+   * @param {number} x Horizontal movement direction, can be -1 or 0 or 1.
+   * @param {number} y Vertical movement direction, can be 0 or 1.
+   * @param {boolean} collided Tells field whether the piece finished its movement.
    */
 
 
@@ -2318,13 +2353,14 @@ var usePiece = function usePiece(tetromino) {
     });
   };
   /**
-   * Tetromino is a character here
-   * @param tetromino
+   * @param {char} tetromino
+   * @param {number} columnAmount
    */
 
 
   var resetPiece = Object(react__WEBPACK_IMPORTED_MODULE_2__["useCallback"])(function (tetromino) {
     var columnAmount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _utils_createField__WEBPACK_IMPORTED_MODULE_4__["COLUMN_AMOUNT"];
+    console.log('resetPiece callback, TETROMINO', tetromino);
     setPiece({
       position: {
         x: columnAmount / 2 - 2,
@@ -54924,7 +54960,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 var initialState = {
   id: null,
-  pieces: null
+  nextPiece: null
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -54957,9 +54993,9 @@ var initialState = {
         score: action.score
       });
 
-    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_PIECES"]:
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_NEXT_PIECE"]:
       return _objectSpread({}, state, {
-        pieces: action.pieces
+        nextPiece: action.nextPiece
       });
 
     case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_LEVEL"]:
@@ -55301,6 +55337,8 @@ var checkCollision = function checkCollision(piece, field, _ref) {
       }
     }
   }
+
+  return false;
 };
 
 /***/ }),
@@ -55335,12 +55373,14 @@ var createField = function createField() {
 /*!***********************************!*\
   !*** ./utils/gameFieldHelpers.js ***!
   \***********************************/
-/*! exports provided: assembleCoordinatesForFillingFieldOnServer */
+/*! exports provided: assembleCoordinatesForFillingFieldOnServer, fieldDebug, piecesDebug */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assembleCoordinatesForFillingFieldOnServer", function() { return assembleCoordinatesForFillingFieldOnServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fieldDebug", function() { return fieldDebug; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "piecesDebug", function() { return piecesDebug; });
 var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesForFillingFieldOnServer(piece) {
   var tetromino = piece.tetromino;
   var variableCoords = JSON.parse(JSON.stringify(piece.position)); // Important cloning of original object.
@@ -55362,6 +55402,47 @@ var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesFor
   }
 
   return coords;
+};
+var fieldDebug = function fieldDebug(field) {
+  var table = 'c\\r||';
+
+  for (var j = 0; j < field[0].length; j++) {
+    table += "".concat(j, "|");
+  }
+
+  table += '\n';
+
+  for (var i = 0; i < field.length; i++) {
+    if (i < 10) {
+      table += '  ';
+    } else {
+      table += ' ';
+    }
+
+    table += "".concat(i, "||");
+
+    for (var _j = 0; _j < field[i].length; _j++) {
+      table += "".concat(field[i][_j][0], "|");
+    }
+
+    table += '\n';
+  }
+
+  console.log(table);
+};
+var piecesDebug = function piecesDebug(pieces) {
+  var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var object = '';
+
+  for (var i = 0; i < pieces.length; i++) {
+    object += "{".concat(pieces[i].shape, "}");
+  }
+
+  if (message !== null) {
+    console.log(message, object);
+  } else {
+    console.log(object);
+  }
 };
 
 /***/ }),

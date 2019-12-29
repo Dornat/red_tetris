@@ -231,6 +231,10 @@ const socketActions = (io, rooms, games, players) => {
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                 }
 
+                if (player.nickname === 'dornat') {
+                    console.log(`\u001b[31m${player.nickname}\u001b[0m`, player.field.matrix);
+                    console.log(`\u001b[31m${player.nickname}\u001b[0m`, data.coords);
+                }
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,
                     score: player.score.quantity,
