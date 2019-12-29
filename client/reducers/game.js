@@ -2,14 +2,14 @@ import {
     CREATE_GAME,
     START_GAME,
     SET_SCORE,
-    SET_PIECES,
+    SET_NEXT_PIECE,
     SET_LEVEL,
     JOIN_GAME,
 } from '../actions/types';
 
 const initialState = {
     id: null,
-    pieces: null
+    nextPiece: null
 };
 
 export default (state = initialState, action = {}) => {
@@ -40,10 +40,10 @@ export default (state = initialState, action = {}) => {
                 ...state,
                 score: action.score
             };
-        case SET_PIECES:
+        case SET_NEXT_PIECE:
             return {
                 ...state,
-                pieces: action.pieces
+                nextPiece: action.nextPiece
             };
         case SET_LEVEL:
             return {

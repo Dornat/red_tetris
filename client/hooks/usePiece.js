@@ -50,9 +50,11 @@ export const usePiece = (tetromino) => {
     };
 
     /**
-     * @param x
-     * @param y
-     * @param collided
+     * Updates piece position on field.
+     *
+     * @param {number} x Horizontal movement direction, can be -1 or 0 or 1.
+     * @param {number} y Vertical movement direction, can be 0 or 1.
+     * @param {boolean} collided Tells field whether the piece finished its movement.
      */
     const updatePiecePosition = ({x, y, collided}) => {
         setPiece(prev => ({
@@ -67,10 +69,11 @@ export const usePiece = (tetromino) => {
     };
 
     /**
-     * Tetromino is a character here
-     * @param tetromino
+     * @param {char} tetromino
+     * @param {number} columnAmount
      */
     const resetPiece = useCallback((tetromino, columnAmount = COLUMN_AMOUNT) => {
+        console.log('resetPiece callback, TETROMINO', tetromino);
         setPiece({
             position: {
                 x: columnAmount / 2 - 2, // to position the piece in the middle of game field

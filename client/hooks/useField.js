@@ -1,7 +1,8 @@
 import {useState, useEffect} from 'react';
 import {createField} from '../utils/createField';
+import {fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
 
-export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, setPiecesAction) => {
+export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, setNextPieceAction) => {
     const [field, setField] = useState(createField());
     const [rowsCleared, setRowsCleared] = useState(0);
 
@@ -42,28 +43,59 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
                 });
             });
 
+            // TODO Fix the bug. Should be here somewhere!
             /**
              * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
-             * to another and of course for seamless usage in future block.
+             * to another one and of course for seamless usage in next piece block.
              */
+            // console.log('piece', piece);
+            // console.log('pieces, piecesBuffer', pieces, piecesBuffer);
             if (piece.collided) {
+                // console.log('in if (piece.collided)');
                 if (pieces.length === 0) {
-                    setPieces(piecesBuffer);
+                    console.log('IN IF (PIECES.LENGTH === 0)');
                     resetPiece(piecesBuffer[0].shape);
                     piecesBuffer.shift();
-                    setPiecesAction(piecesBuffer[0].shape);
+                    setPieces(piecesBuffer);
+
+                    piecesDebug(pieces, 'pieces');
+                    piecesDebug(piecesBuffer, 'piecesBuffer');
+
+                    console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+
+                    setNextPieceAction(piecesBuffer[0].shape);
                 } else {
+                    console.log('IN ELSE');
                     resetPiece(pieces[0].shape);
                     pieces.shift();
+
+                    piecesDebug(pieces, 'pieces');
+                    piecesDebug(piecesBuffer, 'piecesBuffer');
+
                     if (pieces.length === 0) {
-                        setPiecesAction(piecesBuffer[0].shape);
+                        console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
+                        console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+
+                        setNextPieceAction(piecesBuffer[0].shape);
                     } else {
-                        setPiecesAction(pieces[0].shape);
+                        console.log('IN ELSE IN ELSE');
+                        console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
+
+                        setNextPieceAction(pieces[0].shape);
                     }
                 }
-                return sweepRows(newField);
+                const swept = sweepRows(newField);
+                // console.log('field with sweptRows');
+                // console.log('pieces', pieces);
+                // fieldDebug(swept);
+                return swept;
             }
 
+            // console.log('pieces', pieces);
+            // for (let i = 0; i < pieces.length; i++) {
+            //     console.log(pieces[i]);
+            // }
+            // fieldDebug(newField);
             return newField;
         };
 
