@@ -754,6 +754,7 @@ __webpack_require__.r(__webpack_exports__);
 var GameField = function GameField(props) {
   var DROP_TIME_BASE = 725;
   var DROP_TIME_MULTIPLIER = 0.85;
+  var GENERATE_PIECES_AMOUNT = 1000;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])([{
     shape: 0
@@ -891,9 +892,9 @@ var GameField = function GameField(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
     // TODO CAUTION! There is a bug here somewhere.
-    if (pieces.length === 5) {
+    if (pieces.length === GENERATE_PIECES_AMOUNT) {
       // Draw piece only for the first piece in pieces array and only when array is full.
-      console.log('in useEffect with if(pieces.length === 5)');
+      console.log('in useEffect with if(pieces.length === GENERATE_PIECES_AMOUNT)');
       updatePiecePosition({
         x: 0,
         y: 0,
@@ -904,7 +905,7 @@ var GameField = function GameField(props) {
 
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
     if (pieces.length === 0 || pieces[0].shape === 0) {
-      setPieces(piecesBuffer.slice(0, 5));
+      setPieces(piecesBuffer.slice(0, GENERATE_PIECES_AMOUNT));
     }
   }, [piecesBuffer]);
   Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
@@ -923,7 +924,6 @@ var GameField = function GameField(props) {
       if (piecesBuffer[0].shape === 0) {
         setPiecesBuffer(data.pieces);
       } else {
-        console.log('in getPieces socket, piecesBuffer, data.pieces', piecesBuffer, data.pieces);
         setPiecesBuffer([].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(piecesBuffer), _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(data.pieces)));
       }
     });
@@ -2155,26 +2155,19 @@ var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPie
        * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
        * to another one and of course for seamless usage in next piece block.
        */
-      // console.log('piece', piece);
-      // console.log('pieces, piecesBuffer', pieces, piecesBuffer);
 
       if (piece.collided) {
-        // console.log('in if (piece.collided)');
         if (pieces.length === 0) {
           console.log('IN IF (PIECES.LENGTH === 0)');
           resetPiece(piecesBuffer[0].shape);
           piecesBuffer.shift();
           setPieces(piecesBuffer);
-          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(pieces, 'pieces');
-          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(piecesBuffer, 'piecesBuffer');
           console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
           setNextPieceAction(piecesBuffer[0].shape);
         } else {
           console.log('IN ELSE');
           resetPiece(pieces[0].shape);
           pieces.shift();
-          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(pieces, 'pieces');
-          Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_3__["piecesDebug"])(piecesBuffer, 'piecesBuffer');
 
           if (pieces.length === 0) {
             console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
@@ -2192,12 +2185,7 @@ var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPie
         // fieldDebug(swept);
 
         return swept;
-      } // console.log('pieces', pieces);
-      // for (let i = 0; i < pieces.length; i++) {
-      //     console.log(pieces[i]);
-      // }
-      // fieldDebug(newField);
-
+      }
 
       return newField;
     };

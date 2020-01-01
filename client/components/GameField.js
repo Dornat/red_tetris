@@ -22,6 +22,7 @@ import {
 const GameField = (props) => {
     const DROP_TIME_BASE = 725;
     const DROP_TIME_MULTIPLIER = 0.85;
+    const GENERATE_PIECES_AMOUNT = 1000;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
@@ -98,15 +99,15 @@ const GameField = (props) => {
 
     useEffect(() => {
         // TODO CAUTION! There is a bug here somewhere.
-        if (pieces.length === 5) { // Draw piece only for the first piece in pieces array and only when array is full.
-            console.log('in useEffect with if(pieces.length === 5)');
+        if (pieces.length === GENERATE_PIECES_AMOUNT) { // Draw piece only for the first piece in pieces array and only when array is full.
+            console.log('in useEffect with if(pieces.length === GENERATE_PIECES_AMOUNT)');
             updatePiecePosition({x: 0, y: 0, collided: true}); // True is important here. Why?
         }
     }, [pieces]); // This fires every time when pieces are updated.
 
     useEffect(() => {
         if (pieces.length === 0 || pieces[0].shape === 0) {
-            setPieces(piecesBuffer.slice(0, 5));
+            setPieces(piecesBuffer.slice(0, GENERATE_PIECES_AMOUNT));
         }
     }, [piecesBuffer]);
 
@@ -127,7 +128,6 @@ const GameField = (props) => {
             if (piecesBuffer[0].shape === 0) {
                 setPiecesBuffer(data.pieces);
             } else {
-                console.log('in getPieces socket, piecesBuffer, data.pieces', piecesBuffer, data.pieces);
                 setPiecesBuffer([...piecesBuffer, ...data.pieces]);
             }
         });
