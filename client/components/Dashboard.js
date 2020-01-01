@@ -1,32 +1,48 @@
-import React, {useState} from 'react';
-import FormNickname from "./Form/FormNickname";
-import {createRoom} from "../actions/gameActions";
-import {connect} from "react-redux";
+import FormNickname from './Form/FormNickname';
+import PropTypes from 'prop-types';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
+import {createRoomAction} from '../actions/roomActions';
 import {withRouter} from 'react-router-dom';
 
 const Dashboard = (props) => {
 
     const [isError, setError] = useState(false);
     const [isCreateRoomBtnDisabled, setBtnDisability] = useState(false);
+    const [nicknameError, setNicknameError] = useState(false);
 
     const [form, setValues] = useState({
         user: props.user || ''
     });
 
-    const createRoom = (e) => {
-
+    const createRoom = () => {
+        // Very important to remove all listeners from socket to avoid recursion.
+        props.socket.removeAllListeners();
         setValues({user: props.user});
 
         if (!props.user) {
             setError(true);
-        }
-        else {
-            props.socket.emit('createGame', props.user);
-            setBtnDisability(true);
+        } else {
+            props.socket.emit('isPlayerNameUnique', {nickname: props.user});
+            props.socket.on('playerNameIsValid', () => {
+                props.socket.emit('createRoom', props.user);
+                setBtnDisability(true);
+                props.socket.on('roomCreated', (roomId) => {
+                    props.socket.emit('join', roomId, props.user);
+                    props.createRoomAction(roomId);
+                    props.history.push({
+                        pathname: '/room/' + roomId,
+                        state: {
+                            gameCreator: true
+                        }
+                    });
+                });
+            });
 
-            props.socket.on('gameCreated', (game_id) => {
-                props.createRoom(game_id);
-                props.history.push('/room');
+            props.socket.on('playerNameOccupied', () => {
+                setBtnDisability(false);
+                setNicknameError(true);
+                setError(true);
             });
         }
     };
@@ -37,41 +53,61 @@ const Dashboard = (props) => {
         });
     };
 
+    const renderNicknameError = () => {
+        if (nicknameError) {
+            return (
+                <p className="form__error">The selected nickname is occupied</p>
+            );
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            props.socket.removeAllListeners();
+        };
+    }, []);
 
     return (
         <main>
             <div className="flex_centered">
-                <div className="row">
+                <div className="dashboard__section">
                     <div className="col">
-                        <FormNickname form={form} isError={isError} setError={setError} setValues={setValues} onChange={onChange}/>
+                        <FormNickname form={form} isError={isError} setError={setError} setValues={setValues}
+                                      onChange={onChange}/>
                     </div>
                 </div>
-                <div className="row dashboard__menu">
-                    <div className="col-6">
-                        <button type="button" className="nes-btn dashboard__btn" onClick={createRoom} disabled={isCreateRoomBtnDisabled}>Create a room</button>
-                    </div>
-                    <div className="col-6">
-                        <button type="button" className="nes-btn dashboard__btn">Score</button>
-                    </div>
+                <div className="dashboard__section dashboard__menu d-flex-col">
+                    {renderNicknameError()}
+                    <button type="button" className="nes-btn dashboard__btn" onClick={createRoom}
+                            disabled={isCreateRoomBtnDisabled}>
+                        Create a room
+                    </button>
+                    <button type="button" className="nes-btn dashboard__btn">Score</button>
                 </div>
             </div>
         </main>
-    )
+    );
 };
 
 const mapStateToProps = (state) => {
     return {
         user: state.user.nickname
-    }
+    };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        createRoom: (user) => {
-            dispatch(createRoom(user))
+        createRoomAction: (user) => {
+            dispatch(createRoomAction(user));
         }
-    }
-
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Dashboard));
+
+Dashboard.propTypes = {
+    user: PropTypes.string,
+    createRoomAction: PropTypes.func,
+    socket: PropTypes.object,
+    history: PropTypes.object,
+};

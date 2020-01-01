@@ -1,28 +1,26 @@
 import {
-    CREATE_GAME,
-    START_GAME,
-    SET_SCORE,
-    SET_NEXT_PIECE,
-    SET_LEVEL,
-    JOIN_GAME,
+    CREATE_ROOM,
+    JOIN_ROOM,
+    SET_ROOM,
+    SET_LEADER,
+    SET_OPPONENT,
+    REMOVE_OPPONENT,
+    SET_MODAL,
 } from '../actions/types';
 
 const initialState = {
-    id: null,
-    nextPiece: null
+    id: null
 };
 
 export default (state = initialState, action = {}) => {
     switch (action.type) {
-        case CREATE_GAME:
+        case CREATE_ROOM:
             return {
                 ...state,
                 id: action.id,
-                isLeader: true,
-                isGameStarted: false,
-                score: 0
+                isLeader: action.isLeader
             };
-        case JOIN_GAME:
+        case JOIN_ROOM:
             return {
                 ...state,
                 id: action.id,
@@ -30,29 +28,33 @@ export default (state = initialState, action = {}) => {
                 isGameStarted: false,
                 score: 0
             };
-        case START_GAME:
+        case SET_ROOM:
             return {
                 ...state,
-                isGameStarted: true
+                id: action.roomId
             };
-        case SET_SCORE:
+        case SET_LEADER:
             return {
                 ...state,
-                score: action.score
+                isLeader: action.isLeader
             };
-        case SET_NEXT_PIECE:
+        case SET_OPPONENT:
             return {
                 ...state,
-                nextPiece: action.nextPiece
+                opponent: action.opponent
             };
-        case SET_LEVEL:
+        case REMOVE_OPPONENT:
             return {
                 ...state,
-                level: action.level
+                opponent: null
+            };
+        case SET_MODAL:
+            return {
+                ...state,
+                modal: action.modal
             };
         default: {
             return state;
         }
     }
 };
-

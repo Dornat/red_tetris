@@ -1,20 +1,9 @@
 import Server from './Server';
 import Database from './Database';
 import dotenv from 'dotenv';
-import * as path from 'path';
 import http from 'http';
 import socket from 'socket.io';
-
-
-import Game from './entity/Game';
-import Player from './entity/Player';
-
-/**
- * Global games object
- * @type {{}}
- */
-let games = {};
-
+import socketActions from './socketActions.js';
 
 // For .env file to work
 dotenv.config();
@@ -23,7 +12,7 @@ const server = new Server({
     port: process.env.SERVER_PORT || 3000,
     createStaticFolder: true,
     onInit: (port) => {
-        console.log("Red Tetris is running on http://localhost:" + port);
+        console.log('Red Tetris is running on http://localhost:' + port);
     }
 });
 
@@ -35,55 +24,32 @@ const database = new Database({
 const socketServer = http.Server(server.app);
 const io = socket(socketServer);
 
+/**
+ * In JS we can't store key => value pairs in arrays.
+ *
+ * Global games array.
+ *
+ * @type {{}}
+ */
+const games = {};
+
+/**
+ * Global rooms array.
+ *
+ * @type {{}}
+ */
+const rooms = {};
+
+/**
+ * Global players array.
+ *
+ * @type {{}}
+ */
+const players = {};
+
 socketServer.listen(process.env.IO_SERVER_PORT);
 
-io.on('connection', (socket) => {
-    socket.on('createGame', function (playerName) {
-        let player = new Player(playerName);
-        let game = new Game(player);
-
-        games[game.id] = game;
-
-        socket.emit('gameCreated', game.id);
-    });
-
-    /**
-     * Only the leader can kick his opponent, so we need to know only gameId
-     */
-    socket.on('kickPlayer', function (gameId) {
-        /** @param {Game} game */
-        let game = games[gameId];
-        let playerWasKicked = game.kickPlayer();
-
-        socket.emit('playerWasKicked', playerWasKicked);
-    });
-
-    socket.on('acceptPlayer', function (playerName, gameId) {
-        let game = games[gameId];
-        let newPlayer = new Player(playerName, false);
-        let playerWasAccepted = game.addPlayer(newPlayer);
-
-        socket.emit('playerWasAccepted', playerWasAccepted);
-    });
-
-    /**
-     * TODO maybe it's better to use playerId
-     */
-    socket.on('leaveGame', function (playerName, gameId) {
-        let game = games[gameId];
-        let leftGame = game.exitFromGame(playerName);
-
-        socket.emit('leftGame', leftGame);
-    });
-
-    socket.on('generatePieces', function (data) {
-        let game = games[data.id];
-        let pieces = game.generatePieces(5);
-        console.log('pieces', pieces);
-        console.log(games);
-        socket.emit('getPieces', {pieces: pieces});
-    })
-});
+socketActions(io, rooms, games, players);
 
 
 database.initConnection();

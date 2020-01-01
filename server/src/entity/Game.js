@@ -1,95 +1,44 @@
 import crypto from 'crypto';
-import Player from './Player';
 import Piece from './Piece';
+import Player from './Player';
+
+const LEVEL_MEDIAN = 1000;
 
 class Game {
     /**
-     * @param {Player} player
+     * Accepts an array of players passed from Room.
+     *
+     * @param {array} players
      */
-    constructor(player) {
+    constructor(players) {
         this.id = crypto.randomBytes(4).toString('hex');
-
-        this.players = [player];
-        this.leader = player;
-
-        // Возможно что-то еще
+        this.level = 1;
+        this.isGameStarted = false;
+        this.players = players;
+        this.over = false;
     }
 
     /**
-     * Two players only, if more return false and do nothing
-     * Also checks if passed player is a leader, if so demote player
-     * @param {Player} player
+     * Starts the game.
      */
-    addPlayer(player) {
-        if (this.players.length > 1) {
-            return false
-        }
-
-        if (player.isLeader) {
-            player.isLeader = false;
-        }
-        this.players.push(player);
-        return true;
+    start() {
+        this.isGameStarted = true;
     }
 
     /**
-     * @param {Player} player
+     * Finishes the game.
      */
-    removePlayer(player) {
-        let playerIndex = this.players.indexOf(player);
-        this.players.splice(playerIndex, 1);
-        if (player.isLeader) {
-            this.promoteToLeader(this.players[0]);
-        }
+    setOver() {
+        this.over = true;
     }
 
     /**
-     * Only leaders can kick players
-     * @returns {boolean}
-     */
-    kickPlayer() {
-        if (this.players.length > 1) {
-            for (let i = 0; i < this.players.length; i++) {
-                if (!this.players[i].isLeader) {
-                    this.removePlayer(this.players[i]);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param {Player} player
-     */
-    promoteToLeader(player) {
-        if (this.players.indexOf(player) !== -1) {
-            this.leader = player;
-            player.isLeader = true;
-        }
-    }
-
-    /**
-     * Remove player from the game
-     * @param {string} playerName
-     * @returns {boolean}
-     */
-    exitFromGame(playerName) {
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].nickname === playerName) {
-                this.removePlayer(this.players[i]);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Generates array with random pieces
+     * Generates array with random pieces.
+     *
      * @param {int} numberOfPieces
      * @returns {array}
      */
-    generatePieces(numberOfPieces) {
+    static generatePieces(numberOfPieces) {
         let pieces = [];
         for (let i = 0; i < numberOfPieces; i++) {
             pieces.push(new Piece());
@@ -98,19 +47,40 @@ class Game {
         return pieces;
     }
 
+    /**
+     * Manages peace placement, fills coordinates for appropriate player field, sweeps field rows, increases player
+     * score, increases game level.
+     *
+     * @param {array} coordinates
+     * @param {Player} player
+     * @returns {null|number}
+     */
+    managePiecePlacement(coordinates, player) {
+        const sweptRows = player.field.fillCoordinates(coordinates);
+        if (sweptRows) {
+            player.score.increaseScore(sweptRows, this.level);
+        }
+        this._manageLevel();
+        return sweptRows;
+    }
 
-    // enableLevelSystem(level) {
-    //
-    // }
+    /**
+     * Calculates sum of scores for all players and then intelligently increases game level depending on result.
+     *
+     * @private
+     */
+    _manageLevel() {
+        let accumulatedScore = 0;
+        for (let key in this.players){
+            if(this.players.hasOwnProperty(key)){
+                accumulatedScore += this.players[key].score.quantity;
+            }
+        }
 
-    // TODO ??
-    // startGame() {
-    //
-    // }
-    //
-    // restartGame() {
-    //
-    // }
+        if ((accumulatedScore / LEVEL_MEDIAN) > this.level) {
+            this.level += 1;
+        }
+    }
 }
 
 export default Game;

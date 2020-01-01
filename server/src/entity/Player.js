@@ -1,40 +1,18 @@
 import Field from './Field';
+import Score from './Score';
 
 class Player {
     /**
      * @param {string} nickname
-     * @param {boolean=} isLeader
+     * @param {boolean} isLeader
      */
-    constructor(nickname, isLeader) {
-        if (typeof isLeader === "undefined") {
-            isLeader = true;
-        }
-
+    constructor(nickname, isLeader = true) {
         this.nickname = nickname;
         this.isLeader = isLeader;
         this.field = new Field();
-    }
-
-    /**
-     * @param {Field} field
-     */
-    setField(field) {
-        this.field = field;
-    }
-
-
-    // TODO Не забыть вызвать при начале игры
-    initScore() {
-        this.score = 0;
-    }
-
-    /**
-     * Уже посчитанные на фронте баллы
-     * Example: 40 100 300 1200
-     * @param {number} gamePoints
-     */
-    addToScore(gamePoints) {
-        this.score += gamePoints;
+        this.score = new Score();
+        this.level = 1;
+        this.online = true;
     }
 }
 
