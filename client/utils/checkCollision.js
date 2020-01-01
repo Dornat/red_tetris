@@ -12,5 +12,5 @@ export const checkCollision = (piece, field, {x: moveX, y: moveY}) => {
             }
         }
     }
-
+    return false;
 };

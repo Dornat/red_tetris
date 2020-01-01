@@ -30,19 +30,31 @@ class Field {
     }
 
     /**
-     * On success returns true, else false
-     * Example: [[20, 2], [19, 2], [18, 2], [17, 2]] - stick (####) tetramino
+     * On success returns deleted rows, else null.
+     * Parameter example: [[20, 2], [19, 2], [18, 2], [17, 2]] - stick (####) tetromino.
      * @param {Array} coordinates
-     * @returns {boolean}
+     * @returns {null|number}
      */
     fillCoordinates(coordinates) {
+        // TODO The bug sneaked in here. Find it! It's related to cheating.
         if (this.coordinatesAreFillable(coordinates)) {
             for (let i = 0; i < coordinates.length; i++) {
                 this.matrix[coordinates[i][0]][coordinates[i][1]] = 1;
             }
-            return true;
+
+            let sweptRows = 0;
+            // This is for rows sweeping.
+            for (let i = 0; i < this.matrix.length; i++) {
+                if (this.matrix[i].findIndex(cell => cell === 0) === -1) {
+                    this.matrix.splice(i, 1);
+                    this.matrix.unshift(new Array(this.matrix[0].length).fill(0));
+                    sweptRows++;
+                }
+            }
+
+            return sweptRows;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -58,6 +70,8 @@ class Field {
             let value = coordinates[i];
             for (let j = 0; j < valuesSoFar.length; j++) {
                 if (valuesSoFar[j][0] === value[0] && valuesSoFar[j][1] === value[1]) {
+                    console.log('coordinates1', coordinates);
+                    console.log(matrix);
                     return false;
                 }
             }
@@ -66,11 +80,16 @@ class Field {
 
         // check if specific coordinate is not intersecting with the same coordinate in matrix
         for (let i = 0; i < coordinates.length; i++) {
-            if (typeof matrix[coordinates[i][0]] !== 'undefined' && typeof matrix[coordinates[i][0]][coordinates[i][1]] !== 'undefined') {
+            if (typeof matrix[coordinates[i][0]] !== 'undefined'
+                && typeof matrix[coordinates[i][0]][coordinates[i][1]] !== 'undefined') {
                 if (matrix[coordinates[i][0]][coordinates[i][1]] !== 0) {
+                    console.log('coordinates2', coordinates);
+                    console.log(matrix);
                     return false;
                 }
             } else {
+                console.log('coordinates3', coordinates);
+                console.log(matrix);
                 return false;
             }
         }

@@ -5,11 +5,8 @@ export function getStateFromLocalStorage() {
         if (serializedState === null) {
             return undefined;
         }
-        console.log(serializedState);
         return JSON.parse(serializedState);
-    }
-    catch(e) {
+    } catch (e) {
         console.log(e);
-        return ;
     }
 }

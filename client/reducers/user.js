@@ -1,13 +1,12 @@
 import {
     SET_USER
-} from '../actions/types'
+} from '../actions/types';
 
 const initialState = {
     nickname: ''
 };
 
 export default (state = initialState, action = {}) => {
-
     switch(action.type) {
         case SET_USER:
             return {
@@ -18,5 +17,5 @@ export default (state = initialState, action = {}) => {
             return state;
         }
     }
-}
+};
 

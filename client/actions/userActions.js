@@ -1,9 +1,8 @@
 import {
     SET_USER
-} from './types'
+} from './types';
 
 export function setUser(user) {
-
     return {
         type: SET_USER,
         user

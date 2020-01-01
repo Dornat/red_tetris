@@ -1,16 +1,15 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from "react-redux";
-import {setUser} from "../../actions/userActions";
+import {connect} from 'react-redux';
+import {setUser} from '../../actions/userActions';
 
 const FormNickname = (props) => {
-
     const onSubmit = (e) => {
         e.preventDefault();
 
         if (!props.form.user.length) {
             props.setError(true);
-        }
-        else {
+        } else {
             props.setError(false);
         }
 
@@ -19,25 +18,32 @@ const FormNickname = (props) => {
 
     return (
         <form className="form__nickname" onSubmit={event => onSubmit(event)}>
-            <div className="input__group">
+            <div className="form-nickname__group">
                 <label className="input__label">Enter your nickname</label>
                 <input type="text" name="user"
-                    className={props.isError ? "nes-input is-error nickname__input" : "nes-input nickname__input"}
-                    onChange={event => props.onChange(event)} value={props.form.user}
+                       className={props.isError ? 'nes-input is-error nickname__input' : 'nes-input nickname__input'}
+                       onChange={event => props.onChange(event)} value={props.form.user}
                 />
                 <input type="submit" className="nes-btn is-primary" value="Save"/>
             </div>
         </form>
     );
-
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
     return {
         setUser: (user) => {
-            dispatch(setUser(user))
+            dispatch(setUser(user));
         }
-    }
+    };
 };
 
 export default connect(null, mapDispatchToProps)(FormNickname);
+
+FormNickname.propTypes = {
+    isError: PropTypes.bool,
+    form: PropTypes.object,
+    setError: PropTypes.func,
+    setUser: PropTypes.func,
+    onChange: PropTypes.func,
+};
