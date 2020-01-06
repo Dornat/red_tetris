@@ -48,18 +48,12 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
              * For the record - piecesBuffer is used for seamless transition from one bunch of generated array of pieces
              * to another one and of course for seamless usage in next piece block.
              */
-            // console.log('piece', piece);
-            // console.log('pieces, piecesBuffer', pieces, piecesBuffer);
             if (piece.collided) {
-                // console.log('in if (piece.collided)');
                 if (pieces.length === 0) {
                     console.log('IN IF (PIECES.LENGTH === 0)');
                     resetPiece(piecesBuffer[0].shape);
                     piecesBuffer.shift();
                     setPieces(piecesBuffer);
-
-                    piecesDebug(pieces, 'pieces');
-                    piecesDebug(piecesBuffer, 'piecesBuffer');
 
                     console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
 
@@ -68,9 +62,6 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
                     console.log('IN ELSE');
                     resetPiece(pieces[0].shape);
                     pieces.shift();
-
-                    piecesDebug(pieces, 'pieces');
-                    piecesDebug(piecesBuffer, 'piecesBuffer');
 
                     if (pieces.length === 0) {
                         console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
@@ -91,11 +82,6 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
                 return swept;
             }
 
-            // console.log('pieces', pieces);
-            // for (let i = 0; i < pieces.length; i++) {
-            //     console.log(pieces[i]);
-            // }
-            // fieldDebug(newField);
             return newField;
         };
 

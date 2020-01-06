@@ -12,3 +12,4 @@ export const SET_LEADER = 'SET_LEADER';
 export const SET_OPPONENT = 'SET_OPPONENT';
 export const REMOVE_OPPONENT = 'REMOVE_OPPONENT';
 export const SET_MODAL = 'SET_MODAL';
+export const SET_MUSIC = 'SET_MUSIC';
