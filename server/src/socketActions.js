@@ -2,6 +2,8 @@ import Player from './entity/Player';
 import Game from './entity/Game';
 import Room from './entity/Room';
 
+const GENERATE_PIECES_AMOUNT = 5;
+
 const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
 };
@@ -199,8 +201,8 @@ const socketActions = (io, rooms, games, players) => {
             if (typeof rooms[roomId] === 'undefined') {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
-                const pieces = Game.generatePieces(5);
-                console.log(pieces);
+                const pieces = Game.generatePieces(GENERATE_PIECES_AMOUNT);
+                console.log(`[${logDate()}] Generated '${pieces.length}' pieces for the room '${roomId}'`);
                 io.in(roomId).emit('getPieces', {pieces: pieces});
             }
         });
@@ -231,10 +233,6 @@ const socketActions = (io, rooms, games, players) => {
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                 }
 
-                if (player.nickname === 'dornat') {
-                    console.log(`\u001b[31m${player.nickname}\u001b[0m`, player.field.matrix);
-                    console.log(`\u001b[31m${player.nickname}\u001b[0m`, data.coords);
-                }
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,
                     score: player.score.quantity,

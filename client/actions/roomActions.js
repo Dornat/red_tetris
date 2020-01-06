@@ -1,4 +1,13 @@
-import {CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL} from './types';
+import {
+    CREATE_ROOM,
+    JOIN_ROOM,
+    SET_ROOM,
+    SET_LEADER,
+    SET_OPPONENT,
+    REMOVE_OPPONENT,
+    SET_MODAL,
+    SET_MUSIC
+} from './types';
 
 export function createRoomAction(id, isLeader = true) {
     return {
@@ -46,5 +55,12 @@ export function setModalAction(modal) {
     return {
         type: SET_MODAL,
         modal: modal
+    };
+}
+
+export function setMusicAction(musicSound) {
+    return {
+        type: SET_MUSIC,
+        musicSound: musicSound
     };
 }

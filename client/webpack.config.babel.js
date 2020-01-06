@@ -1,4 +1,6 @@
-import * as path from 'path'
+import * as path from 'path';
+
+const SRC = path.resolve(__dirname, 'music');
 
 module.exports = {
     devtool: 'source-map',
@@ -6,7 +8,7 @@ module.exports = {
     entry: './index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, "../server/src/resources/js")
+        path: path.resolve(__dirname, '../server/src/resources/js')
     },
     module: {
         rules: [
@@ -33,7 +35,12 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader"
+                loader: 'babel-loader'
+            },
+            {
+                test: /\.mp3$/,
+                include: SRC,
+                loader: 'file-loader'
             }
         ]
     }
