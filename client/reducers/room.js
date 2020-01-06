@@ -7,11 +7,14 @@ import {
     REMOVE_OPPONENT,
     SET_MODAL,
     SET_MUSIC,
+    SET_MUSIC_TRACK,
 } from '../actions/types';
+import {musicLibrary} from '../utils/musicLibrary';
 
 const initialState = {
     id: null,
-    musicSound: true
+    musicSound: false,
+    musicLibrary: musicLibrary
 };
 
 export default (state = initialState, action = {}) => {
@@ -59,6 +62,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 musicSound: action.musicSound
+            };
+        case SET_MUSIC_TRACK:
+            return {
+                ...state,
+                musicTrackName: action.musicTrackName
             };
         default: {
             return state;

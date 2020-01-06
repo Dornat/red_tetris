@@ -6,7 +6,8 @@ import {
     SET_OPPONENT,
     REMOVE_OPPONENT,
     SET_MODAL,
-    SET_MUSIC
+    SET_MUSIC,
+    SET_MUSIC_TRACK,
 } from './types';
 
 export function createRoomAction(id, isLeader = true) {
@@ -62,5 +63,12 @@ export function setMusicAction(musicSound) {
     return {
         type: SET_MUSIC,
         musicSound: musicSound
+    };
+}
+
+export function setMusicTrackAction(musicTrackName) {
+    return {
+        type: SET_MUSIC_TRACK,
+        musicTrackName: musicTrackName
     };
 }
