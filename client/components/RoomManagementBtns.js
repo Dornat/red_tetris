@@ -2,16 +2,17 @@ import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {startGameAction} from '../actions/gameActions';
+import {setMusicTrackAction} from '../actions/roomActions';
 
 const RoomManagementBtns = (props) => {
     const [isGameStarted, setGameStarted] = useState(props.isGameStarted || false);
 
     const onClickStartGame = () => {
         props.socket.emit('startGameInRoom', props.roomId);
-    };
 
-    const onClickPause = (e) => {
-        console.log('PAUSE');
+        props.musicLibrary['newBeginnings'].pause();
+        props.setMusicTrackAction('halfLife');
+        props.musicLibrary['halfLife'].play();
     };
 
     const toDashboard = () => props.socket.emit('leaveGame', props.roomId, props.user);
@@ -24,12 +25,16 @@ const RoomManagementBtns = (props) => {
                 setGameStarted(true);
             }
         });
+
+        return () => {
+            props.musicLibrary['halfLife'].pause();
+        };
     }, []);
 
     if (props.isLeader) {
         return (
             <div className="room-management__btns">
-                { !isGameStarted && <button className="nes-btn" onClick={onClickStartGame}>Start</button>}
+                {!isGameStarted && <button className="nes-btn" onClick={onClickStartGame}>Start</button>}
                 <button className="nes-btn" onClick={toDashboard}>Dashboard</button>
             </div>
         );
@@ -46,7 +51,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         startGameAction: () => {
             dispatch(startGameAction());
-        }
+        },
+        setMusicTrackAction: (musicTrackName) => {
+            dispatch(setMusicTrackAction(musicTrackName));
+        },
     };
 };
 
@@ -55,7 +63,8 @@ const mapStateToProps = (state) => {
         user: state.user.nickname,
         isGameStarted: state.room.isGameStarted,
         isLeader: state.room.isLeader,
-        roomId: state.room.id
+        roomId: state.room.id,
+        musicLibrary: state.room.musicLibrary,
     };
 };
 
