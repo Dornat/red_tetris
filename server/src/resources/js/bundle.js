@@ -293,8 +293,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var _socket__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../socket */ "./socket.js");
-/* harmony import */ var _socketEvents__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../socketEvents */ "./socketEvents.js");
-
 
 
 
@@ -303,7 +301,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var socket = Object(_socket__WEBPACK_IMPORTED_MODULE_6__["initSocketConnection"])();
-Object(_socketEvents__WEBPACK_IMPORTED_MODULE_7__["socketEvents"])(socket);
 function App() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Context_SocketContext__WEBPACK_IMPORTED_MODULE_2__["default"].Provider, {
     value: socket
@@ -487,7 +484,10 @@ var Dashboard = function Dashboard(props) {
     disabled: isCreateRoomBtnDisabled
   }, "Create a room"), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("button", {
     type: "button",
-    className: "nes-btn dashboard__btn"
+    className: "nes-btn dashboard__btn",
+    onClick: function onClick() {
+      return props.history.push('/score');
+    }
   }, "Score"))));
 };
 
@@ -1508,6 +1508,69 @@ var NotFound = function NotFound() {
 
 /***/ }),
 
+/***/ "./components/Paginator.js":
+/*!*********************************!*\
+  !*** ./components/Paginator.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var Paginator = function Paginator(props) {
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    console.log("HERE I AM");
+  }, []);
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "paginator"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "paginator__row"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "\u041D\u0430\u0437\u0430\u0434")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn is-primary"
+  }, "1")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "2")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "3")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "...")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page-btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "pagination__page__btn"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "nes-btn"
+  }, "\u0412\u043F\u0435\u0440\u0435\u0434"))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Paginator);
+
+/***/ }),
+
 /***/ "./components/Room.js":
 /*!****************************!*\
   !*** ./components/Room.js ***!
@@ -2156,10 +2219,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
 /* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
 /* harmony import */ var _NotFound__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NotFound */ "./components/NotFound.js");
+/* harmony import */ var _Score__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Score */ "./components/Score.js");
 
  // Higher Order Components
 
  // Components
+
 
 
 
@@ -2174,10 +2239,113 @@ function Router(props) {
     path: "/room/:id",
     component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Room__WEBPACK_IMPORTED_MODULE_4__["default"])
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+    exact: true,
+    path: "/score",
+    component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Score__WEBPACK_IMPORTED_MODULE_6__["default"])
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     path: "*",
     component: _NotFound__WEBPACK_IMPORTED_MODULE_5__["default"]
   }));
 }
+
+/***/ }),
+
+/***/ "./components/Score.js":
+/*!*****************************!*\
+  !*** ./components/Score.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Paginator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Paginator */ "./components/Paginator.js");
+
+
+
+var SCORES_AMOUNT = 3;
+
+var Score = function Score(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])({
+    items: null,
+    page: null,
+    pages: null
+  }),
+      _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState, 2),
+      paginationData = _useState2[0],
+      setPaginationData = _useState2[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    props.socket.emit('getScoreResults', {
+      count: SCORES_AMOUNT,
+      page: 1
+    });
+    props.socket.on('scoreResults', function (data) {
+      setPaginationData({
+        items: data.items,
+        page: data.page,
+        pages: data.pages
+      });
+    });
+  }, []);
+
+  var pageChange = function pageChange() {};
+
+  var renderData = function renderData() {
+    if (paginationData.items !== null && paginationData.items.length) {
+      return paginationData.items.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          className: "score__row",
+          key: index
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          className: "score__column"
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, item.rank)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          className: "score__column"
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, item.nickname)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          className: "score__column"
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, item.score)));
+      });
+    }
+  };
+
+  var renderPaginator = function renderPaginator() {
+    if (paginationData.pages && paginationData.page) {
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Paginator__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        currentPage: paginationData.pages,
+        pages: paginationData.pages,
+        pageChange: pageChange
+      });
+    }
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__container"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__head"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__value"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Highest score: 620")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__position"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Your position: 24 / 234"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__table-wrap"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__table"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score-table__head score__row"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__column"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Rank")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__column"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Nickname")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "score__column"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "Score"))), renderData())), renderPaginator());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Score);
 
 /***/ }),
 
@@ -14994,7 +15162,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    height: 40vw;\n    max-width: 300px;\n    max-height: 600px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n", ""]);
+exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    height: 40vw;\n    max-width: 300px;\n    max-height: 600px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 0 10vw; }\n\n@media (max-width: 786px) {\n  .score__container {\n    margin: 0 30px; } }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n", ""]);
 
 
 /***/ }),
@@ -53912,7 +54080,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -71528,20 +71696,6 @@ var initSocketConnection = function initSocketConnection() {
     console.log(e);
   }
 };
-
-/***/ }),
-
-/***/ "./socketEvents.js":
-/*!*************************!*\
-  !*** ./socketEvents.js ***!
-  \*************************/
-/*! exports provided: socketEvents */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "socketEvents", function() { return socketEvents; });
-var socketEvents = function socketEvents(socket) {};
 
 /***/ }),
 
