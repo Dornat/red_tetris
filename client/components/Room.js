@@ -89,17 +89,22 @@ const Room = (props) => {
         const handleJoining = async () => {
             try {
                 const locationState = props.location.state;
+
                 let isRoomCreator = false;
+
                 if (typeof locationState !== 'undefined' && typeof locationState.gameCreator !== 'undefined') {
                     isRoomCreator = locationState.gameCreator;
                 }
+
                 const roomIdFromUrl = props.match.params.id;
+
                 // When creator refreshes the page he needs to return to the room that he's created recently.
                 if (props.roomId === null && props.isLeader == null && isRoomCreator) {
                     props.socket.emit('join', roomIdFromUrl, props.user);
                     props.setRoomAction(roomIdFromUrl);
                     props.setLeaderAction(true);
                 }
+
                 if (isRoomCreator) {
                     return {msg: MSG_GAME_CREATED};
                 }

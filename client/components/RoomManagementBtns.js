@@ -29,10 +29,7 @@ const RoomManagementBtns = (props) => {
     if (props.isLeader) {
         return (
             <div className="room-management__btns">
-                {isGameStarted
-                    ? <button className="nes-btn" onClick={onClickPause}>Pause</button>
-                    : <button className="nes-btn" onClick={onClickStartGame}>Start</button>
-                }
+                { !isGameStarted && <button className="nes-btn" onClick={onClickStartGame}>Start</button>}
                 <button className="nes-btn" onClick={toDashboard}>Dashboard</button>
             </div>
         );
