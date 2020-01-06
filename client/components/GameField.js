@@ -22,7 +22,7 @@ import {
 const GameField = (props) => {
     const DROP_TIME_BASE = 725;
     const DROP_TIME_MULTIPLIER = 0.85;
-    const GENERATE_PIECES_AMOUNT = 5;
+    const GENERATE_PIECES_AMOUNT = 1000;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);

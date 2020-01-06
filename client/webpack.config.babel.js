@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-const SRC = path.resolve(__dirname, 'music');
+const music = path.resolve(__dirname, 'music');
 
 module.exports = {
     devtool: 'source-map',
@@ -38,8 +38,8 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.mp3$/,
-                include: SRC,
+                test: /\.(ogg|mp3|wav|mpe?g)$/i,
+                include: music,
                 loader: 'file-loader'
             }
         ]

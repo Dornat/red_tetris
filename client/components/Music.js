@@ -3,9 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {connect} from 'react-redux';
 import {faVolumeMute, faVolumeUp} from '@fortawesome/free-solid-svg-icons';
-import {setMusicAction} from '../actions/roomActions';
-import {soundManager, sfw} from 'soundmanager2';
-import music from '../music/tetris_effect_ost_boscage.mp3';
+import {setMusicAction, setMusicTrackAction} from '../actions/roomActions';
 
 const Music = (props) => {
     const toggleMusicSound = () => {
@@ -13,25 +11,19 @@ const Music = (props) => {
     };
 
     useEffect(() => {
-        // soundManager.setup({
-        //     url: sfw,
-        //     onready: function() {
-        //         const mySound = soundManager.createSound({
-        //             id: 'aSound', // optional: provide your own unique id
-        //             url: music
-        //         });
-        //
-        //         mySound.play();
-        //
-        //     },
-        // });
-        // const music = new Audio('../music/tetris_effect_ost_boscage.mp3');
-        // music.loop = true;
-        // music.play().then(response => {
-        //     console.log('hello', response);
-        // }).catch(reason => {
-        //     console.log('in catch', reason);
-        // });
+        if (props.musicSound) {
+            props.musicLibrary[props.musicTrackName].play();
+        } else {
+            console.log('props.musicTrackName', props.musicTrackName);
+            console.log('soundTracks', props.musicLibrary);
+            if (props.musicTrackName) {
+                props.musicLibrary[props.musicTrackName].pause();
+            }
+        }
+
+    }, [props.musicSound]);
+
+    useEffect(() => {
     }, []);
 
     return (
@@ -53,7 +45,9 @@ const Music = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        musicSound: state.room.musicSound
+        musicSound: state.room.musicSound,
+        musicTrackName: state.room.musicTrackName,
+        musicLibrary: state.room.musicLibrary
     };
 };
 
@@ -61,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setMusicAction: (musicSound) => {
             dispatch(setMusicAction(musicSound));
+        },
+        setMusicTrackAction: (musicTrackName) => {
+            dispatch(setMusicTrackAction(musicTrackName));
         }
     };
 };
@@ -69,5 +66,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Music);
 
 Music.propTypes = {
     musicSound: PropTypes.bool,
-    setMusicAction: PropTypes.func
+    musicTrackName: PropTypes.string,
+    musicLibrary: PropTypes.object,
+    setMusicAction: PropTypes.func,
+    setMusicTrackAction: PropTypes.func,
 };

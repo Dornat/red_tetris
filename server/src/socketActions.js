@@ -3,7 +3,7 @@ import Game from './entity/Game';
 import Room from './entity/Room';
 import ScoreService from './service/ScoreService';
 
-const GENERATE_PIECES_AMOUNT = 5;
+const GENERATE_PIECES_AMOUNT = 1000;
 
 const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
@@ -214,7 +214,7 @@ const socketActions = (io, rooms, games, players) => {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
                 const pieces = Game.generatePieces(GENERATE_PIECES_AMOUNT);
-                console.log(`[${logDate()}] Generated '${pieces.length}' pieces for the room '${roomId}'`);
+                // console.log(`[${logDate()}] Generated '${pieces.length}' pieces for the room '${roomId}'`);
                 io.in(roomId).emit('getPieces', {pieces: pieces});
             }
         });

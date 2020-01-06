@@ -12,7 +12,7 @@ import {
     setRoomAction,
     setLeaderAction,
     setOpponentAction,
-    removeOpponentAction
+    removeOpponentAction, setMusicTrackAction
 } from '../actions/roomActions';
 
 const modalStyles = {
@@ -201,7 +201,9 @@ const Room = (props) => {
             setIsModalOpened(true);
         });
 
+        props.setMusicTrackAction('newBeginnings');
         return () => {
+            props.musicLibrary['newBeginnings'].pause();
             props.socket.removeAllListeners();
         };
     }, []);
@@ -286,6 +288,7 @@ const mapStateToProps = (state) => {
         roomId: state.room.id,
         isLeader: state.room.isLeader,
         opponent: state.room.opponent,
+        musicLibrary: state.room.musicLibrary,
     };
 };
 
@@ -305,7 +308,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         removeOpponentAction: () => {
             dispatch(removeOpponentAction());
-        }
+        },
+        setMusicTrackAction: (musicTrackName) => {
+            dispatch(setMusicTrackAction(musicTrackName));
+        },
     };
 };
 
@@ -315,13 +321,15 @@ Room.propTypes = {
     roomId: PropTypes.string,
     user: PropTypes.string,
     isLeader: PropTypes.bool,
-    joinRoomAction: PropTypes.func,
-    setRoomAction: PropTypes.func,
-    setLeaderAction: PropTypes.func,
-    setOpponentAction: PropTypes.func,
-    removeOpponentAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
+    musicLibrary: PropTypes.object,
+    joinRoomAction: PropTypes.func,
+    setRoomAction: PropTypes.func,
+    setLeaderAction: PropTypes.func,
+    setOpponentAction: PropTypes.func,
+    setMusicTrackAction: PropTypes.func,
+    removeOpponentAction: PropTypes.func,
 };

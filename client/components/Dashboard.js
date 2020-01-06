@@ -3,7 +3,7 @@ import Music from './Music';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
-import {createRoomAction} from '../actions/roomActions';
+import {createRoomAction, setMusicTrackAction} from '../actions/roomActions';
 import {withRouter} from 'react-router-dom';
 
 const Dashboard = (props) => {
@@ -61,7 +61,9 @@ const Dashboard = (props) => {
     };
 
     useEffect(() => {
+        props.setMusicTrackAction('boscage');
         return () => {
+            props.musicLibrary['boscage'].pause();
             props.socket.removeAllListeners();
         };
     }, []);
@@ -84,7 +86,9 @@ const Dashboard = (props) => {
                             disabled={isCreateRoomBtnDisabled}>
                         Create a room
                     </button>
-                    <button type="button" className="nes-btn dashboard__btn" onClick={() => props.history.push('/score')}>Score</button>
+                    <button type="button" className="nes-btn dashboard__btn" onClick={() => props.history.push('/score')}>
+                        Score
+                    </button>
                 </div>
             </div>
         </main>
@@ -93,7 +97,8 @@ const Dashboard = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.nickname
+        user: state.user.nickname,
+        musicLibrary: state.room.musicLibrary,
     };
 };
 
@@ -101,7 +106,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         createRoomAction: (user) => {
             dispatch(createRoomAction(user));
-        }
+        },
+        setMusicTrackAction: (musicTrackName) => {
+            dispatch(setMusicTrackAction(musicTrackName));
+        },
     };
 };
 
@@ -109,7 +117,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Dashboard
 
 Dashboard.propTypes = {
     user: PropTypes.string,
-    createRoomAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
+    musicLibrary: PropTypes.object,
+    createRoomAction: PropTypes.func,
+    setMusicTrackAction: PropTypes.func,
 };
