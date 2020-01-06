@@ -2,7 +2,7 @@ import Player from './entity/Player';
 import Game from './entity/Game';
 import Room from './entity/Room';
 
-const GENERATE_PIECES_AMOUNT = 1000;
+const GENERATE_PIECES_AMOUNT = 5;
 
 const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
@@ -232,9 +232,6 @@ const socketActions = (io, rooms, games, players) => {
                     console.log('\u001b[31mfireInTheHoleTheCheaterIsHere\u001b[0m');
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
                 }
-
-                // console.log(`\u001b[31m${player.nickname}\u001b[0m`, player.field.matrix);
-                // console.log(`\u001b[31m${player.nickname}\u001b[0m`, data.coords);
 
                 io.in(data.roomId).emit('sendUpdatedGameData', {
                     myNickName: player.nickname,

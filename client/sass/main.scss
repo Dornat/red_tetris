@@ -437,3 +437,23 @@ button {
     }
   }
 }
+
+.dashboard-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  position: absolute;
+  top: 3rem;
+  right: 3rem;
+}
+
+.music {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  button {
+    cursor: pointer !important;
+  }
+}

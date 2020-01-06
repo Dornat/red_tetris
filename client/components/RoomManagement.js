@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import RoomManagementBtns from './RoomManagementBtns';
 import {connect} from 'react-redux';
+import Music from './Music';
 
 const RoomManagement = (props) => {
     const setFocusToField = () => {
@@ -13,6 +14,7 @@ const RoomManagement = (props) => {
     return (
         <div className="room__management" onClick={setFocusToField}>
             <div>
+                <Music/>
                 <GameLink/>
                 <GamePlayers socket={props.socket}/>
             </div>

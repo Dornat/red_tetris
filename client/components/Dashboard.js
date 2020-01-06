@@ -1,4 +1,5 @@
 import FormNickname from './Form/FormNickname';
+import Music from './Music';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
@@ -6,11 +7,9 @@ import {createRoomAction} from '../actions/roomActions';
 import {withRouter} from 'react-router-dom';
 
 const Dashboard = (props) => {
-
     const [isError, setError] = useState(false);
     const [isCreateRoomBtnDisabled, setBtnDisability] = useState(false);
     const [nicknameError, setNicknameError] = useState(false);
-
     const [form, setValues] = useState({
         user: props.user || ''
     });
@@ -70,6 +69,9 @@ const Dashboard = (props) => {
     return (
         <main>
             <div className="flex_centered">
+                <div className="dashboard-actions">
+                    <Music/>
+                </div>
                 <div className="dashboard__section">
                     <div className="col">
                         <FormNickname form={form} isError={isError} setError={setError} setValues={setValues}
