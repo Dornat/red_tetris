@@ -1112,7 +1112,7 @@ var GameLink = function GameLink(props) {
     className: "game-link__label label text-uppercase"
   }, "Invite link"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "game__link"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.roomId), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__["CopyToClipboard"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, props.roomId || "NO ROOM"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_copy_to_clipboard__WEBPACK_IMPORTED_MODULE_1__["CopyToClipboard"], {
     text: window.location.origin + '/room/' + props.roomId
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "invite-cpy__btn nes-btn is-primary"
@@ -2101,10 +2101,7 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
   if (props.isLeader) {
     return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
       className: "room-management__btns"
-    }, isGameStarted ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-      className: "nes-btn",
-      onClick: onClickPause
-    }, "Pause") : react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    }, !isGameStarted && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
       className: "nes-btn",
       onClick: onClickStartGame
     }, "Start"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
@@ -71595,7 +71592,8 @@ var loadFromLocalStorage = function loadFromLocalStorage() {
 };
 
 var persistedState = loadFromLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });

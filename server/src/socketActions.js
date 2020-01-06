@@ -49,7 +49,18 @@ const socketActions = (io, rooms, games, players) => {
          * Checks if somebody can join the room.
          */
         socket.on('canJoinRoom', (roomId) => {
-            if (typeof rooms[roomId] !== 'undefined') {
+
+            console.log("ROOM ID", roomId);
+            console.log("GAME", rooms[roomId].game);
+
+            if (
+                /** Room exists */
+                typeof rooms[roomId] !== 'undefined'
+                /** Game does not exist */
+                && (!rooms[roomId].game ||
+                /** or game isn't started (might be) */
+                !rooms[roomId].game.isGameStarted)
+            ) {
                 socket.emit('canJoinRoom', {success: true});
             } else {
                 socket.emit('canJoinRoom', {success: false});
