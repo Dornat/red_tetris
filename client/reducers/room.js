@@ -6,10 +6,12 @@ import {
     SET_OPPONENT,
     REMOVE_OPPONENT,
     SET_MODAL,
+    SET_MUSIC,
 } from '../actions/types';
 
 const initialState = {
-    id: null
+    id: null,
+    musicSound: true
 };
 
 export default (state = initialState, action = {}) => {
@@ -52,6 +54,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 modal: action.modal
+            };
+        case SET_MUSIC:
+            return {
+                ...state,
+                musicSound: action.musicSound
             };
         default: {
             return state;

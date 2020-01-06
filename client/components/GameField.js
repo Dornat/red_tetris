@@ -22,7 +22,7 @@ import {
 const GameField = (props) => {
     const DROP_TIME_BASE = 725;
     const DROP_TIME_MULTIPLIER = 0.85;
-    const GENERATE_PIECES_AMOUNT = 1000;
+    const GENERATE_PIECES_AMOUNT = 5;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
@@ -39,9 +39,13 @@ const GameField = (props) => {
         }
     };
 
-    const drop = () => {
-        if (!checkCollision(piece, field, {x: 0, y: 1})) {
-            updatePiecePosition({x: 0, y: 1, collided: false});
+    /**
+     *
+     * @param y
+     */
+    const drop = (y = null) => {
+        if (!checkCollision(piece, field, {x: 0, y: y ? y : 1})) {
+            updatePiecePosition({x: 0, y: y ? y : 1, collided: false});
         } else {
             setDropTime(assembleDropTime());
             if (piece.position.y < 1) {
@@ -76,6 +80,18 @@ const GameField = (props) => {
         drop();
     };
 
+    const dropPieceInAvailableSpot = () => {
+        let y = 1;
+        for (;;) {
+            if (!checkCollision(piece, field, {x: 0, y: y})) {
+                y++;
+            } else {
+                break;
+            }
+        }
+        drop(y - 1);
+    };
+
     const move = (e) => {
         if (!gameOver) {
             if (e.keyCode === 72 || e.keyCode === 37) {
@@ -87,7 +103,8 @@ const GameField = (props) => {
             } else if (e.keyCode === 38 || e.keyCode === 75) {
                 pieceRotate(field, 1);
             } else if (e.keyCode === 32) {
-                setDropTime(1);
+                // setDropTime(1);
+                dropPieceInAvailableSpot();
             }
         }
     };
