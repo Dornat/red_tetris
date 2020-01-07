@@ -66,20 +66,14 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
                     if (pieces.length === 0) {
                         // console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
                         // console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
-
                         setNextPieceAction(piecesBuffer[0].shape);
                     } else {
                         // console.log('IN ELSE IN ELSE');
                         // console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
-
                         setNextPieceAction(pieces[0].shape);
                     }
                 }
-                const swept = sweepRows(newField);
-                // console.log('field with sweptRows');
-                // console.log('pieces', pieces);
-                // fieldDebug(swept);
-                return swept;
+                return sweepRows(newField);
             }
 
             return newField;
