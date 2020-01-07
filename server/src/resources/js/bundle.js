@@ -938,7 +938,6 @@ var GameField = function GameField(props) {
       } else if (e.keyCode === 38 || e.keyCode === 75) {
         pieceRotate(field, 1);
       } else if (e.keyCode === 32) {
-        // setDropTime(1);
         dropPieceInAvailableSpot();
       }
     }
@@ -2551,11 +2550,7 @@ var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPie
           }
         }
 
-        var swept = sweepRows(newField); // console.log('field with sweptRows');
-        // console.log('pieces', pieces);
-        // fieldDebug(swept);
-
-        return swept;
+        return sweepRows(newField);
       }
 
       return newField;

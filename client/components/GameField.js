@@ -102,7 +102,6 @@ const GameField = (props) => {
             } else if (e.keyCode === 38 || e.keyCode === 75) {
                 pieceRotate(field, 1);
             } else if (e.keyCode === 32) {
-                // setDropTime(1);
                 dropPieceInAvailableSpot();
             }
         }
@@ -209,7 +208,6 @@ const GameField = (props) => {
     useInterval(() => {
         drop();
     }, dropTime);
-
 
     return (
         <div tabIndex="0" className="game-field__wrap flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}
