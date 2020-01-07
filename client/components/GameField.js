@@ -23,7 +23,7 @@ import {
 const GameField = (props) => {
     const DROP_TIME_BASE = 725;
     const DROP_TIME_MULTIPLIER = 0.85;
-    const GENERATE_PIECES_AMOUNT = 5;
+    const GENERATE_PIECES_AMOUNT = 1000;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
@@ -56,13 +56,11 @@ const GameField = (props) => {
                 return;
             }
             if (piecesBuffer.length === 1) {
-                piecesDebug(piecesBuffer, 'in if (piecesBuffer.length == 1), piecesBuffer');
                 props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
             } else {
                 updatePiecePosition({x: 0, y: 0, collided: true});
                 // Maybe we need to move this two lines outside of else statement.
                 const coords = assembleCoordinatesForFillingFieldOnServer(piece);
-                console.log('coords', coords);
                 props.socket.emit('updatePlayerField', {roomId: props.roomId, nickname: props.user, coords: coords});
             }
         }
@@ -118,7 +116,6 @@ const GameField = (props) => {
     useEffect(() => {
         // TODO CAUTION! There is a bug here somewhere.
         if (pieces.length === GENERATE_PIECES_AMOUNT) { // Draw piece only for the first piece in pieces array and only when array is full.
-            console.log('in useEffect with if(pieces.length === GENERATE_PIECES_AMOUNT)');
             updatePiecePosition({x: 0, y: 0, collided: true}); // True is important here. Why?
         }
     }, [pieces]); // This fires every time when pieces are updated.
@@ -198,10 +195,6 @@ const GameField = (props) => {
         }
         setField(newField);
     }, [props.rowsAmount]);
-
-    useEffect(() => {
-        piecesDebug(piecesBuffer);
-    }, [piecesBuffer]);
 
     const redrawOpponentField = (matrix) => {
         let newField = createField(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
