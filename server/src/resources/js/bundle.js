@@ -468,7 +468,6 @@ var Dashboard = function Dashboard(props) {
   Object(react__WEBPACK_IMPORTED_MODULE_5__["useEffect"])(function () {
     props.setMusicTrackAction('boscage');
     return function () {
-      props.musicLibrary['boscage'].pause();
       props.socket.removeAllListeners();
     };
   }, []);
@@ -504,8 +503,7 @@ var Dashboard = function Dashboard(props) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    user: state.user.nickname,
-    musicLibrary: state.room.musicLibrary
+    user: state.user.nickname
   };
 };
 
@@ -525,7 +523,6 @@ Dashboard.propTypes = {
   user: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string,
   socket: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
   history: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  musicLibrary: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
   createRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   setMusicTrackAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func
 };
@@ -1348,15 +1345,35 @@ var Music = function Music(props) {
     if (props.musicSound) {
       props.musicLibrary[props.musicTrackName].play();
     } else {
-      console.log('props.musicTrackName', props.musicTrackName);
-      console.log('soundTracks', props.musicLibrary);
-
       if (props.musicTrackName) {
         props.musicLibrary[props.musicTrackName].pause();
       }
     }
   }, [props.musicSound]);
-  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {}, []);
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    for (var trackName in props.musicLibrary) {
+      if (props.musicLibrary.hasOwnProperty(trackName)) {
+        if (trackName === props.musicTrackName && props.musicSound) {
+          props.musicLibrary[trackName].play();
+        } else {
+          props.musicLibrary[trackName].pause();
+        }
+      }
+    }
+  }, [props.musicTrackName]);
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    if (props.musicSound) {
+      props.musicLibrary[props.musicTrackName].play();
+    }
+
+    return function () {
+      for (var trackName in props.musicLibrary) {
+        if (trackName.isPrototypeOf(props.musicLibrary)) {
+          props.musicLibrary[trackName].pause();
+        }
+      }
+    };
+  }, []);
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "music"
   }, props.musicSound ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
@@ -1937,7 +1954,7 @@ var Room = function Room(props) {
     });
     props.setMusicTrackAction('newBeginnings');
     return function () {
-      props.musicLibrary['newBeginnings'].pause();
+      props.setMusicTrackAction('boscage');
       props.socket.removeAllListeners();
     };
   }, []);
@@ -2023,8 +2040,7 @@ var mapStateToProps = function mapStateToProps(state) {
     user: state.user.nickname,
     roomId: state.room.id,
     isLeader: state.room.isLeader,
-    opponent: state.room.opponent,
-    musicLibrary: state.room.musicLibrary
+    opponent: state.room.opponent
   };
 };
 
@@ -2060,7 +2076,6 @@ Room.propTypes = {
   history: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
   match: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
   location: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  musicLibrary: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
   joinRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   setRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
   setLeaderAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
@@ -2163,13 +2178,12 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
 
   var onClickStartGame = function onClickStartGame() {
     props.socket.emit('startGameInRoom', props.roomId);
-    props.musicLibrary['newBeginnings'].pause();
     props.setMusicTrackAction('halfLife');
-    props.musicLibrary['halfLife'].play();
   };
 
   var toDashboard = function toDashboard() {
-    return props.socket.emit('leaveGame', props.roomId, props.user);
+    props.setMusicTrackAction('boscage');
+    props.socket.emit('leaveGame', props.roomId, props.user);
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
@@ -2181,7 +2195,7 @@ var RoomManagementBtns = function RoomManagementBtns(props) {
       }
     });
     return function () {
-      props.musicLibrary['halfLife'].pause();
+      props.setMusicTrackAction('boscage');
     };
   }, []);
 
@@ -2221,8 +2235,7 @@ var mapStateToProps = function mapStateToProps(state) {
     user: state.user.nickname,
     isGameStarted: state.room.isGameStarted,
     isLeader: state.room.isLeader,
-    roomId: state.room.id,
-    musicLibrary: state.room.musicLibrary
+    roomId: state.room.id
   };
 };
 
