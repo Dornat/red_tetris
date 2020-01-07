@@ -90,7 +90,7 @@
 /*!********************************!*\
   !*** ./actions/gameActions.js ***!
   \********************************/
-/*! exports provided: createGameAction, joinGameAction, startGameAction, setScoreAction, setNextPieceAction, setLevelAction */
+/*! exports provided: createGameAction, joinGameAction, startGameAction, setScoreAction, setNextPieceAction, setLevelAction, reduceRowsAmountAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101,6 +101,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setScoreAction", function() { return setScoreAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNextPieceAction", function() { return setNextPieceAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setLevelAction", function() { return setLevelAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reduceRowsAmountAction", function() { return reduceRowsAmountAction; });
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./types */ "./actions/types.js");
 
 function createGameAction(id) {
@@ -136,6 +137,12 @@ function setLevelAction(level) {
   return {
     type: _types__WEBPACK_IMPORTED_MODULE_0__["SET_LEVEL"],
     level: level
+  };
+}
+function reduceRowsAmountAction(reductionAmount) {
+  return {
+    type: _types__WEBPACK_IMPORTED_MODULE_0__["REDUCE_ROWS_AMOUNT"],
+    reductionAmount: reductionAmount
   };
 }
 
@@ -223,7 +230,7 @@ function setMusicTrackAction(musicTrackName) {
 /*!**************************!*\
   !*** ./actions/types.js ***!
   \**************************/
-/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_NEXT_PIECE, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL, SET_MUSIC, SET_MUSIC_TRACK */
+/*! exports provided: SET_USER, CREATE_GAME, START_GAME, SET_SCORE, SET_NEXT_PIECE, SET_LEVEL, JOIN_GAME, CREATE_ROOM, JOIN_ROOM, SET_ROOM, SET_LEADER, SET_OPPONENT, REMOVE_OPPONENT, SET_MODAL, SET_MUSIC, SET_MUSIC_TRACK, REDUCE_ROWS_AMOUNT */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -244,6 +251,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_MODAL", function() { return SET_MODAL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_MUSIC", function() { return SET_MUSIC; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_MUSIC_TRACK", function() { return SET_MUSIC_TRACK; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REDUCE_ROWS_AMOUNT", function() { return REDUCE_ROWS_AMOUNT; });
 var SET_USER = 'SET_USER';
 var CREATE_GAME = 'CREATE_GAME';
 var START_GAME = 'START_GAME';
@@ -260,6 +268,7 @@ var REMOVE_OPPONENT = 'REMOVE_OPPONENT';
 var SET_MODAL = 'SET_MODAL';
 var SET_MUSIC = 'SET_MUSIC';
 var SET_MUSIC_TRACK = 'SET_MUSIC_TRACK';
+var REDUCE_ROWS_AMOUNT = 'REDUCE_ROWS_AMOUNT';
 
 /***/ }),
 
@@ -781,7 +790,7 @@ __webpack_require__.r(__webpack_exports__);
 var GameField = function GameField(props) {
   var DROP_TIME_BASE = 725;
   var DROP_TIME_MULTIPLIER = 0.85;
-  var GENERATE_PIECES_AMOUNT = 1000;
+  var GENERATE_PIECES_AMOUNT = 5;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])([{
     shape: 0
@@ -820,9 +829,10 @@ var GameField = function GameField(props) {
       pieceRotate = _usePiece2[3];
 
   var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_12__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction),
-      _useField2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useField, 2),
+      _useField2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useField, 3),
       field = _useField2[0],
-      setField = _useField2[1];
+      setField = _useField2[1],
+      rowsCleared = _useField2[2];
 
   var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])()),
       _useState12 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState11, 2),
@@ -1000,6 +1010,11 @@ var GameField = function GameField(props) {
       setGameOver(true);
       setDropTime(null);
     });
+    props.socket.on('reduceOpponentField', function (nickname, rowsCleared) {
+      if (props.user !== nickname) {
+        props.reduceRowsAmountAction(rowsCleared);
+      }
+    });
     return function () {
       props.socket.removeAllListeners();
       props.setScoreAction(0);
@@ -1007,9 +1022,27 @@ var GameField = function GameField(props) {
       props.setNextPieceAction(null);
     };
   }, []);
+  Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
+    if (rowsCleared > 0) {
+      props.socket.emit('reduceOpponentField', props.roomId, props.user, rowsCleared);
+    }
+  }, [rowsCleared]);
+  Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
+    var newField = field;
+    var rows = newField.length - props.rowsAmount;
+
+    for (var i = 0; i < rows; i++) {
+      newField.shift();
+    }
+
+    setField(newField);
+  }, [props.rowsAmount]);
+  Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
+    Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["piecesDebug"])(piecesBuffer);
+  }, [piecesBuffer]);
 
   var redrawOpponentField = function redrawOpponentField(matrix) {
-    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])();
+    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
 
     for (var i = 0; i < matrix.length; i++) {
       for (var j = 0; j < matrix[i].length; j++) {
@@ -1054,7 +1087,8 @@ var mapStateToProps = function mapStateToProps(state) {
     roomId: state.room.id,
     isLeader: state.room.isLeader,
     score: state.game.score,
-    level: state.game.level
+    level: state.game.level,
+    rowsAmount: state.game.rowsAmount
   };
 };
 
@@ -1074,6 +1108,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     setLevelAction: function setLevelAction(level) {
       dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["setLevelAction"])(level));
+    },
+    reduceRowsAmountAction: function reduceRowsAmountAction(reductionAmount) {
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_15__["reduceRowsAmountAction"])(reductionAmount));
     }
   };
 };
@@ -1085,11 +1122,13 @@ GameField.propTypes = {
   isLeader: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.bool,
   score: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.number,
   level: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.number,
+  rowsAmount: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.number,
   createGameAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   startGameAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   setScoreAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   setNextPieceAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   setLevelAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  reduceRowsAmountAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
   socket: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
   history: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
   gameFieldRef: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object
@@ -2496,24 +2535,24 @@ var useField = function useField(piece, resetPiece, pieces, piecesBuffer, setPie
 
       if (piece.collided) {
         if (pieces.length === 0) {
-          console.log('IN IF (PIECES.LENGTH === 0)');
+          // console.log('IN IF (PIECES.LENGTH === 0)');
           resetPiece(piecesBuffer[0].shape);
           piecesBuffer.shift();
-          setPieces(piecesBuffer);
-          console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+          setPieces(piecesBuffer); // console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+
           setNextPieceAction(piecesBuffer[0].shape);
         } else {
-          console.log('IN ELSE');
+          // console.log('IN ELSE');
           resetPiece(pieces[0].shape);
           pieces.shift();
 
           if (pieces.length === 0) {
-            console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
-            console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
+            // console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
+            // console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
             setNextPieceAction(piecesBuffer[0].shape);
           } else {
-            console.log('IN ELSE IN ELSE');
-            console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
+            // console.log('IN ELSE IN ELSE');
+            // console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
             setNextPieceAction(pieces[0].shape);
           }
         }
@@ -2686,7 +2725,6 @@ var usePiece = function usePiece(tetromino) {
 
   var resetPiece = Object(react__WEBPACK_IMPORTED_MODULE_2__["useCallback"])(function (tetromino) {
     var columnAmount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _utils_createField__WEBPACK_IMPORTED_MODULE_4__["COLUMN_AMOUNT"];
-    console.log('resetPiece callback, TETROMINO', tetromino);
     setPiece({
       position: {
         x: columnAmount / 2 - 2,
@@ -15225,7 +15263,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  min-height: 800px;\n  width: 400px;\n  height: 800px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  height: 60vw;\n  max-width: 500px;\n  max-height: 1000px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw;\n    height: 80vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between; }\n\n.test {\n  background-color: #eceded;\n  width: 15vw;\n  height: 30vw; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    height: 40vw;\n    max-width: 300px;\n    max-height: 600px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 0 10vw; }\n\n@media (max-width: 786px) {\n  .score__container {\n    margin: 0 30px; } }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n", ""]);
+exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  width: 400px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  max-width: 500px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between;\n  align-items: start; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    max-width: 300px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 0 10vw; }\n\n@media (max-width: 786px) {\n  .score__container {\n    margin: 0 30px; } }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n", ""]);
 
 
 /***/ }),
@@ -65163,6 +65201,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _actions_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../actions/types */ "./actions/types.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
 
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -65170,9 +65209,11 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 
+
 var initialState = {
   id: null,
-  nextPiece: null
+  nextPiece: null,
+  rowsAmount: _utils_createField__WEBPACK_IMPORTED_MODULE_2__["ROWS_AMOUNT"]
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -65213,6 +65254,11 @@ var initialState = {
     case _actions_types__WEBPACK_IMPORTED_MODULE_1__["SET_LEVEL"]:
       return _objectSpread({}, state, {
         level: action.level
+      });
+
+    case _actions_types__WEBPACK_IMPORTED_MODULE_1__["REDUCE_ROWS_AMOUNT"]:
+      return _objectSpread({}, state, {
+        rowsAmount: state.rowsAmount - action.reductionAmount
       });
 
     default:
@@ -65616,6 +65662,7 @@ var assembleCoordinatesForFillingFieldOnServer = function assembleCoordinatesFor
   return coords;
 };
 var fieldDebug = function fieldDebug(field) {
+  var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
   var table = 'c\\r||';
 
   for (var j = 0; j < field[0].length; j++) {
@@ -65640,7 +65687,11 @@ var fieldDebug = function fieldDebug(field) {
     table += '\n';
   }
 
-  console.log(table);
+  if (message !== null) {
+    console.log(message + '\n', table);
+  } else {
+    console.log(table);
+  }
 };
 var piecesDebug = function piecesDebug(pieces) {
   var message = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
