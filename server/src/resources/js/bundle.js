@@ -790,7 +790,7 @@ __webpack_require__.r(__webpack_exports__);
 var GameField = function GameField(props) {
   var DROP_TIME_BASE = 725;
   var DROP_TIME_MULTIPLIER = 0.85;
-  var GENERATE_PIECES_AMOUNT = 5;
+  var GENERATE_PIECES_AMOUNT = 1000;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])([{
     shape: 0
@@ -879,7 +879,6 @@ var GameField = function GameField(props) {
       }
 
       if (piecesBuffer.length === 1) {
-        Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["piecesDebug"])(piecesBuffer, 'in if (piecesBuffer.length == 1), piecesBuffer');
         props.socket.emit('generatePieces', props.roomId); // Inject pieces with new dose from server.
       } else {
         updatePiecePosition({
@@ -889,7 +888,6 @@ var GameField = function GameField(props) {
         }); // Maybe we need to move this two lines outside of else statement.
 
         var coords = Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["assembleCoordinatesForFillingFieldOnServer"])(piece);
-        console.log('coords', coords);
         props.socket.emit('updatePlayerField', {
           roomId: props.roomId,
           nickname: props.user,
@@ -956,7 +954,6 @@ var GameField = function GameField(props) {
     // TODO CAUTION! There is a bug here somewhere.
     if (pieces.length === GENERATE_PIECES_AMOUNT) {
       // Draw piece only for the first piece in pieces array and only when array is full.
-      console.log('in useEffect with if(pieces.length === GENERATE_PIECES_AMOUNT)');
       updatePiecePosition({
         x: 0,
         y: 0,
@@ -1037,9 +1034,6 @@ var GameField = function GameField(props) {
 
     setField(newField);
   }, [props.rowsAmount]);
-  Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
-    Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_8__["piecesDebug"])(piecesBuffer);
-  }, [piecesBuffer]);
 
   var redrawOpponentField = function redrawOpponentField(matrix) {
     var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_11__["createField"])(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.

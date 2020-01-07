@@ -3,7 +3,7 @@ import Game from './entity/Game';
 import Room from './entity/Room';
 import ScoreService from './service/ScoreService';
 
-const GENERATE_PIECES_AMOUNT = 5;
+const GENERATE_PIECES_AMOUNT = 1000;
 
 const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
