@@ -9,13 +9,13 @@ const RoomManagementBtns = (props) => {
 
     const onClickStartGame = () => {
         props.socket.emit('startGameInRoom', props.roomId);
-
-        props.musicLibrary['newBeginnings'].pause();
         props.setMusicTrackAction('halfLife');
-        props.musicLibrary['halfLife'].play();
     };
 
-    const toDashboard = () => props.socket.emit('leaveGame', props.roomId, props.user);
+    const toDashboard = () => {
+        props.setMusicTrackAction('boscage');
+        props.socket.emit('leaveGame', props.roomId, props.user);
+    };
 
     useEffect(() => {
         const socket = props.socket;
@@ -27,7 +27,7 @@ const RoomManagementBtns = (props) => {
         });
 
         return () => {
-            props.musicLibrary['halfLife'].pause();
+            props.setMusicTrackAction('boscage');
         };
     }, []);
 
@@ -64,7 +64,6 @@ const mapStateToProps = (state) => {
         isGameStarted: state.room.isGameStarted,
         isLeader: state.room.isLeader,
         roomId: state.room.id,
-        musicLibrary: state.room.musicLibrary,
     };
 };
 
