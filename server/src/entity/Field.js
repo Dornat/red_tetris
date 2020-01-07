@@ -13,19 +13,22 @@ class Field {
 
     /**
      * In case of multi player game, when one of the users successfully clears a row opponent board should reduce it's
-     * maximum length i.e. row amount
-     * If the field (matrix) is too small then the game is over
+     * maximum length i.e. row amount.
+     * If the field (matrix) is too small then the game is over that is defined by returned value.
+     *
+     * @returns {boolean}
      */
     destroyRow() {
         if (this.matrix[0].indexOf(1) === -1) {
             if (this.rowAmount > MINIMUM_ROWS_AMOUNT) {
                 this.rowAmount = this.rowAmount - 1;
                 this.matrix.shift();
+                return true;
             } else {
-                // TODO "GAME OVER"
+                return false;
             }
         } else {
-            // TODO "GAME OVER"
+            return false;
         }
     }
 
@@ -83,8 +86,8 @@ class Field {
             if (typeof matrix[coordinates[i][0]] !== 'undefined'
                 && typeof matrix[coordinates[i][0]][coordinates[i][1]] !== 'undefined') {
                 if (matrix[coordinates[i][0]][coordinates[i][1]] !== 0) {
-                    console.log('coordinates2', coordinates);
-                    console.log(matrix);
+                    // console.log('coordinates2', coordinates);
+                    // console.log(matrix);
                     return false;
                 }
             } else {

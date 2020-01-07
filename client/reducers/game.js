@@ -5,11 +5,14 @@ import {
     SET_NEXT_PIECE,
     SET_LEVEL,
     JOIN_GAME,
+    REDUCE_ROWS_AMOUNT,
 } from '../actions/types';
+import {ROWS_AMOUNT} from '../utils/createField';
 
 const initialState = {
     id: null,
-    nextPiece: null
+    nextPiece: null,
+    rowsAmount: ROWS_AMOUNT,
 };
 
 export default (state = initialState, action = {}) => {
@@ -49,6 +52,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 level: action.level
+            };
+        case REDUCE_ROWS_AMOUNT:
+            return {
+                ...state,
+                rowsAmount: state.rowsAmount - action.reductionAmount
             };
         default: {
             return state;

@@ -3,7 +3,7 @@ import Game from './entity/Game';
 import Room from './entity/Room';
 import ScoreService from './service/ScoreService';
 
-const GENERATE_PIECES_AMOUNT = 1000;
+const GENERATE_PIECES_AMOUNT = 5;
 
 const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
@@ -49,10 +49,6 @@ const socketActions = (io, rooms, games, players) => {
          * Checks if somebody can join the room.
          */
         socket.on('canJoinRoom', (roomId) => {
-
-            console.log("ROOM ID", roomId);
-            console.log("GAME", rooms[roomId].game);
-
             if (
                 /** Room exists */
                 typeof rooms[roomId] !== 'undefined'
@@ -251,6 +247,23 @@ const socketActions = (io, rooms, games, players) => {
                     level: game.level,
                     field: player.field.matrix
                 });
+            }
+        });
+
+        /**
+         * When player sweeps rows the opponent field needs to be reduced
+         */
+        socket.on('reduceOpponentField', (roomId, nickname, rowsCleared) => {
+            const room = rooms[roomId];
+            try {
+                const opponent = room.getMeMyOpponentUsingMyNickname(nickname);
+                for (let i = 0; i < rowsCleared; i++) {
+                    opponent.field.destroyRow();
+                }
+                console.log(opponent.field);
+                io.in(roomId).emit('reduceOpponentField', nickname, rowsCleared);
+            } catch (e) {
+                // Opponent doesn't exist. Do nothing.
             }
         });
 

@@ -17,7 +17,7 @@ describe('Field Tests', function () {
 
         field.fillCoordinates(coords);
 
-        assert.deepEqual(field.matrix[0].slice(0, 4), prefilledMatrixWithCoords)
+        assert.deepEqual(field.matrix[0].slice(0, 4), prefilledMatrixWithCoords);
     });
 
     it('should not fill coordinates than fill them', function () {
@@ -54,7 +54,7 @@ describe('Field Tests', function () {
 
         field.fillCoordinates(coords);
         field.destroyRow();
-        assert.deepEqual(field.matrix[0].slice(0, 4), prefilledMatrixWithCoords)
+        assert.deepEqual(field.matrix[0].slice(0, 4), prefilledMatrixWithCoords);
 
         assert.notEqual(field.rowAmount, rowAmount);
         assert.equal(field.columnAmount, columnAmount);

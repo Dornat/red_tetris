@@ -14,3 +14,4 @@ export const REMOVE_OPPONENT = 'REMOVE_OPPONENT';
 export const SET_MODAL = 'SET_MODAL';
 export const SET_MUSIC = 'SET_MUSIC';
 export const SET_MUSIC_TRACK = 'SET_MUSIC_TRACK';
+export const REDUCE_ROWS_AMOUNT = 'REDUCE_ROWS_AMOUNT';

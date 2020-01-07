@@ -73,7 +73,6 @@ export const usePiece = (tetromino) => {
      * @param {number} columnAmount
      */
     const resetPiece = useCallback((tetromino, columnAmount = COLUMN_AMOUNT) => {
-        console.log('resetPiece callback, TETROMINO', tetromino);
         setPiece({
             position: {
                 x: columnAmount / 2 - 2, // to position the piece in the middle of game field

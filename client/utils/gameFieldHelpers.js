@@ -20,7 +20,7 @@ export const assembleCoordinatesForFillingFieldOnServer = piece => {
     return coords;
 };
 
-export const fieldDebug = field => {
+export const fieldDebug = (field, message = null) => {
     let table = 'c\\r||';
     for (let j = 0; j < field[0].length; j++) {
         table += `${j}|`;
@@ -38,7 +38,11 @@ export const fieldDebug = field => {
         }
         table += '\n';
     }
-    console.log(table);
+    if (message !== null) {
+        console.log(message + '\n', table);
+    } else {
+        console.log(table);
+    }
 };
 
 export const piecesDebug = (pieces, message = null) => {

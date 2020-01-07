@@ -5,6 +5,7 @@ import {
     SET_NEXT_PIECE,
     SET_LEVEL,
     JOIN_GAME,
+    REDUCE_ROWS_AMOUNT,
 } from './types';
 
 export function createGameAction(id) {
@@ -45,5 +46,12 @@ export function setLevelAction(level) {
     return {
         type: SET_LEVEL,
         level: level
+    };
+}
+
+export function reduceRowsAmountAction(reductionAmount) {
+    return {
+        type: REDUCE_ROWS_AMOUNT,
+        reductionAmount: reductionAmount
     };
 }
