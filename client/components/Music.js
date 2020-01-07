@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {connect} from 'react-redux';
 import {faVolumeMute, faVolumeUp} from '@fortawesome/free-solid-svg-icons';
@@ -14,8 +14,6 @@ const Music = (props) => {
         if (props.musicSound) {
             props.musicLibrary[props.musicTrackName].play();
         } else {
-            console.log('props.musicTrackName', props.musicTrackName);
-            console.log('soundTracks', props.musicLibrary);
             if (props.musicTrackName) {
                 props.musicLibrary[props.musicTrackName].pause();
             }
@@ -24,6 +22,29 @@ const Music = (props) => {
     }, [props.musicSound]);
 
     useEffect(() => {
+        for (let trackName in props.musicLibrary) {
+            if (props.musicLibrary.hasOwnProperty(trackName)) {
+                if (trackName === props.musicTrackName && props.musicSound) {
+                    props.musicLibrary[trackName].play();
+                } else {
+                    props.musicLibrary[trackName].pause();
+                }
+            }
+        }
+    }, [props.musicTrackName]);
+
+    useEffect(() => {
+        if (props.musicSound) {
+            props.musicLibrary[props.musicTrackName].play();
+        }
+
+        return () => {
+            for (let trackName in props.musicLibrary) {
+                if (trackName.isPrototypeOf(props.musicLibrary)) {
+                    props.musicLibrary[trackName].pause();
+                }
+            }
+        };
     }, []);
 
     return (
