@@ -4,7 +4,7 @@ import GameStats from './GameStats';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
-import {assembleCoordinatesForFillingFieldOnServer, piecesDebug} from '../utils/gameFieldHelpers';
+import {assembleCoordinatesForFillingFieldOnServer, fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
@@ -16,13 +16,14 @@ import {
     startGameAction,
     setScoreAction,
     setNextPieceAction,
-    setLevelAction
+    setLevelAction,
+    reduceRowsAmountAction,
 } from '../actions/gameActions';
 
 const GameField = (props) => {
     const DROP_TIME_BASE = 725;
     const DROP_TIME_MULTIPLIER = 0.85;
-    const GENERATE_PIECES_AMOUNT = 1000;
+    const GENERATE_PIECES_AMOUNT = 5;
 
     const [piecesBuffer, setPiecesBuffer] = useState([{shape: 0}]);
     const [pieces, setPieces] = useState([{shape: 0}]);
@@ -30,11 +31,10 @@ const GameField = (props) => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
-    const [field, setField] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction);
+    const [field, setField, rowsCleared] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction);
     const [opponentField, setOpponentField] = useState(createField());
 
     const movePiece = direction => {
-
         if (!checkCollision(piece, field, {x: direction, y: 0})) {
             updatePiecePosition({x: direction, y: 0});
         }
@@ -170,6 +170,12 @@ const GameField = (props) => {
             setDropTime(null);
         });
 
+        props.socket.on('reduceOpponentField', (nickname, rowsCleared) => {
+            if (props.user !== nickname) {
+                props.reduceRowsAmountAction(rowsCleared);
+            }
+        });
+
         return () => {
             props.socket.removeAllListeners();
             props.setScoreAction(0);
@@ -178,14 +184,32 @@ const GameField = (props) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (rowsCleared > 0) {
+            props.socket.emit('reduceOpponentField', props.roomId, props.user, rowsCleared);
+        }
+    }, [rowsCleared]);
+
+    useEffect(() => {
+        let newField = field;
+        const rows = newField.length - props.rowsAmount;
+        for (let i = 0; i < rows; i++) {
+            newField.shift();
+        }
+        setField(newField);
+    }, [props.rowsAmount]);
+
+    useEffect(() => {
+        piecesDebug(piecesBuffer);
+    }, [piecesBuffer]);
+
     const redrawOpponentField = (matrix) => {
-        let newField = createField();
+        let newField = createField(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 newField[i][j] = matrix[i][j] === 1 ? ['J', 'filled'] : [0, 'empty'];
             }
         }
-
         setOpponentField(newField);
     };
 
@@ -221,7 +245,8 @@ const mapStateToProps = (state) => {
         roomId: state.room.id,
         isLeader: state.room.isLeader,
         score: state.game.score,
-        level: state.game.level
+        level: state.game.level,
+        rowsAmount: state.game.rowsAmount,
     };
 };
 
@@ -241,7 +266,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         setLevelAction: (level) => {
             dispatch(setLevelAction(level));
-        }
+        },
+        reduceRowsAmountAction: (reductionAmount) => {
+            dispatch(reduceRowsAmountAction(reductionAmount));
+        },
     };
 };
 
@@ -253,11 +281,13 @@ GameField.propTypes = {
     isLeader: PropTypes.bool,
     score: PropTypes.number,
     level: PropTypes.number,
+    rowsAmount: PropTypes.number,
     createGameAction: PropTypes.func,
     startGameAction: PropTypes.func,
     setScoreAction: PropTypes.func,
     setNextPieceAction: PropTypes.func,
     setLevelAction: PropTypes.func,
+    reduceRowsAmountAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
     gameFieldRef: PropTypes.object,
