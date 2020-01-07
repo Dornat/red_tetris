@@ -203,7 +203,7 @@ const Room = (props) => {
 
         props.setMusicTrackAction('newBeginnings');
         return () => {
-            props.musicLibrary['newBeginnings'].pause();
+            props.setMusicTrackAction('boscage');
             props.socket.removeAllListeners();
         };
     }, []);
@@ -288,7 +288,6 @@ const mapStateToProps = (state) => {
         roomId: state.room.id,
         isLeader: state.room.isLeader,
         opponent: state.room.opponent,
-        musicLibrary: state.room.musicLibrary,
     };
 };
 
@@ -325,7 +324,6 @@ Room.propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
-    musicLibrary: PropTypes.object,
     joinRoomAction: PropTypes.func,
     setRoomAction: PropTypes.func,
     setLeaderAction: PropTypes.func,

@@ -63,7 +63,6 @@ const Dashboard = (props) => {
     useEffect(() => {
         props.setMusicTrackAction('boscage');
         return () => {
-            props.musicLibrary['boscage'].pause();
             props.socket.removeAllListeners();
         };
     }, []);
@@ -98,7 +97,6 @@ const Dashboard = (props) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user.nickname,
-        musicLibrary: state.room.musicLibrary,
     };
 };
 
@@ -119,7 +117,6 @@ Dashboard.propTypes = {
     user: PropTypes.string,
     socket: PropTypes.object,
     history: PropTypes.object,
-    musicLibrary: PropTypes.object,
     createRoomAction: PropTypes.func,
     setMusicTrackAction: PropTypes.func,
 };
