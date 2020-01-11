@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {faMedal} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const GamePlayers = (props) => {
     const [hidden, setHidden] = useState(false);
@@ -12,7 +14,15 @@ const GamePlayers = (props) => {
         if (player.nickname) {
             return (
                 <a href="#" className="nes-badge">
-                    <span className="is-primary">{player.nickname} {player.isLeader === true ? '(L)' : ''}</span>
+                    <span className="is-primary player">
+                        <span className="player__nickname">{player.nickname}</span>
+                        <span className="player__rank">
+                            {player.isLeader === true
+                                ? <FontAwesomeIcon icon={faMedal}/>
+                                : ''
+                            }
+                        </span>
+                    </span>
                 </a>
             );
         }

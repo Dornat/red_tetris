@@ -18,6 +18,7 @@ import {
     setNextPieceAction,
     setLevelAction,
     reduceRowsAmountAction,
+    resetRowsAmountAction,
 } from '../actions/gameActions';
 
 const GameField = (props) => {
@@ -81,7 +82,7 @@ const GameField = (props) => {
 
     const dropPieceInAvailableSpot = () => {
         let y = 1;
-        for (;;) {
+        for (; ;) {
             if (!checkCollision(piece, field, {x: 0, y: y})) {
                 y++;
             } else {
@@ -177,6 +178,7 @@ const GameField = (props) => {
             props.setScoreAction(0);
             props.setLevelAction(1);
             props.setNextPieceAction(null);
+            props.resetRowsAmountAction();
         };
     }, []);
 
@@ -194,6 +196,12 @@ const GameField = (props) => {
         }
         setField(newField);
     }, [props.rowsAmount]);
+
+    useEffect(() => {
+        if (gameOver === true) {
+            props.socket.emit('addScoreResult', props.user, props.score);
+        }
+    }, [gameOver]);
 
     const redrawOpponentField = (matrix) => {
         let newField = createField(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
@@ -261,6 +269,9 @@ const mapDispatchToProps = (dispatch) => {
         reduceRowsAmountAction: (reductionAmount) => {
             dispatch(reduceRowsAmountAction(reductionAmount));
         },
+        resetRowsAmountAction: () => {
+            dispatch(resetRowsAmountAction());
+        },
     };
 };
 
@@ -279,6 +290,7 @@ GameField.propTypes = {
     setNextPieceAction: PropTypes.func,
     setLevelAction: PropTypes.func,
     reduceRowsAmountAction: PropTypes.func,
+    resetRowsAmountAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
     gameFieldRef: PropTypes.object,
