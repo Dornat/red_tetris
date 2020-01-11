@@ -228,8 +228,9 @@ const socketActions = (io, rooms, games, players) => {
                 const game = room.game;
 
                 if (game.over) {
-                    console.log('the game is over man');
+                    console.log(`[${logDate()}] The game in room '${data.roomId}' is over`);
                     delete rooms[data.roomId];
+                    console.log(`[${logDate()}] Room '${room.id}' was removed from global rooms array`);
                     return;
                 }
 
@@ -260,7 +261,6 @@ const socketActions = (io, rooms, games, players) => {
                 for (let i = 0; i < rowsCleared; i++) {
                     opponent.field.destroyRow();
                 }
-                console.log(opponent.field);
                 io.in(roomId).emit('reduceOpponentField', nickname, rowsCleared);
             } catch (e) {
                 // Opponent doesn't exist. Do nothing.
@@ -279,7 +279,6 @@ const socketActions = (io, rooms, games, players) => {
         });
 
         socket.on('addScoreResult', (nickname, score) => {
-            console.log('in addScoreResult, nickname, score', nickname, score);
             const promise = ScoreService.addScoreResult({nickname, score});
 
             promise.then(() => {

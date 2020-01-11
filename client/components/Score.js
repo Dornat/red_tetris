@@ -62,20 +62,18 @@ const Score = (props) => {
                 </div>
             </div>
 
-            <div className="nes-table-responsive">
-                <table className="nes-table is-bordered is-centered" style={{width: '-webkit-fill-available'}}>
-                    <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Nickname</th>
-                        <th>Score</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {renderData()}
-                    </tbody>
-                </table>
-            </div>
+            <table className="nes-table is-bordered is-centered score-table">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nickname</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {renderData()}
+                </tbody>
+            </table>
 
             {renderPaginator()}
         </div>

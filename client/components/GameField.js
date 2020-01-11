@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import EnemyField from './EnemyField';
 import Field from './Field';
 import GameStats from './GameStats';
@@ -189,12 +190,15 @@ const GameField = (props) => {
     }, [rowsCleared]);
 
     useEffect(() => {
-        let newField = field;
+        let newField = JSON.parse(JSON.stringify(field));
         const rows = newField.length - props.rowsAmount;
-        for (let i = 0; i < rows; i++) {
-            newField.shift();
-        }
-        setField(newField);
+        console.log(_.drop(newField, rows));
+        // for (let i = 0; i < rows; i++) {
+        //     newField.shift();
+        // }
+        fieldDebug(newField, 'after Shift');
+        console.log('newField', newField);
+        setField(_.drop(newField, rows));
     }, [props.rowsAmount]);
 
     useEffect(() => {
@@ -230,7 +234,10 @@ const GameField = (props) => {
                     </div>
                     <div className="game-field__col">
                         <NextPieceField/>
-                        <EnemyField field={opponentField}/>
+                        {props.opponent
+                            ? <EnemyField field={opponentField}/>
+                            : ''
+                        }
                     </div>
                 </div>
             </div>
@@ -246,6 +253,7 @@ const mapStateToProps = (state) => {
         score: state.game.score,
         level: state.game.level,
         rowsAmount: state.game.rowsAmount,
+        opponent: state.room.opponent,
     };
 };
 
@@ -284,6 +292,7 @@ GameField.propTypes = {
     score: PropTypes.number,
     level: PropTypes.number,
     rowsAmount: PropTypes.number,
+    opponent: PropTypes.object,
     createGameAction: PropTypes.func,
     startGameAction: PropTypes.func,
     setScoreAction: PropTypes.func,

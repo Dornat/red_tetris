@@ -6,6 +6,27 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
     const [field, setField] = useState(createField());
     const [rowsCleared, setRowsCleared] = useState(0);
 
+    /**
+     * Checks if piece can be placed in a field. This function is needed for situations when field shrinks and the piece
+     * can be pushed out of bounds on 'y' access.
+     *
+     * @param piece
+     * @param field
+     * @returns {boolean}
+     */
+    const isPieceCanBePlaced = (piece, field) => {
+        piece.tetromino.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    if (field[y + piece.position.y] === undefined || field[y + piece.position.y][x + piece.position.x] === undefined) {
+                        return false;
+                    }
+                }
+            });
+        });
+        return true;
+    };
+
     useEffect(() => {
         setRowsCleared(0);
 
@@ -31,11 +52,22 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
                 }
             );
 
+            while (!isPieceCanBePlaced(piece, newField)) {
+                console.log('in while isPieceCanBePlaces, piece.position.y', piece.position.y);
+                piece.position.y = piece.position.y - 1;
+            }
             // draw the tetromino
             piece.tetromino.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        // console.log('y, piece.position.y, x, piece.position.x', y, piece.position.y, x, piece.position.x);
+                        if (newField[y + piece.position.y] === undefined || newField[y + piece.position.y][x + piece.position.x] === undefined) {
+                            // TODO Reset piece on y access for field shrink situations.
+                            fieldDebug(newField, 'newField');
+                            console.log('piece', piece);
+                            console.log('value', value);
+                            console.log('row', row);
+                            console.log('y, piece.position.y, x, piece.position.x', y, piece.position.y, x, piece.position.x);
+                        }
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
                             `${piece.collided ? 'filled' : 'empty'}`
