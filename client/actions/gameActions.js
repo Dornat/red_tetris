@@ -1,11 +1,5 @@
 import {
-    CREATE_GAME,
-    START_GAME,
-    SET_SCORE,
-    SET_NEXT_PIECE,
-    SET_LEVEL,
-    JOIN_GAME,
-    REDUCE_ROWS_AMOUNT,
+    CREATE_GAME, START_GAME, SET_SCORE, SET_NEXT_PIECE, SET_LEVEL, JOIN_GAME, REDUCE_ROWS_AMOUNT, RESET_ROWS_AMOUNT,
 } from './types';
 
 export function createGameAction(id) {
@@ -53,5 +47,11 @@ export function reduceRowsAmountAction(reductionAmount) {
     return {
         type: REDUCE_ROWS_AMOUNT,
         reductionAmount: reductionAmount
+    };
+}
+
+export function resetRowsAmountAction() {
+    return {
+        type: RESET_ROWS_AMOUNT
     };
 }

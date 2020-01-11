@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Paginator from './Paginator';
+import PropTypes from 'prop-types';
 
 const SCORES_AMOUNT = 3;
 
@@ -18,7 +19,6 @@ const Score = (props) => {
         });
 
         props.socket.on('scoreResults', (data) => {
-
             setPaginationData({
                 items: data.items,
                 page: data.page,
@@ -34,17 +34,11 @@ const Score = (props) => {
     const renderData = () => {
         if (paginationData.items !== null && paginationData.items.length) {
             return paginationData.items.map((item, index) => (
-                <div className="score__row" key={index}>
-                    <div className="score__column">
-                        <span>{item.rank}</span>
-                    </div>
-                    <div className="score__column">
-                        <span>{item.nickname}</span>
-                    </div>
-                    <div className="score__column">
-                        <span>{item.score}</span>
-                    </div>
-                </div>
+                <tr key={index}>
+                    <td style={{textAlign: 'center'}}>{item.rank}</td>
+                    <td style={{textAlign: 'center'}}>{item.nickname}</td>
+                    <td style={{textAlign: 'center'}}>{item.score}</td>
+                </tr>
             ));
         }
     };
@@ -67,26 +61,29 @@ const Score = (props) => {
                     <p>Your position: 24 / 234</p>
                 </div>
             </div>
-            <div className="score__table-wrap">
-                <div className="score__table">
-                    <div className="score-table__head score__row">
-                        <div className="score__column">
-                            <span>Rank</span>
-                        </div>
-                        <div className="score__column">
-                            <span>Nickname</span>
-                        </div>
-                        <div className="score__column">
-                            <span>Score</span>
-                        </div>
-                    </div>
-                    { renderData() }
-                </div>
+
+            <div className="nes-table-responsive">
+                <table className="nes-table is-bordered is-centered" style={{width: '-webkit-fill-available'}}>
+                    <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Nickname</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {renderData()}
+                    </tbody>
+                </table>
             </div>
 
-            { renderPaginator() }
+            {renderPaginator()}
         </div>
-    )
+    );
 };
 
 export default Score;
+
+Score.propTypes = {
+    socket: PropTypes.object,
+};

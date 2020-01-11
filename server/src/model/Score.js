@@ -10,7 +10,7 @@ const ScoreSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-}, {collection : 'scores'});
+}, {collection: 'scores'});
 
 
 let ScoreModel = mongoose.model('Score', ScoreSchema, 'scores');

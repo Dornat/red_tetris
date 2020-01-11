@@ -376,6 +376,7 @@ button {
 
 .game-link__wrap {
   display: inline-block;
+  position: relative;
 }
 
 .game-players__title {
@@ -521,5 +522,20 @@ button {
 .paginator__row {
   .pagination__page-btn:not(:last-child) {
     margin-right: 15px;
+  }
+}
+
+.player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__nickname {
+  }
+
+  &__rank {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
   }
 }

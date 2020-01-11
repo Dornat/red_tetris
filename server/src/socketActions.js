@@ -278,7 +278,8 @@ const socketActions = (io, rooms, games, players) => {
             io.in(roomId).emit('gameOver');
         });
 
-        socket.on('addScoreResult', ({nickname, score}) => {
+        socket.on('addScoreResult', (nickname, score) => {
+            console.log('in addScoreResult, nickname, score', nickname, score);
             const promise = ScoreService.addScoreResult({nickname, score});
 
             promise.then(() => {

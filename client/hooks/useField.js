@@ -35,6 +35,7 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
             piece.tetromino.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
+                        // console.log('y, piece.position.y, x, piece.position.x', y, piece.position.y, x, piece.position.x);
                         newField[y + piece.position.y][x + piece.position.x] = [
                             value,
                             `${piece.collided ? 'filled' : 'empty'}`

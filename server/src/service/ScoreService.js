@@ -2,8 +2,7 @@ import Score from '../model/Score';
 
 class ScoreService {
 
-    static async addScoreResult({nickname, score})
-    {
+    static async addScoreResult({nickname, score}) {
         const filter = {nickname: nickname};
         const update = {score: score};
 
@@ -14,15 +13,13 @@ class ScoreService {
             });
 
             return true;
-        }
-        catch(e) {
+        } catch (e) {
             console.log(e);
             return false;
         }
     }
 
-    static async getScoreResults({count, page})
-    {
+    static async getScoreResults({count, page}) {
         const limit = count;
         const skip = count * page - count;
 
@@ -50,12 +47,10 @@ class ScoreService {
                 items: items,
                 pages: Math.ceil(total / count)
             };
-        }
-        catch(e) {
+        } catch (e) {
             console.log(e);
             return false;
         }
-
     }
 }
 
