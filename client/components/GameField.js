@@ -4,11 +4,12 @@ import GameStats from './GameStats';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
+import _ from 'lodash';
 import {assembleCoordinatesForFillingFieldOnServer, fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
-import {useField} from '../hooks/useField';
+import {useField, isPieceCanBePlaced} from '../hooks/useField';
 import {useInterval} from '../hooks/useInterval';
 import {usePiece} from '../hooks/usePiece';
 import {
@@ -18,6 +19,7 @@ import {
     setNextPieceAction,
     setLevelAction,
     reduceRowsAmountAction,
+    resetRowsAmountAction,
 } from '../actions/gameActions';
 
 const GameField = (props) => {
@@ -30,7 +32,7 @@ const GameField = (props) => {
     const [isGameStarted, setGameStarted] = useState(false);
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-    const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
+    const [piece, updatePiecePosition, resetPiece, pieceRotate, setPiece] = usePiece(0);
     const [field, setField, rowsCleared] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction);
     const [opponentField, setOpponentField] = useState(createField());
 
@@ -81,7 +83,7 @@ const GameField = (props) => {
 
     const dropPieceInAvailableSpot = () => {
         let y = 1;
-        for (;;) {
+        for (; ;) {
             if (!checkCollision(piece, field, {x: 0, y: y})) {
                 y++;
             } else {
@@ -177,6 +179,7 @@ const GameField = (props) => {
             props.setScoreAction(0);
             props.setLevelAction(1);
             props.setNextPieceAction(null);
+            props.resetRowsAmountAction();
         };
     }, []);
 
@@ -187,13 +190,21 @@ const GameField = (props) => {
     }, [rowsCleared]);
 
     useEffect(() => {
-        let newField = field;
+        let newField = JSON.parse(JSON.stringify(field));
         const rows = newField.length - props.rowsAmount;
-        for (let i = 0; i < rows; i++) {
-            newField.shift();
+        newField = _.drop(newField, rows);
+        while (!isPieceCanBePlaced(piece, newField)) {
+            piece.position.y = piece.position.y - 1;
+            setPiece(piece);
         }
         setField(newField);
     }, [props.rowsAmount]);
+
+    useEffect(() => {
+        if (gameOver === true) {
+            props.socket.emit('addScoreResult', props.user, props.score);
+        }
+    }, [gameOver]);
 
     const redrawOpponentField = (matrix) => {
         let newField = createField(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
@@ -222,7 +233,10 @@ const GameField = (props) => {
                     </div>
                     <div className="game-field__col">
                         <NextPieceField/>
-                        <EnemyField field={opponentField}/>
+                        {props.opponent
+                            ? <EnemyField field={opponentField}/>
+                            : ''
+                        }
                     </div>
                 </div>
             </div>
@@ -238,6 +252,7 @@ const mapStateToProps = (state) => {
         score: state.game.score,
         level: state.game.level,
         rowsAmount: state.game.rowsAmount,
+        opponent: state.room.opponent,
     };
 };
 
@@ -261,6 +276,9 @@ const mapDispatchToProps = (dispatch) => {
         reduceRowsAmountAction: (reductionAmount) => {
             dispatch(reduceRowsAmountAction(reductionAmount));
         },
+        resetRowsAmountAction: () => {
+            dispatch(resetRowsAmountAction());
+        },
     };
 };
 
@@ -273,12 +291,14 @@ GameField.propTypes = {
     score: PropTypes.number,
     level: PropTypes.number,
     rowsAmount: PropTypes.number,
+    opponent: PropTypes.object,
     createGameAction: PropTypes.func,
     startGameAction: PropTypes.func,
     setScoreAction: PropTypes.func,
     setNextPieceAction: PropTypes.func,
     setLevelAction: PropTypes.func,
     reduceRowsAmountAction: PropTypes.func,
+    resetRowsAmountAction: PropTypes.func,
     socket: PropTypes.object,
     history: PropTypes.object,
     gameFieldRef: PropTypes.object,

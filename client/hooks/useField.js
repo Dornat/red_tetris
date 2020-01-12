@@ -1,6 +1,33 @@
-import {useState, useEffect} from 'react';
+import {checkCollision} from '../utils/checkCollision';
 import {createField} from '../utils/createField';
 import {fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
+import {useState, useEffect} from 'react';
+
+/**
+ * Checks if piece can be placed in a field. This function is needed for situations when field shrinks and the piece
+ * can be pushed out of bounds on 'y' access.
+ *
+ * @param piece
+ * @param field
+ * @returns {boolean}
+ */
+export const isPieceCanBePlaced = (piece, field) => {
+    piece.tetromino.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                if (field[y + piece.position.y] === undefined || field[y + piece.position.y][x + piece.position.x] === undefined) {
+                    return false;
+                }
+            }
+        });
+    });
+
+    if (piece.position.y > 0) {
+        return !checkCollision(piece, field, {x: 0, y: 0});
+    } else {
+        return true;
+    }
+};
 
 export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, setNextPieceAction) => {
     const [field, setField] = useState(createField());
@@ -50,26 +77,16 @@ export const useField = (piece, resetPiece, pieces, piecesBuffer, setPieces, set
              */
             if (piece.collided) {
                 if (pieces.length === 0) {
-                    // console.log('IN IF (PIECES.LENGTH === 0)');
                     resetPiece(piecesBuffer[0].shape);
                     piecesBuffer.shift();
                     setPieces(piecesBuffer);
-
-                    // console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
-
                     setNextPieceAction(piecesBuffer[0].shape);
                 } else {
-                    // console.log('IN ELSE');
                     resetPiece(pieces[0].shape);
                     pieces.shift();
-
                     if (pieces.length === 0) {
-                        // console.log('IN ELSE IN IF (PIECES.LENGTH === 0)');
-                        // console.log('NEXT PIECE SHOULD BE', piecesBuffer[0].shape);
                         setNextPieceAction(piecesBuffer[0].shape);
                     } else {
-                        // console.log('IN ELSE IN ELSE');
-                        // console.log('NEXT PIECE SHOULD BE', pieces[0].shape);
                         setNextPieceAction(pieces[0].shape);
                     }
                 }

@@ -28,9 +28,9 @@ export const fieldDebug = (field, message = null) => {
     table += '\n';
     for (let i = 0; i < field.length; i++) {
         if (i < 10) {
-            table += '  ';
+            table += '   ';
         } else {
-            table += ' ';
+            table += '  ';
         }
         table += `${i}||`;
         for (let j = 0; j < field[i].length; j++) {

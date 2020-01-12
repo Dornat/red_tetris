@@ -139,32 +139,27 @@ const Room = (props) => {
             const msg = result.msg;
             switch (msg) {
                 case MSG_GAME_CREATED: {
-                    console.log('MSG_GAME_CREATED');
                     setRoomExists(true);
                     break;
                 }
                 case MSG_PLAYER_ADDED: {
-                    console.log('MSG_PLAYER_ADDED');
                     setRoomExists(true);
                     props.setLeaderAction(false);
                     break;
                 }
                 case MSG_JOINED_ROOM: {
-                    console.log('MSG_JOINED_ROOM');
                     setRoomExists(true);
                     setModal(MODAL_ROOM_JOINED);
                     setIsModalOpened(true);
                     break;
                 }
                 case ERROR_ROOM_NOT_FOUND: {
-                    console.log('ERROR_ROOM_NOT_FOUND');
                     setModal(MODAL_NO_ROOM);
                     setIsModalOpened(true);
                     setRoomExists(true);
                     break;
                 }
                 case ERROR_NO_SPACE_AVAILABLE: {
-                    console.log('ERROR_NO_SPACE_AVAILABLE');
                     setModal(MODAL_NO_SPACE);
                     setIsModalOpened(true);
                     setRoomExists(true);
@@ -175,9 +170,9 @@ const Room = (props) => {
                 }
             }
         }, error => {
-            // TODO
+            console.warn(error);
         }).catch(reason => {
-            // TODO
+            console.warn(reason);
         });
 
         props.socket.on('playerJoined', (players) => {
@@ -187,6 +182,7 @@ const Room = (props) => {
 
         props.socket.on('leftGame', (response) => {
             if (response.player === props.user) {
+                props.socket.emit('disconnect');
                 props.history.push('/');
             } else {
                 if (response.isLeader && (props.isLeader === false || typeof props.isLeader === 'undefined')) {

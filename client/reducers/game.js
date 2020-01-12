@@ -1,11 +1,5 @@
 import {
-    CREATE_GAME,
-    START_GAME,
-    SET_SCORE,
-    SET_NEXT_PIECE,
-    SET_LEVEL,
-    JOIN_GAME,
-    REDUCE_ROWS_AMOUNT,
+    CREATE_GAME, START_GAME, SET_SCORE, SET_NEXT_PIECE, SET_LEVEL, JOIN_GAME, REDUCE_ROWS_AMOUNT, RESET_ROWS_AMOUNT,
 } from '../actions/types';
 import {ROWS_AMOUNT} from '../utils/createField';
 
@@ -57,6 +51,11 @@ export default (state = initialState, action = {}) => {
             return {
                 ...state,
                 rowsAmount: state.rowsAmount - action.reductionAmount
+            };
+        case RESET_ROWS_AMOUNT:
+            return {
+                ...state,
+                rowsAmount: ROWS_AMOUNT
             };
         default: {
             return state;

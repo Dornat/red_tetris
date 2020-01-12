@@ -83,5 +83,5 @@ export const usePiece = (tetromino) => {
         });
     }, []);
 
-    return [piece, updatePiecePosition, resetPiece, pieceRotate];
+    return [piece, updatePiecePosition, resetPiece, pieceRotate, setPiece];
 };
