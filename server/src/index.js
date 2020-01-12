@@ -25,15 +25,6 @@ const socketServer = http.Server(server.app);
 const io = socket(socketServer);
 
 /**
- * In JS we can't store key => value pairs in arrays.
- *
- * Global games array.
- *
- * @type {{}}
- */
-const games = {};
-
-/**
  * Global rooms array.
  *
  * @type {{}}
@@ -47,9 +38,16 @@ const rooms = {};
  */
 const players = {};
 
+/**
+ * Online statuses of players in form of {socket.id: nickname}.
+ *
+ * @type {{}}
+ */
+const onlineStatuses = {};
+
 socketServer.listen(process.env.IO_SERVER_PORT);
 
-socketActions(io, rooms, games, players);
+socketActions(io, rooms, onlineStatuses, players);
 
 
 database.initConnection();

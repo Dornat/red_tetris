@@ -182,6 +182,7 @@ const Room = (props) => {
 
         props.socket.on('leftGame', (response) => {
             if (response.player === props.user) {
+                props.socket.emit('disconnect');
                 props.history.push('/');
             } else {
                 if (response.isLeader && (props.isLeader === false || typeof props.isLeader === 'undefined')) {

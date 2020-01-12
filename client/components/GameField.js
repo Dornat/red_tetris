@@ -193,11 +193,8 @@ const GameField = (props) => {
         let newField = JSON.parse(JSON.stringify(field));
         const rows = newField.length - props.rowsAmount;
         newField = _.drop(newField, rows);
-        fieldDebug(newField, 'props.amount after drop');
         while (!isPieceCanBePlaced(piece, newField)) {
-            console.log('USEFFECT in while isPieceCanBePlaces, piece.position.y', piece.position.y);
             piece.position.y = piece.position.y - 1;
-            console.log('USEFFECT in while isPieceCanBePlaces, piece', piece);
             setPiece(piece);
         }
         setField(newField);
