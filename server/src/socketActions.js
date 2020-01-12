@@ -239,7 +239,12 @@ const socketActions = (io, rooms, games, players) => {
 
                 if (cheater === null) {
                     console.log('\u001b[31mfireInTheHoleTheCheaterIsHere\u001b[0m');
+                    console.log('player.field', data.coords);
+                    console.log('player.field', player.field);
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
+                }
+                if (player.nickname === 'dornat') {
+                    console.log('\u001b[31mdornat.field\u001b[0m', player.field);
                 }
 
                 io.in(data.roomId).emit('sendUpdatedGameData', {
