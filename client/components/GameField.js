@@ -1,15 +1,15 @@
-import _ from 'lodash';
 import EnemyField from './EnemyField';
 import Field from './Field';
 import GameStats from './GameStats';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
+import _ from 'lodash';
 import {assembleCoordinatesForFillingFieldOnServer, fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
 import {createField} from '../utils/createField';
-import {useField} from '../hooks/useField';
+import {useField, isPieceCanBePlaced} from '../hooks/useField';
 import {useInterval} from '../hooks/useInterval';
 import {usePiece} from '../hooks/usePiece';
 import {
@@ -32,7 +32,7 @@ const GameField = (props) => {
     const [isGameStarted, setGameStarted] = useState(false);
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-    const [piece, updatePiecePosition, resetPiece, pieceRotate] = usePiece(0);
+    const [piece, updatePiecePosition, resetPiece, pieceRotate, setPiece] = usePiece(0);
     const [field, setField, rowsCleared] = useField(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction);
     const [opponentField, setOpponentField] = useState(createField());
 
@@ -192,13 +192,15 @@ const GameField = (props) => {
     useEffect(() => {
         let newField = JSON.parse(JSON.stringify(field));
         const rows = newField.length - props.rowsAmount;
-        console.log(_.drop(newField, rows));
-        // for (let i = 0; i < rows; i++) {
-        //     newField.shift();
-        // }
-        fieldDebug(newField, 'after Shift');
-        console.log('newField', newField);
-        setField(_.drop(newField, rows));
+        newField = _.drop(newField, rows);
+        fieldDebug(newField, 'props.amount after drop');
+        while (!isPieceCanBePlaced(piece, newField)) {
+            console.log('USEFFECT in while isPieceCanBePlaces, piece.position.y', piece.position.y);
+            piece.position.y = piece.position.y - 1;
+            console.log('USEFFECT in while isPieceCanBePlaces, piece', piece);
+            setPiece(piece);
+        }
+        setField(newField);
     }, [props.rowsAmount]);
 
     useEffect(() => {
