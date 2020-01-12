@@ -1040,12 +1040,9 @@ var GameField = function GameField(props) {
     var newField = JSON.parse(JSON.stringify(field));
     var rows = newField.length - props.rowsAmount;
     newField = lodash__WEBPACK_IMPORTED_MODULE_8___default.a.drop(newField, rows);
-    Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_9__["fieldDebug"])(newField, 'props.amount after drop');
 
     while (!Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_13__["isPieceCanBePlaced"])(piece, newField)) {
-      console.log('USEFFECT in while isPieceCanBePlaces, piece.position.y', piece.position.y);
       piece.position.y = piece.position.y - 1;
-      console.log('USEFFECT in while isPieceCanBePlaces, piece', piece);
       setPiece(piece);
     }
 
@@ -2060,6 +2057,7 @@ var Room = function Room(props) {
     });
     props.socket.on('leftGame', function (response) {
       if (response.player === props.user) {
+        props.socket.emit('disconnect');
         props.history.push('/');
       } else {
         if (response.isLeader && (props.isLeader === false || typeof props.isLeader === 'undefined')) {

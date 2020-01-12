@@ -9,7 +9,7 @@ const logDate = () => {
     return (new Date()).toISOString().slice(0, -5);
 };
 
-const socketActions = (io, rooms, games, players) => {
+const socketActions = (io, rooms, onlineStatuses, players) => {
     io.on('connection', (socket) => {
         /**
          * Checks whether the player nickname is occupied or not.
@@ -40,7 +40,51 @@ const socketActions = (io, rooms, games, players) => {
                 console.log(`[${logDate()}] Player '${nickname}' was added to global players array`);
                 socket.emit('roomCreated', room.id);
                 socket.join(room.id);
+                onlineStatuses[socket.id] = nickname;
             } else {
+                for (let roomId in rooms) {
+                    if (rooms.hasOwnProperty(roomId)) {
+                        try {
+                            const player = rooms[roomId].getPlayer(nickname);
+                            /**
+                             * If room is created but the game is not started we can join created room and remove from
+                             * this room player with the same nickname (if this player is online).
+                             */
+                            if (rooms[roomId].game === null || (!rooms[roomId].game.isGameStarted && !rooms[roomId].game.over)) {
+                                io.in(roomId).emit('leftGame', {player: nickname});
+                                socket.emit('roomCreated', roomId);
+                                socket.join(roomId);
+                                onlineStatuses[socket.id] = nickname;
+                                return;
+                            } else {
+                                /**
+                                 * If the game exists and maybe already started we need to find if the player that is
+                                 * playing the game is online or not. If the player is online then we emit occupied else
+                                 * the room was abandoned and we can remove it and create the new one.
+                                 */
+                                for (let status in onlineStatuses) {
+                                    if (onlineStatuses.hasOwnProperty(status)) {
+                                        if (onlineStatuses[status] === player.nickname) {
+                                            socket.emit('playerNameOccupied');
+                                            return;
+                                        }
+                                    }
+                                }
+                                delete rooms[roomId];
+                                console.log(`[${logDate()}] Room '${roomId}' was removed from global rooms array`);
+                                const room = new Room(player);
+                                rooms[room.id] = room;
+                                console.log(`[${logDate()}] Room '${room.id}' was added to global rooms array`);
+                                socket.emit('roomCreated', room.id);
+                                socket.join(room.id);
+                                onlineStatuses[socket.id] = nickname;
+                                return;
+                            }
+                        } catch (e) {
+                            // Do nothing.
+                        }
+                    }
+                }
                 socket.emit('playerNameOccupied');
             }
         });
@@ -75,17 +119,13 @@ const socketActions = (io, rooms, games, players) => {
             io.in(roomId).emit('gameCreated', {roomId: roomId, gameId: room.game.id});
         });
 
-        // TODO description
-        socket.on('annulGame', (nickname) => {
-            // TODO Answer me why do we need this one?
-        });
-
         /**
          * Joins player to specific room in socket.io.
          */
         socket.on('join', (roomId, nickname = 'Guest') => {
             const room = rooms[roomId];
             socket.join(roomId);
+            onlineStatuses[socket.id] = nickname;
             if (typeof room !== 'undefined') {
                 console.log(`[${logDate()}] Player '${nickname}' has joined the room '${roomId}'`);
             } else {
@@ -210,7 +250,6 @@ const socketActions = (io, rooms, games, players) => {
                 io.in(roomId).emit('roomStatus', 'undefined');
             } else {
                 const pieces = Game.generatePieces(GENERATE_PIECES_AMOUNT);
-                // console.log(`[${logDate()}] Generated '${pieces.length}' pieces for the room '${roomId}'`);
                 io.in(roomId).emit('getPieces', {pieces: pieces});
             }
         });
@@ -228,6 +267,7 @@ const socketActions = (io, rooms, games, players) => {
                 const game = room.game;
 
                 if (game.over) {
+                    io.in(data.roomId).emit('gameOver');
                     console.log(`[${logDate()}] The game in room '${data.roomId}' is over`);
                     delete rooms[data.roomId];
                     console.log(`[${logDate()}] Room '${room.id}' was removed from global rooms array`);
@@ -287,7 +327,7 @@ const socketActions = (io, rooms, games, players) => {
             const promise = ScoreService.addScoreResult({nickname, score});
 
             promise.then(() => {
-               socket.emit('scoreResultAdded');
+                socket.emit('scoreResultAdded');
             });
         });
 
@@ -295,14 +335,18 @@ const socketActions = (io, rooms, games, players) => {
             const promise = ScoreService.getScoreResults({count, page});
 
             promise.then(({page, returned, items, total, pages}) => {
-                 socket.emit('scoreResults', {
-                     page: page,
-                     returned: returned,
-                     items: items,
-                     total: total,
-                     pages: pages
-                 });
+                socket.emit('scoreResults', {
+                    page: page,
+                    returned: returned,
+                    items: items,
+                    total: total,
+                    pages: pages
+                });
             });
+        });
+
+        socket.on('disconnect', () => {
+            delete onlineStatuses[socket.id];
         });
     });
 };
