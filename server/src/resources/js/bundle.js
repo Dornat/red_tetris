@@ -394,15 +394,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Form_FormNickname__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Form/FormNickname */ "./components/Form/FormNickname.js");
-/* harmony import */ var _Music__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Music */ "./components/Music.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 
 
 
@@ -413,22 +411,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Dashboard = function Dashboard(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState, 2),
       isError = _useState2[0],
       setError = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState3, 2),
       isCreateRoomBtnDisabled = _useState4[0],
       setBtnDisability = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false),
       _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState5, 2),
       nicknameError = _useState6[0],
       setNicknameError = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])({
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])({
     user: props.user || ''
   }),
       _useState8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState7, 2),
@@ -476,40 +474,38 @@ var Dashboard = function Dashboard(props) {
 
   var renderNicknameError = function renderNicknameError() {
     if (nicknameError) {
-      return react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("p", {
+      return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("p", {
         className: "form__error"
       }, "The selected nickname is occupied");
     }
   };
 
-  Object(react__WEBPACK_IMPORTED_MODULE_5__["useEffect"])(function () {
+  Object(react__WEBPACK_IMPORTED_MODULE_4__["useEffect"])(function () {
     props.setMusicTrackAction('boscage');
     return function () {
       props.socket.removeAllListeners();
     };
   }, []);
-  return react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("div", {
+  return react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("main", null, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "flex_centered"
-  }, react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("div", {
-    className: "dashboard-actions"
-  }, react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(_Music__WEBPACK_IMPORTED_MODULE_3__["default"], null)), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "dashboard__section"
-  }, react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "col"
-  }, react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement(_Form_FormNickname__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_Form_FormNickname__WEBPACK_IMPORTED_MODULE_2__["default"], {
     form: form,
     isError: isError,
     setError: setError,
     setValues: setValues,
     onChange: onChange
-  }))), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("div", {
+  }))), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("div", {
     className: "dashboard__section dashboard__menu d-flex-col"
-  }, renderNicknameError(), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("button", {
+  }, renderNicknameError(), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn",
     onClick: createRoom,
     disabled: isCreateRoomBtnDisabled
-  }, "Create a room"), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("button", {
+  }, "Create a room"), react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement("button", {
     type: "button",
     className: "nes-btn dashboard__btn",
     onClick: function onClick() {
@@ -527,21 +523,21 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     createRoomAction: function createRoomAction(user) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_7__["createRoomAction"])(user));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_6__["createRoomAction"])(user));
     },
     setMusicTrackAction: function setMusicTrackAction(musicTrackName) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_7__["setMusicTrackAction"])(musicTrackName));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_6__["setMusicTrackAction"])(musicTrackName));
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_6__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_8__["withRouter"])(Dashboard)));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_5__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_7__["withRouter"])(Dashboard)));
 Dashboard.propTypes = {
-  user: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string,
-  socket: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  history: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  createRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  setMusicTrackAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func
+  user: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.string,
+  socket: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.object,
+  history: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.object,
+  createRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.func,
+  setMusicTrackAction: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.func
 };
 
 /***/ }),
@@ -1418,7 +1414,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Loader = function Loader() {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "LOADER");
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "gooey"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "dot"
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "dots"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Loader);
@@ -1640,12 +1642,33 @@ NextPieceField.propTypes = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
 
 
-var NotFound = function NotFound() {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Not Found");
+
+var NotFound = function NotFound(props) {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "not-found__section"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "not-found__head"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "nes-bulbasaur"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "not-found__msg"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "Page does not exist"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "bottom__menu"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "nes-btn",
+    onClick: function onClick() {
+      return props.history.push('/');
+    }
+  }, "To Dashboard")));
 };
 
+NotFound.propTypes = {
+  history: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.object
+};
 /* harmony default export */ __webpack_exports__["default"] = (NotFound);
 
 /***/ }),
@@ -1659,64 +1682,141 @@ var NotFound = function NotFound() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
-/* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
+
+
+var PORTION_SIZE = 5;
 
 var Paginator = function Paginator(props) {
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    console.log('HERE I AM');
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])([]),
+      _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState, 2),
+      items = _useState2[0],
+      setItems = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(false),
+      _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
+      isLoaded = _useState4[0],
+      setLoaded = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(Math.ceil(props.page / PORTION_SIZE)),
+      _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState5, 2),
+      portionNumber = _useState6[0],
+      setPortionNumber = _useState6[1];
+
+  var leftBorderPage = (portionNumber - 1) * PORTION_SIZE + 1;
+  var rightBorderPage = portionNumber * PORTION_SIZE;
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    var items = [];
+
+    for (var i = 1; i <= props.pageCount; i++) {
+      items.push(i);
+    }
+
+    setItems(items);
   }, []);
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    setLoaded(true);
+  }, [items]);
+
+  var handlePageClick = function handlePageClick(e) {
+    var page = e.target.dataset.page;
+    var currentPage = parseInt(props.page);
+
+    if (page === 'previous') {
+      if (currentPage - 1 === 0) {
+        return;
+      }
+
+      page = currentPage - 1;
+
+      if (page < leftBorderPage) {
+        setPortionNumber(portionNumber - 1);
+      }
+    }
+
+    if (page === 'next') {
+      if (currentPage === props.pageCount) {
+        return;
+      }
+
+      page = currentPage + 1;
+
+      if (page > rightBorderPage) {
+        setPortionNumber(portionNumber + 1);
+      }
+    }
+
+    props.onPageClick(page);
+  };
+
+  var handlePortionChange = function handlePortionChange(e) {
+    var direction = e.target.dataset.direction;
+    var maxPortion = Math.ceil(items.length / PORTION_SIZE);
+
+    if (direction === 'previous') {
+      if (portionNumber - 1 !== 0) {
+        setPortionNumber(portionNumber - 1);
+        props.onPageClick((portionNumber - 1) * PORTION_SIZE - PORTION_SIZE + 1);
+      }
+    }
+
+    if (direction === 'next') {
+      if (portionNumber !== maxPortion) {
+        setPortionNumber(portionNumber + 1);
+        props.onPageClick(portionNumber * PORTION_SIZE + 1);
+      }
+    }
+  };
+
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
     className: "paginator"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "paginator__row"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__["FontAwesomeIcon"], {
-    icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__["faAngleLeft"]
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn is-primary"
-  }, "1")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, "2")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, "3")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, "...")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, "7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "pagination__page__btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "button",
-    className: "nes-btn"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_1__["FontAwesomeIcon"], {
-    icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__["faAngleRight"]
-  })))));
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "nes-btn",
+    "data-page": "previous",
+    onClick: handlePageClick
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__["FontAwesomeIcon"], {
+    icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faAngleLeft"]
+  })), portionNumber - 1 !== 0 && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "nes-btn",
+    "data-direction": "previous",
+    onClick: handlePortionChange
+  }, '...'), isLoaded && items.filter(function (page) {
+    return page >= leftBorderPage && page <= rightBorderPage;
+  }).map(function (page, index) {
+    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: page == props.page ? 'nes-btn is-primary' : 'nes-btn',
+      key: index,
+      "data-page": page,
+      onClick: handlePageClick
+    }, page);
+  }), portionNumber !== Math.ceil(items.length / PORTION_SIZE) && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "nes-btn",
+    "data-direction": "next",
+    onClick: handlePortionChange
+  }, '...'), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "nes-btn",
+    "data-page": "next",
+    onClick: handlePageClick
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_2__["FontAwesomeIcon"], {
+    icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faAngleRight"]
+  })));
 };
 
+Paginator.propTypes = {
+  page: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.oneOfType([prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string, prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.number]),
+  onPageClick: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
+  pageCount: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.number
+};
 /* harmony default export */ __webpack_exports__["default"] = (Paginator);
 
 /***/ }),
@@ -1821,17 +1921,18 @@ var Room = function Room(props) {
           switch (_context.prev = _context.next) {
             case 0:
               return _context.abrupt("return", new Promise(function (resolve, reject) {
-                props.socket.emit('canJoinRoom', roomId);
+                props.socket.emit('canJoinRoom', {
+                  roomId: roomId,
+                  nickname: props.user
+                });
                 props.socket.on('canJoinRoom', function (response) {
                   if (response.success) {
                     resolve({
                       msg: MSG_JOINED_ROOM
                     });
+                  } else {
+                    props.history.push('/');
                   }
-
-                  reject({
-                    msg: ERROR_ROOM_NOT_FOUND
-                  });
                 });
               }));
 
@@ -2056,6 +2157,9 @@ var Room = function Room(props) {
       props.setOpponentAction(opponent);
     });
     props.socket.on('leftGame', function (response) {
+      console.log("RESPONSE", response);
+      console.log("PROPS USER", props.user);
+
       if (response.player === props.user) {
         props.socket.emit('disconnect');
         props.history.push('/');
@@ -2222,8 +2326,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _RoomManagementBtns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RoomManagementBtns */ "./components/RoomManagementBtns.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _Music__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Music */ "./components/Music.js");
-
 
 
 
@@ -2239,7 +2341,7 @@ var RoomManagement = function RoomManagement(props) {
   return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
     className: "room__management",
     onClick: setFocusToField
-  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Music__WEBPACK_IMPORTED_MODULE_6__["default"], null), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_0__["default"], null), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GamePlayers__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GameLink__WEBPACK_IMPORTED_MODULE_0__["default"], null), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GamePlayers__WEBPACK_IMPORTED_MODULE_1__["default"], {
     socket: props.socket
   })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_RoomManagementBtns__WEBPACK_IMPORTED_MODULE_4__["default"], {
     socket: props.socket
@@ -2376,12 +2478,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hoc/InitSockets */ "./components/hoc/InitSockets.js");
-/* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
-/* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
-/* harmony import */ var _NotFound__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NotFound */ "./components/NotFound.js");
-/* harmony import */ var _Score__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Score */ "./components/Score.js");
+/* harmony import */ var _hoc_ApplicationActions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./hoc/ApplicationActions */ "./components/hoc/ApplicationActions.js");
+/* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Dashboard */ "./components/Dashboard.js");
+/* harmony import */ var _Room__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Room */ "./components/Room.js");
+/* harmony import */ var _NotFound__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NotFound */ "./components/NotFound.js");
+/* harmony import */ var _Score__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Score */ "./components/Score.js");
 
  // Higher Order Components
+
 
  // Components
 
@@ -2393,18 +2497,18 @@ function Router(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Switch"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
     path: "/",
-    component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Dashboard__WEBPACK_IMPORTED_MODULE_3__["default"])
+    component: Object(_hoc_ApplicationActions__WEBPACK_IMPORTED_MODULE_3__["default"])(Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Dashboard__WEBPACK_IMPORTED_MODULE_4__["default"]))
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
     path: "/room/:id",
-    component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Room__WEBPACK_IMPORTED_MODULE_4__["default"])
+    component: Object(_hoc_ApplicationActions__WEBPACK_IMPORTED_MODULE_3__["default"])(Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Room__WEBPACK_IMPORTED_MODULE_5__["default"]))
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
     path: "/score",
-    component: Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Score__WEBPACK_IMPORTED_MODULE_6__["default"])
+    component: Object(_hoc_ApplicationActions__WEBPACK_IMPORTED_MODULE_3__["default"])(Object(_hoc_InitSockets__WEBPACK_IMPORTED_MODULE_2__["default"])(props, _Score__WEBPACK_IMPORTED_MODULE_7__["default"]))
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     path: "*",
-    component: _NotFound__WEBPACK_IMPORTED_MODULE_5__["default"]
+    component: _NotFound__WEBPACK_IMPORTED_MODULE_6__["default"]
   }));
 }
 
@@ -2423,9 +2527,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Paginator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Paginator */ "./components/Paginator.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _Paginator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Paginator */ "./components/Paginator.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -2442,10 +2548,21 @@ var Score = function Score(props) {
       paginationData = _useState2[0],
       setPaginationData = _useState2[1];
 
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])({
+    highest: null,
+    position: null
+  }),
+      _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
+      personalScore = _useState4[0],
+      setPersonalScore = _useState4[1];
+
   Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
     props.socket.emit('getScoreResults', {
       count: SCORES_AMOUNT,
       page: 1
+    });
+    props.socket.emit('getPersonalScore', {
+      nickname: props.nickname
     });
     props.socket.on('scoreResults', function (data) {
       setPaginationData({
@@ -2454,9 +2571,20 @@ var Score = function Score(props) {
         pages: data.pages
       });
     });
+    props.socket.on('personalScore', function (data) {
+      setPersonalScore({
+        highest: data.highest,
+        position: data.position
+      });
+    });
   }, []);
 
-  var pageChange = function pageChange() {};
+  var onPageClick = function onPageClick(page) {
+    props.socket.emit('getScoreResults', {
+      count: SCORES_AMOUNT,
+      page: page
+    });
+  };
 
   var renderData = function renderData() {
     if (paginationData.items !== null && paginationData.items.length) {
@@ -2482,12 +2610,16 @@ var Score = function Score(props) {
 
   var renderPaginator = function renderPaginator() {
     if (paginationData.pages && paginationData.page) {
-      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Paginator__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        currentPage: paginationData.pages,
-        pages: paginationData.pages,
-        pageChange: pageChange
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Paginator__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        page: paginationData.page,
+        pageCount: paginationData.pages,
+        onPageClick: onPageClick
       });
     }
+  };
+
+  var toDashboard = function toDashboard() {
+    return props.history.push('/');
   };
 
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -2500,13 +2632,56 @@ var Score = function Score(props) {
     className: "score__position"
   }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Your position: 24 / 234"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("table", {
     className: "nes-table is-bordered is-centered score-table"
-  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Rank"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Nickname"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Score"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tbody", null, renderData())), renderPaginator());
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Rank"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Nickname"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("th", null, "Score"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("tbody", null, renderData())), renderPaginator(), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "bottom__menu"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    className: "nes-btn is-primary",
+    onClick: toDashboard
+  }, "To Dashboard")));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Score);
 Score.propTypes = {
-  socket: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.object
+  socket: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
+  history: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
+  nickname: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string
 };
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    nickname: state.user.nickname
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["connect"])(mapStateToProps, null)(Score));
+
+/***/ }),
+
+/***/ "./components/hoc/ApplicationActions.js":
+/*!**********************************************!*\
+  !*** ./components/hoc/ApplicationActions.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Music__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Music */ "./components/Music.js");
+
+
+
+var ApplicationActions = function ApplicationActions(ChildComponent) {
+  var Component = function Component() {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "application__actions"
+    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Music__WEBPACK_IMPORTED_MODULE_1__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ChildComponent, null));
+  };
+
+  return Component;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ApplicationActions);
 
 /***/ }),
 
@@ -15365,7 +15540,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  width: 400px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  max-width: 500px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between;\n  align-items: start; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block;\n  position: relative; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    max-width: 300px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 0 10vw; }\n\n@media (max-width: 786px) {\n  .score__container {\n    margin: 0 30px; } }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.score-table {\n  width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  width: fill-available; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n\n.player {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .player__rank {\n    display: flex;\n    align-items: center;\n    margin-left: 10px; }\n", ""]);
+exports.push([module.i, ".gooey {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 142px;\n  height: 40px;\n  margin: -20px 0 0 -71px;\n  background: #fff;\n  filter: contrast(20); }\n\n.gooey .dot {\n  position: absolute;\n  width: 16px;\n  height: 16px;\n  top: 12px;\n  left: 15px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%;\n  transform: translateX(0);\n  animation: dot 2.8s infinite; }\n\n.gooey .dots {\n  transform: translateX(0);\n  margin-top: 12px;\n  margin-left: 31px;\n  animation: dots 2.8s infinite; }\n\n.gooey .dots span {\n  display: block;\n  float: left;\n  width: 16px;\n  height: 16px;\n  margin-left: 16px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%; }\n\n@-moz-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-webkit-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-o-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-moz-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-webkit-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-o-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  width: 400px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  max-width: 500px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between;\n  align-items: start; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block;\n  position: relative; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    max-width: 300px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 0 10vw; }\n\n@media (max-width: 786px) {\n  .score__container {\n    margin: 0 30px; } }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.score-table {\n  width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  width: fill-available; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n\n.player {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .player__rank {\n    display: flex;\n    align-items: center;\n    margin-left: 10px; }\n\n.application__actions {\n  position: absolute;\n  top: 20px;\n  left: 20px; }\n\n.bottom__menu {\n  display: flex;\n  justify-content: center;\n  margin-top: 30px; }\n\n.not-found__msg {\n  text-align: center; }\n  .not-found__msg span {\n    font-size: 18px;\n    font-weight: bold; }\n\n.not-found__section {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  margin: 30% 5vw 0 5vw;\n  flex-direction: column; }\n\n.not-found__head {\n  margin-bottom: 15px; }\n\n.paginator div {\n  margin: 0 9px; }\n", ""]);
 
 
 /***/ }),
