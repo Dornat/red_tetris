@@ -1,11 +1,11 @@
 import React from 'react';
 import SocketContext from '../Context/SocketContext';
 
-const InitSockets = (props, Component) => {
+const InitSockets = (ChildComponent) => {
     return () => {
         return (
             <SocketContext.Consumer>
-                { socket => <Component {...props} socket={socket}/> }
+                { socket => <ChildComponent socket={socket}/> }
             </SocketContext.Consumer>
         );
     };

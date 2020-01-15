@@ -11,22 +11,22 @@ import Room from './Room';
 import NotFound from './NotFound';
 import Score from './Score';
 
-export default function Router(props) {
+export default function Router() {
     return (
         <Switch>
             <Route exact path="/" component={
                 ApplicationActions(
-                    InitSockets(props, Dashboard)
+                    InitSockets(Dashboard)
                 )
             }/>
             <Route exact path="/room/:id" component={
                 ApplicationActions(
-                    InitSockets(props, Room)
+                    InitSockets(Room)
                 )
             }/>
             <Route exact path="/score" component={
                 ApplicationActions(
-                    InitSockets(props, Score)
+                    InitSockets(Score)
                 )
             }/>
             <Route path="*" component={NotFound}/>
