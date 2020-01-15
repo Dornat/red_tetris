@@ -345,6 +345,10 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
             });
         });
 
+        socket.on('getPersonalScore', ({nickname}) => {
+            const promise = ScoreService.getPersonalScore(nickname);
+        });
+
         socket.on('disconnect', () => {
             delete onlineStatuses[socket.id];
         });

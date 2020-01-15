@@ -1,5 +1,4 @@
 import FormNickname from './Form/FormNickname';
-import Music from './Music';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
@@ -70,9 +69,6 @@ const Dashboard = (props) => {
     return (
         <main>
             <div className="flex_centered">
-                <div className="dashboard-actions">
-                    <Music/>
-                </div>
                 <div className="dashboard__section">
                     <div className="col">
                         <FormNickname form={form} isError={isError} setError={setError} setValues={setValues}

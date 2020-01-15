@@ -41,13 +41,49 @@ class ScoreService {
             });
 
             return {
-                page: 1,
+                page: page,
                 returned: items.length,
                 total: total,
                 items: items,
                 pages: Math.ceil(total / count)
             };
         } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    static async getPersonalScore(nickname) {
+        try {
+            const result = await Score.findOne({nickname: nickname});
+
+            if (result === null) {
+                return {msg: 'noGamesYet'}
+            }
+
+            const position = await Score.mapReduce(
+                () => {
+                    emit(null, this.nickname);
+                },
+                (key, values) => {
+                    // console.log("KEY", key);
+                    // console.log("VALUES", values);
+                    // return values.indexOf(nickname) + 1;
+                },
+                {
+                    "sort": {"score": -1},
+                    "out": {"inline": 1}
+                }
+            );
+
+            console.log("POSITION", position);
+
+            return {
+                msg: 'found',
+                score: result.score,
+            }
+        }
+        catch {
             console.log(e);
             return false;
         }

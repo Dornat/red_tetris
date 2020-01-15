@@ -40,7 +40,10 @@ module.exports = {
             {
                 test: /\.(ogg|mp3|wav|mpe?g)$/i,
                 include: music,
-                loader: 'file-loader'
+                loader: 'file-loader',
+                options: {
+                    outputPath: 'music'
+                }
             }
         ]
     }
