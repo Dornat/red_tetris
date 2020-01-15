@@ -1921,18 +1921,17 @@ var Room = function Room(props) {
           switch (_context.prev = _context.next) {
             case 0:
               return _context.abrupt("return", new Promise(function (resolve, reject) {
-                props.socket.emit('canJoinRoom', {
-                  roomId: roomId,
-                  nickname: props.user
-                });
+                props.socket.emit('canJoinRoom', roomId);
                 props.socket.on('canJoinRoom', function (response) {
                   if (response.success) {
                     resolve({
                       msg: MSG_JOINED_ROOM
                     });
-                  } else {
-                    props.history.push('/');
                   }
+
+                  reject({
+                    msg: ERROR_ROOM_NOT_FOUND
+                  });
                 });
               }));
 
@@ -2157,9 +2156,6 @@ var Room = function Room(props) {
       props.setOpponentAction(opponent);
     });
     props.socket.on('leftGame', function (response) {
-      console.log("RESPONSE", response);
-      console.log("PROPS USER", props.user);
-
       if (response.player === props.user) {
         props.socket.emit('disconnect');
         props.history.push('/');
@@ -3052,7 +3048,7 @@ if (document.getElementById('app')) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "0c0e600f2fe65ea511876fa53191247f.mp3";
+module.exports = __webpack_require__.p + "music/0c0e600f2fe65ea511876fa53191247f.mp3";
 
 /***/ }),
 
@@ -3063,7 +3059,7 @@ module.exports = __webpack_require__.p + "0c0e600f2fe65ea511876fa53191247f.mp3";
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "7386e9e91d5ddb13eecd50c7e0ca815b.mp3";
+module.exports = __webpack_require__.p + "music/7386e9e91d5ddb13eecd50c7e0ca815b.mp3";
 
 /***/ }),
 
@@ -3074,7 +3070,7 @@ module.exports = __webpack_require__.p + "7386e9e91d5ddb13eecd50c7e0ca815b.mp3";
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "e21aff0df3db7167ba9aea34b2216e63.mp3";
+module.exports = __webpack_require__.p + "music/e21aff0df3db7167ba9aea34b2216e63.mp3";
 
 /***/ }),
 
@@ -71574,7 +71570,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
+/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
