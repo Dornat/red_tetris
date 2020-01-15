@@ -450,13 +450,7 @@ button {
 }
 
 .score__container {
-  margin: 0 10vw;
-}
-
-@media (max-width: 786px) {
-  .score__container {
-    margin: 0 30px;
-  }
+  margin: 150px 10vw;
 }
 
 .score__table-wrap {
@@ -586,4 +580,9 @@ button {
 
 .paginator div {
   margin: 0 9px;
+}
+
+.room-dialog__btns
+{
+  text-align: center;
 }

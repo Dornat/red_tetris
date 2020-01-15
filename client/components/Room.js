@@ -232,7 +232,9 @@ const Room = (props) => {
             return (
                 <div className="nes-dialog">
                     <h2>No such room</h2>
-                    <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                    <div className="room-dialog__btns">
+                        <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                    </div>
                 </div>
             );
         } else if (modal === MODAL_GAME_PAUSED) {
@@ -245,14 +247,18 @@ const Room = (props) => {
             return (
                 <div className="nes-dialog">
                     <h2>No space in room</h2>
-                    <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                    <div className="room-dialog__btns">
+                        <button className="nes-btn" onClick={straightToDashboard}>To Dashboard</button>
+                    </div>
                 </div>
             );
         } else if (modal === MODAL_GAME_OVER) {
             return (
                 <div className="nes-dialog">
                     <h2>Game Over!</h2>
-                    <button className="nes-btn" onClick={toDashBoard}>To Dashboard</button>
+                    <div className="room-dialog__btns">
+                        <button className="nes-btn" onClick={toDashBoard}>To Dashboard</button>
+                    </div>
                 </div>
             );
         }
