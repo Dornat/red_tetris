@@ -11,7 +11,7 @@ const server = new Server({
     port: process.env.PORT || 8,
     createStaticFolder: true,
     onInit: (port) => {
-        console.log('Red Tetris is running on http://' + process.env.HOST + ':' + port);
+        console.log('Red Tetris is running on ' + process.env.PROTOCOL + '://' + process.env.HOST + ':' + port);
     }
 });
 

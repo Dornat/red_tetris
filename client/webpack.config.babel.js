@@ -1,17 +1,17 @@
 import * as path from 'path';
 import webpack from 'webpack';
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 const music = path.resolve(__dirname, 'music');
 
-// // call dotenv and it will return an Object with a parsed key
-// const env = dotenv.config().parsed;
-//
-// // reduce it to a nice object, the same as before
-// const envKeys = Object.keys(env).reduce((prev, next) => {
-//     prev[`process.env.${next}`] = JSON.stringify(env[next]);
-//     return prev;
-// }, {});
+// call dotenv and it will return an Object with a parsed key
+const env = dotenv.config().parsed;
+
+// reduce it to a nice object, the same as before
+const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+}, {});
 
 module.exports = {
     devtool: 'source-map',
@@ -62,11 +62,12 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
-                HOST: JSON.stringify(process.env.HOST),
-            }
-        })
+        new webpack.DefinePlugin(envKeys)
+            // 'process.env': {
+                // PROTOCOL: JSON.stringify(process.env.PROTOCOL),
+                // HOST: JSON.stringify(process.env.HOST),
+                // IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
+            // }
+        // })
     ]
 };
