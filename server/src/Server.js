@@ -43,10 +43,6 @@ class Server {
 
         this.app.use('/api', router);
 
-        this.app.listen(port, () => {
-            this.onInit(port);
-        });
-
         this.server.listen(port, () => {
             this.onInit(port);
         });
