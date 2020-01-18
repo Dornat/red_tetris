@@ -4,7 +4,7 @@
   "description": "Red Tetris Client",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --env.IO_SERVER_PORT=3001",
+    "build": "webpack",
     "watch": "webpack --watch --progress --hide-modules"
   },
   "author": "ymarchys & dpolosuk",
