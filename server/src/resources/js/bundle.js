@@ -82889,18 +82889,25 @@ if (content.locals) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initSocketConnection", function() { return initSocketConnection; });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "initSocketConnection", function() { return initSocketConnection; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
 var initSocketConnection = function initSocketConnection() {
   try {
-    var uri = "http" + '://' + "localhost" + ':' + "3001";
+    var ioServerPort = ''; // Heroku doesn't need a definition of socket.io port.
+
+    if (typeof process.env.HEROKU === 'undefined') {
+      ioServerPort = ':' + "3001";
+    }
+
+    var uri = "http" + '://' + "localhost" + ioServerPort;
     return socket_io_client__WEBPACK_IMPORTED_MODULE_0___default.a.connect(uri);
   } catch (e) {
     console.log(e);
   }
 };
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -83179,6 +83186,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buildUrl", function() { return buildUrl; });
 var FOLDER = '/js/';
 var buildUrl = function buildUrl() {
+  console.log("http" + '://' + "localhost" + ':' + "3000" + FOLDER);
   return "http" + '://' + "localhost" + ':' + "3000" + FOLDER;
 };
 

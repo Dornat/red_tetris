@@ -56,6 +56,7 @@ module.exports = {
                 PROTOCOL: JSON.stringify(process.env.PROTOCOL),
                 HOST: JSON.stringify(process.env.HOST),
                 IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
+                PORT: JSON.stringify(process.env.PORT),
             }
         })
     ]
