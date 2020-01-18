@@ -1,8 +1,5 @@
-const PROTOCOL = 'http';
-const HOST = 'localhost';
-const PORT = '3000';
 const FOLDER = '/js/';
 
 export const buildUrl = () => {
-    return PROTOCOL + '://' + HOST + ':' + PORT + FOLDER;
+    return process.env.PROTOCOL + '://' + process.env.HOST + ':' + process.env.PORT + FOLDER;
 };

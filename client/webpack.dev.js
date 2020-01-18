@@ -1,6 +1,6 @@
-import * as path from 'path';
-import webpack from 'webpack';
-import dotenv from 'dotenv';
+const path = require('path');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
 
 const music = path.resolve(__dirname, 'music');
 
@@ -19,7 +19,7 @@ module.exports = {
     entry: './index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, '../dist/resources/js')
+        path: path.resolve(__dirname, '../server/src/resources/js')
     },
     node: {
         fs: 'empty'
