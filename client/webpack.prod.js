@@ -57,6 +57,7 @@ module.exports = {
                 HOST: JSON.stringify(process.env.HOST),
                 IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
                 PORT: JSON.stringify(process.env.PORT),
+                HEROKU: JSON.stringify(process.env.HEROKU),
             }
         })
     ]
