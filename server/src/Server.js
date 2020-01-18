@@ -43,9 +43,20 @@ class Server {
 
         this.app.use('/api', router);
 
-        this.server.listen(port, () => {
-            this.onInit(port);
-        });
+        // Heroku doesn't need a definition of socket.io port.
+        if (typeof process.env.HEROKU === 'undefined') {
+            this.app.listen(port, () => {
+                this.onInit(port);
+            });
+
+            this.server.listen(process.env.IO_SERVER_PORT, () => {
+                this.onInit(process.env.IO_SERVER_PORT);
+            });
+        } else {
+            this.server.listen(port, () => {
+                this.onInit(port);
+            });
+        }
 
         this.io = socketIO(this.server);
     }
