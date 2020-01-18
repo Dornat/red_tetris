@@ -47,8 +47,8 @@ class Server {
             this.onInit(port);
         });
 
-        this.server.listen(process.env.IO_SERVER_PORT, () => {
-            this.onInit(process.env.IO_SERVER_PORT);
+        this.server.listen(port, () => {
+            this.onInit(port);
         });
 
         this.io = socketIO(this.server);
