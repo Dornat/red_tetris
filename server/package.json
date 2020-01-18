@@ -4,9 +4,9 @@
   "description": "Red Tetris Server",
   "main": "src/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "rm -rf dist && webpack --mode production",
     "dev": "nodemon --exec babel-node src/index.js",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "test": "mocha --require @babel/register"
   },
   "author": "ymarchys & dpolosuk",
@@ -20,16 +20,26 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
+    "@babel/core": "^7.8.3",
     "@babel/node": "^7.7.7",
     "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/polyfill": "^7.7.0",
-    "@babel/preset-env": "^7.7.7",
+    "@babel/plugin-transform-regenerator": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.7.4",
+    "@babel/polyfill": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
     "@types/node": "^12.12.22",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-latest": "^6.14.0",
     "chai": "^4.2.0",
+    "file-loader": "^4.2.0",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
   }
 }

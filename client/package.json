@@ -4,7 +4,7 @@
   "description": "Red Tetris Client",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --env.IO_SERVER_PORT=3001",
     "watch": "webpack --watch --progress --hide-modules"
   },
   "author": "ymarchys & dpolosuk",
@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",
+    "dotenv": "^8.2.0",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.15",
     "nes.css": "^2.2.1",
