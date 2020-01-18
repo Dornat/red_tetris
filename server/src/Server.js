@@ -1,5 +1,7 @@
 import express from 'express';
 import router from './router';
+import http from 'http';
+import socketIO from 'socket.io';
 
 class Server {
 
@@ -11,6 +13,7 @@ class Server {
      */
     constructor(options) {
         this.app = express();
+        this.server = http.Server(this.app);
 
         this.app.set('port', options.port);
 
@@ -34,7 +37,7 @@ class Server {
         const port = this.app.get('port');
 
         // Non-API Routes
-        this.app.get(/^(?!\/api)/, function(req, res, next) {
+        this.app.get(/^(?!\/api)/, function(req, res) {
             res.sendFile(__dirname + '/resources/index.html');
         });
 
@@ -44,6 +47,11 @@ class Server {
             this.onInit(port);
         });
 
+        this.server.listen(process.env.IO_SERVER_PORT, () => {
+            this.onInit(process.env.IO_SERVER_PORT);
+        });
+
+        this.io = socketIO(this.server);
     }
 }
 

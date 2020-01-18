@@ -1,6 +1,17 @@
 import * as path from 'path';
+import webpack from 'webpack';
+import dotenv from 'dotenv';
 
 const music = path.resolve(__dirname, 'music');
+
+// call dotenv and it will return an Object with a parsed key
+const env = dotenv.config().parsed;
+
+// reduce it to a nice object, the same as before
+const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+}, {});
 
 module.exports = {
     devtool: 'source-map',
@@ -8,7 +19,10 @@ module.exports = {
     entry: './index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, '../server/src/resources/js')
+        path: path.resolve(__dirname, '../dist/resources/js')
+    },
+    node: {
+        fs: 'empty'
     },
     module: {
         rules: [
@@ -46,5 +60,8 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.DefinePlugin(envKeys)
+    ]
 };
