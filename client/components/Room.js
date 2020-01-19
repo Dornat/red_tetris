@@ -87,6 +87,8 @@ const Room = (props) => {
 
     useEffect(() => {
         const handleJoining = async () => {
+            const roomIdFromUrl = props.match.params.id;
+
             try {
                 const locationState = props.location.state;
 
@@ -96,11 +98,10 @@ const Room = (props) => {
                     isRoomCreator = locationState.gameCreator;
                 }
 
-                const roomIdFromUrl = props.match.params.id;
-
                 // When creator refreshes the page he needs to return to the room that he's created recently.
                 if (props.roomId === null && props.isLeader == null && isRoomCreator) {
                     props.socket.emit('join', roomIdFromUrl, props.user);
+                    props.socket.emit('roomCreatorJoinRoom', roomIdFromUrl, props.user);
                     props.setRoomAction(roomIdFromUrl);
                     props.setLeaderAction(true);
                 }
@@ -129,6 +130,8 @@ const Room = (props) => {
                     return {msg: joined.msg};
                 }
             } catch (e) {
+                props.socket.emit('removePlayerFromRoomIfCantJoin', roomIdFromUrl, props.user);
+
                 if (e.msg === ERROR_ROOM_NOT_FOUND || e.msg === ERROR_NO_SPACE_AVAILABLE) {
                     return {msg: e.msg};
                 }
