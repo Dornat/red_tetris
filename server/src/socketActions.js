@@ -99,19 +99,21 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
         socket.on('roomCreatorJoinRoom', (roomId, nickname) => {
             const room = rooms[roomId];
 
-            if (Object.keys(room.players).length === 2 && room.game) {
-                if (room.game.isGameStarted) {
-                    room.game.setOver();
-                    io.in(roomId).emit('gameOver');
-                }
-            } else {
-                if (Object.keys(room.players).length === 2) {
-                    try {
-                        const player = room.getPlayer(nickname);
-                        player.onlineStatusKey = socket.id;
-                        io.in(roomId).emit('playerJoined', room.players);
-                    } catch (e) {
-                        // No such player in room.
+            if (typeof room !== 'undefined') {
+                if (Object.keys(room.players).length === 2 && room.game) {
+                    if (room.game.isGameStarted) {
+                        room.game.setOver();
+                        io.in(roomId).emit('gameOver');
+                    }
+                } else {
+                    if (Object.keys(room.players).length === 2) {
+                        try {
+                            const player = room.getPlayer(nickname);
+                            player.onlineStatusKey = socket.id;
+                            io.in(roomId).emit('playerJoined', room.players);
+                        } catch (e) {
+                            // No such player in room.
+                        }
                     }
                 }
             }
@@ -210,18 +212,20 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
         socket.on('removePlayerFromRoomIfCantJoin', (roomId, nickname) => {
             const room = rooms[roomId];
 
-            try {
-                room.removePlayer(nickname);
-                delete players[nickname];
-                console.log(`[${logDate()}] Player '${nickname}' was removed from the room and global players array`);
-                if (Object.keys(room.players).length === 1 && room.game) {
-                    if (room.game.isGameStarted) {
-                        room.game.setOver();
-                        io.in(roomId).emit('gameOver');
+            if (typeof room !== 'undefined') {
+                try {
+                    room.removePlayer(nickname);
+                    delete players[nickname];
+                    console.log(`[${logDate()}] Player '${nickname}' was removed from the room and global players array`);
+                    if (Object.keys(room.players).length === 1 && room.game) {
+                        if (room.game.isGameStarted) {
+                            room.game.setOver();
+                            io.in(roomId).emit('gameOver');
+                        }
                     }
+                } catch (e) {
+                    // Player doesn't exist.
                 }
-            } catch (e) {
-                // Player doesn't exist.
             }
         });
 
