@@ -32,7 +32,7 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
          */
         socket.on('createRoom', (nickname) => {
             if (Room.isPlayerUnique(players, nickname)) {
-                const player = new Player(nickname);
+                const player = new Player(nickname, true, socket.id);
                 const room = new Room(player);
                 rooms[room.id] = room;
                 console.log(`[${logDate()}] Room '${room.id}' was added to global rooms array`);
@@ -42,8 +42,12 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                 socket.join(room.id);
                 onlineStatuses[socket.id] = nickname;
             } else {
+                console.log('in else');
+                console.log('rooms', rooms);
+                console.log('players', players);
                 for (let roomId in rooms) {
                     if (rooms.hasOwnProperty(roomId)) {
+                        console.log('roomId', roomId);
                         try {
                             const player = rooms[roomId].getPlayer(nickname);
                             /**
@@ -86,6 +90,30 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                     }
                 }
                 socket.emit('playerNameOccupied');
+            }
+        });
+
+        /**
+         * If room creator refreshes the page there are some stuff needs to happen.
+         */
+        socket.on('roomCreatorJoinRoom', (roomId, nickname) => {
+            const room = rooms[roomId];
+
+            if (Object.keys(room.players).length === 2 && room.game) {
+                if (room.game.isGameStarted) {
+                    room.game.setOver();
+                    io.in(roomId).emit('gameOver');
+                }
+            } else {
+                if (Object.keys(room.players).length === 2) {
+                    try {
+                        const player = room.getPlayer(nickname);
+                        player.onlineStatusKey = socket.id;
+                        io.in(roomId).emit('playerJoined', room.players);
+                    } catch (e) {
+                        // No such player in room.
+                    }
+                }
             }
         });
 
@@ -176,6 +204,28 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
         });
 
         /**
+         * When the game was already started and one of the player's page was refreshed we need to remove a player from
+         * room and players array and over the game in room.
+         */
+        socket.on('removePlayerFromRoomIfCantJoin', (roomId, nickname) => {
+            const room = rooms[roomId];
+
+            try {
+                room.removePlayer(nickname);
+                delete players[nickname];
+                console.log(`[${logDate()}] Player '${nickname}' was removed from the room and global players array`);
+                if (Object.keys(room.players).length === 1 && room.game) {
+                    if (room.game.isGameStarted) {
+                        room.game.setOver();
+                        io.in(roomId).emit('gameOver');
+                    }
+                }
+            } catch (e) {
+                // Player doesn't exist.
+            }
+        });
+
+        /**
          * Kicks the player from room. Only the leader can kick his opponent, so we need to know only room id.
          *
          * @param roomId
@@ -196,7 +246,25 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                 io.in(roomId).emit('roomStatus', 'undefined'); // Should never reach here.
             } else {
                 const room = rooms[roomId];
-                const newPlayer = new Player(nickname, false);
+
+                /**
+                 * If player page was refreshed manually then player is left in global players array and in a room.
+                 * That's why we need to remove player through checking player's onlineStatusKey.
+                 */
+                try {
+                    const alreadyLoggedInPlayer = room.getPlayer(nickname);
+                    if (typeof alreadyLoggedInPlayer !== 'undefined') {
+                        if (alreadyLoggedInPlayer.onlineStatusKey !== socket.id) {
+                            room.removePlayer(nickname);
+                            delete players[nickname];
+                            console.log(`[${logDate()}] Player '${nickname}' was removed from the room and global players array`);
+                        }
+                    }
+                } catch (e) {
+                    // Player doesn't exist.
+                }
+
+                const newPlayer = new Player(nickname, false, socket.id);
                 const playerWasAccepted = room.addPlayer(newPlayer);
 
                 io.in(roomId).emit('playerWasAccepted', {success: playerWasAccepted});
@@ -239,6 +307,10 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                 }
                 io.in(roomId).emit('leftGame', {player: nickname, isLeader: isLeader, left: isPlayerRemoved});
                 console.log(`[${logDate()}] Player '${nickname}' has left the room '${roomId}'`);
+                if (Object.keys(room.players).length === 1 && room.game) {
+                    room.game.setOver();
+                    io.in(roomId).emit('gameOver');
+                }
             }
         });
 
@@ -319,7 +391,9 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
          */
         socket.on('gameOver', (roomId) => {
             const room = rooms[roomId];
-            room.game.setOver();
+            if (room.game) {
+                room.game.setOver();
+            }
             io.in(roomId).emit('gameOver');
         });
 

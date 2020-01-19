@@ -2001,23 +2001,24 @@ var Room = function Room(props) {
       var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var locationState, isRoomCreator, roomIdFromUrl, joined, accepted;
+        var roomIdFromUrl, locationState, isRoomCreator, joined, accepted;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.prev = 0;
+                roomIdFromUrl = props.match.params.id;
+                _context3.prev = 1;
                 locationState = props.location.state;
                 isRoomCreator = false;
 
                 if (typeof locationState !== 'undefined' && typeof locationState.gameCreator !== 'undefined') {
                   isRoomCreator = locationState.gameCreator;
-                }
+                } // When creator refreshes the page he needs to return to the room that he's created recently.
 
-                roomIdFromUrl = props.match.params.id; // When creator refreshes the page he needs to return to the room that he's created recently.
 
                 if (props.roomId === null && props.isLeader == null && isRoomCreator) {
                   props.socket.emit('join', roomIdFromUrl, props.user);
+                  props.socket.emit('roomCreatorJoinRoom', roomIdFromUrl, props.user);
                   props.setRoomAction(roomIdFromUrl);
                   props.setLeaderAction(true);
                 }
@@ -2069,15 +2070,16 @@ var Room = function Room(props) {
                 });
 
               case 24:
-                _context3.next = 30;
+                _context3.next = 31;
                 break;
 
               case 26:
                 _context3.prev = 26;
-                _context3.t0 = _context3["catch"](0);
+                _context3.t0 = _context3["catch"](1);
+                props.socket.emit('removePlayerFromRoomIfCantJoin', roomIdFromUrl, props.user);
 
                 if (!(_context3.t0.msg === ERROR_ROOM_NOT_FOUND || _context3.t0.msg === ERROR_NO_SPACE_AVAILABLE)) {
-                  _context3.next = 30;
+                  _context3.next = 31;
                   break;
                 }
 
@@ -2085,12 +2087,12 @@ var Room = function Room(props) {
                   msg: _context3.t0.msg
                 });
 
-              case 30:
+              case 31:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, null, [[0, 26]]);
+        }, _callee3, null, [[1, 26]]);
       }));
 
       return function handleJoining() {
@@ -71570,7 +71572,7 @@ function warning(message) {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
+/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
