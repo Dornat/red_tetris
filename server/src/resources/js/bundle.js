@@ -2182,13 +2182,15 @@ var Room = function Room(props) {
   }, []);
 
   var closeModalAndEnrollNewPlayerIntoTheGame = function closeModalAndEnrollNewPlayerIntoTheGame() {
-    acceptPlayer(props.roomId, props.user).then(function () {
-      setRoomExists(true);
-      setIsModalOpened(false);
-    })["catch"](function () {
-      setIsModalOpened(true);
-      setModal(MODAL_NO_SPACE);
-    });
+    if (props.user) {
+      acceptPlayer(props.roomId, props.user).then(function () {
+        setRoomExists(true);
+        setIsModalOpened(false);
+      })["catch"](function () {
+        setIsModalOpened(true);
+        setModal(MODAL_NO_SPACE);
+      });
+    }
   };
 
   var toDashBoard = function toDashBoard() {

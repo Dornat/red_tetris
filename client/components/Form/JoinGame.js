@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 const JoinGame = ({onClick}) => {
     const [isError, setError] = useState(false);
 
-    const [form, setValues] = useState({ user: ''});
+    const [form, setValues] = useState({user: ''});
 
     const onChange = (e) => {
         setValues({
