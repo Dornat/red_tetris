@@ -625,14 +625,15 @@ __webpack_require__.r(__webpack_exports__);
 var FormNickname = function FormNickname(props) {
   var _onSubmit = function onSubmit(e) {
     e.preventDefault();
+    var nicknameValidation = '^[0-9\\w]{1,10}$';
+    var nickname = String(props.form.user);
 
-    if (!props.form.user.length) {
-      props.setError(true);
-    } else {
+    if (nickname.match(nicknameValidation)) {
       props.setError(false);
+      props.setUser(props.form.user);
+    } else {
+      props.setError(true);
     }
-
-    props.setUser(props.form.user);
   };
 
   return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
@@ -82960,7 +82961,8 @@ var loadFromLocalStorage = function loadFromLocalStorage() {
 };
 
 var persistedState = loadFromLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });

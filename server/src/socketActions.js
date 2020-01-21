@@ -42,12 +42,8 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                 socket.join(room.id);
                 onlineStatuses[socket.id] = nickname;
             } else {
-                console.log('in else');
-                console.log('rooms', rooms);
-                console.log('players', players);
                 for (let roomId in rooms) {
                     if (rooms.hasOwnProperty(roomId)) {
-                        console.log('roomId', roomId);
                         try {
                             const player = rooms[roomId].getPlayer(nickname);
                             /**
@@ -355,12 +351,7 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
 
                 if (cheater === null) {
                     console.log('\u001b[31mfireInTheHoleTheCheaterIsHere\u001b[0m');
-                    console.log('player.field', data.coords);
-                    console.log('player.field', player.field);
                     io.in(data.roomId).emit('fireInTheHoleTheCheaterIsHere');
-                }
-                if (player.nickname === 'dornat') {
-                    console.log('\u001b[31mdornat.field\u001b[0m', player.field);
                 }
 
                 io.in(data.roomId).emit('sendUpdatedGameData', {
