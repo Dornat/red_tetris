@@ -6,14 +6,15 @@ import {setUser} from '../../actions/userActions';
 const FormNickname = (props) => {
     const onSubmit = (e) => {
         e.preventDefault();
+        const nicknameValidation = '^[0-9\\w]{1,10}$';
+        const nickname = String(props.form.user);
 
-        if (!props.form.user.length) {
-            props.setError(true);
-        } else {
+        if (nickname.match(nicknameValidation)) {
             props.setError(false);
+            props.setUser(props.form.user);
+        } else {
+            props.setError(true);
         }
-
-        props.setUser(props.form.user);
     };
 
     return (

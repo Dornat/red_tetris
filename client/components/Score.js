@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import Paginator from './Paginator';
 import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom';
 
-const SCORES_AMOUNT = 3;
+const SCORES_AMOUNT = 10;
 
 const Score = (props) => {
 
@@ -81,15 +82,6 @@ const Score = (props) => {
 
     return (
         <div className="score__container">
-            <div className="score__head">
-                <div className="score__value">
-                    <p>Highest score: 620</p>
-                </div>
-                <div className="score__position">
-                    <p>Your position: 24 / 234</p>
-                </div>
-            </div>
-
             <table className="nes-table is-bordered is-centered score-table">
                 <thead>
                 <tr>
@@ -124,4 +116,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Score);
+export default connect(mapStateToProps, null)(withRouter(Score));
