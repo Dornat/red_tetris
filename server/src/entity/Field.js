@@ -39,7 +39,6 @@ class Field {
      * @returns {null|number}
      */
     fillCoordinates(coordinates) {
-        // TODO The bug sneaked in here. Find it! It's related to cheating.
         if (this.coordinatesAreFillable(coordinates)) {
             for (let i = 0; i < coordinates.length; i++) {
                 this.matrix[coordinates[i][0]][coordinates[i][1]] = 1;
@@ -73,8 +72,6 @@ class Field {
             let value = coordinates[i];
             for (let j = 0; j < valuesSoFar.length; j++) {
                 if (valuesSoFar[j][0] === value[0] && valuesSoFar[j][1] === value[1]) {
-                    console.log('coordinates1', coordinates);
-                    console.log(matrix);
                     return false;
                 }
             }
@@ -86,13 +83,9 @@ class Field {
             if (typeof matrix[coordinates[i][0]] !== 'undefined'
                 && typeof matrix[coordinates[i][0]][coordinates[i][1]] !== 'undefined') {
                 if (matrix[coordinates[i][0]][coordinates[i][1]] !== 0) {
-                    // console.log('coordinates2', coordinates);
-                    // console.log(matrix);
                     return false;
                 }
             } else {
-                console.log('coordinates3', coordinates);
-                console.log(matrix);
                 return false;
             }
         }
