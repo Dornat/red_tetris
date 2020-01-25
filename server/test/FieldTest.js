@@ -1,7 +1,8 @@
-import {describe} from 'mocha';
-import {assert} from 'chai';
-import Player from '../src/entity/Player';
 import Field from '../src/entity/Field';
+import Player from '../src/entity/Player';
+import _ from 'lodash';
+import {assert} from 'chai';
+import {describe} from 'mocha';
 
 describe('Field Tests', function () {
     it('should check if the matrix is an array', function () {
@@ -58,6 +59,20 @@ describe('Field Tests', function () {
 
         assert.notEqual(field.rowAmount, rowAmount);
         assert.equal(field.columnAmount, columnAmount);
+
+        const coords2 = [[0, 0], [0, 1], [0, 2], [0, 3]];
+        field.fillCoordinates(coords2);
+        assert.isFalse(field.destroyRow());
+    });
+
+    it('should not destroy row', function () {
+        const field = new Field();
+
+        for (let i = 0; i < 15; i++) {
+            field.destroyRow();
+        }
+
+        assert.isFalse(field.destroyRow());
     });
 
     it('should sweep the row', function () {

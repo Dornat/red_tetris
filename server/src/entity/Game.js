@@ -71,8 +71,8 @@ class Game {
      */
     _manageLevel() {
         let accumulatedScore = 0;
-        for (let key in this.players){
-            if(this.players.hasOwnProperty(key)){
+        for (let key in this.players) {
+            if (this.players.hasOwnProperty(key)) {
                 accumulatedScore += this.players[key].score.quantity;
             }
         }

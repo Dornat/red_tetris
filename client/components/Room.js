@@ -208,13 +208,15 @@ const Room = (props) => {
     }, []);
 
     const closeModalAndEnrollNewPlayerIntoTheGame = () => {
-        acceptPlayer(props.roomId, props.user).then(() => {
-            setRoomExists(true);
-            setIsModalOpened(false);
-        }).catch(() => {
-            setIsModalOpened(true);
-            setModal(MODAL_NO_SPACE);
-        });
+        if (props.user) {
+            acceptPlayer(props.roomId, props.user).then(() => {
+                setRoomExists(true);
+                setIsModalOpened(false);
+            }).catch(() => {
+                setIsModalOpened(true);
+                setModal(MODAL_NO_SPACE);
+            });
+        }
     };
 
     const toDashBoard = () => props.socket.emit('leaveGame', props.roomId, props.user);
