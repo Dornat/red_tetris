@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch --progress --hide-modules --config webpack.dev.js",
-    "test": "nyc mocha --require @babel/register"
+    "coverage": "nyc -r text -r text-summary mocha --require @babel/register"
   },
   "author": "ymarchys & dpolosuk",
   "license": "ISC",
