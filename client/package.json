@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "watch": "webpack --watch --progress --hide-modules --config webpack.dev.js"
+    "watch": "webpack --watch --progress --hide-modules --config webpack.dev.js",
+    "test": "nyc mocha --require @babel/register"
   },
   "author": "ymarchys & dpolosuk",
   "license": "ISC",
@@ -48,6 +49,9 @@
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1"
   }
 }
