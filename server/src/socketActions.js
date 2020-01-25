@@ -258,6 +258,8 @@ const socketActions = (io, rooms, onlineStatuses, players) => {
                             room.removePlayer(nickname);
                             delete players[nickname];
                             console.log(`[${logDate()}] Player '${nickname}' was removed from the room and global players array`);
+                            // When player joined to room with the same nickname as opponent we need to remove both of them.
+                            io.in(roomId).emit('leftGame', {player: nickname, left: true});
                         }
                     }
                 } catch (e) {
