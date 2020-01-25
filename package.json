@@ -7,7 +7,11 @@
     "build": "cd client && npm run build && cd ../server && npm run build",
     "start": "node dist/server.js",
     "test": "mocha --require @babel/register",
-    "postinstall": "cd client && npm i && cd ../server && npm i"
+    "postinstall": "cd client && npm i && cd ../server && npm i",
+    "cover:client": "cd client && npm run coverage && npx nyc merge .nyc_output ../.nyc_output/client.js",
+    "cover:server": "cd server && npm run coverage && npx nyc merge .nyc_output ../.nyc_output/server.js",
+    "cover:report": "nyc report -r text -r text-summary ",
+    "coverage": "npm run cover:client && npm run cover:server && npm run cover:report"
   },
   "author": "ymarchys & dpolosuk",
   "license": "ISC",
@@ -17,7 +21,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.8.3",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "nyc": "^14.1.1"
   },
   "devDependencies": {}
 }
