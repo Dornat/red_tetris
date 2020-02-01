@@ -3045,39 +3045,6 @@ if (document.getElementById('app')) {
 
 /***/ }),
 
-/***/ "./music/halr_life_ost.mp3":
-/*!*********************************!*\
-  !*** ./music/halr_life_ost.mp3 ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/0c0e600f2fe65ea511876fa53191247f.mp3";
-
-/***/ }),
-
-/***/ "./music/tetris_effect_ost_boscage.mp3":
-/*!*********************************************!*\
-  !*** ./music/tetris_effect_ost_boscage.mp3 ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/7386e9e91d5ddb13eecd50c7e0ca815b.mp3";
-
-/***/ }),
-
-/***/ "./music/tetris_effect_ost_new_beginings.mp3":
-/*!***************************************************!*\
-  !*** ./music/tetris_effect_ost_new_beginings.mp3 ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/e21aff0df3db7167ba9aea34b2216e63.mp3";
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/arrayWithHoles.js":
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/arrayWithHoles.js ***!
@@ -15511,7 +15478,7 @@ module.exports = copy;
 
 exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, ".gooey {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 142px;\n  height: 40px;\n  margin: -20px 0 0 -71px;\n  background: #fff;\n  filter: contrast(20); }\n\n.gooey .dot {\n  position: absolute;\n  width: 16px;\n  height: 16px;\n  top: 12px;\n  left: 15px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%;\n  transform: translateX(0);\n  animation: dot 2.8s infinite; }\n\n.gooey .dots {\n  transform: translateX(0);\n  margin-top: 12px;\n  margin-left: 31px;\n  animation: dots 2.8s infinite; }\n\n.gooey .dots span {\n  display: block;\n  float: left;\n  width: 16px;\n  height: 16px;\n  margin-left: 16px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%; }\n\n@-moz-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-webkit-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-o-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-moz-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-webkit-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-o-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room-management__container {\n  height: 100%;\n  position: fixed;\n  right: 0; }\n\n.room__management {\n  padding: 15px 43px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  width: 400px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  max-width: 500px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between;\n  align-items: start; }\n\n.game-stats__btns {\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block;\n  position: relative; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    max-width: 300px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 150px 10vw; }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.score-table {\n  width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  width: fill-available; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n\n.player {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .player__rank {\n    display: flex;\n    align-items: center;\n    margin-left: 10px; }\n\n.application__actions {\n  position: absolute;\n  top: 20px;\n  left: 20px; }\n\n.bottom__menu {\n  display: flex;\n  justify-content: center;\n  margin-top: 30px; }\n\n.not-found__msg {\n  text-align: center; }\n  .not-found__msg span {\n    font-size: 18px;\n    font-weight: bold; }\n\n.not-found__section {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  margin: 30% 5vw 0 5vw;\n  flex-direction: column; }\n\n.not-found__head {\n  margin-bottom: 15px; }\n\n.paginator div {\n  margin: 0 9px; }\n\n.room-dialog__btns {\n  text-align: center; }\n", ""]);
+exports.push([module.i, ".gooey {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 142px;\n  height: 40px;\n  margin: -20px 0 0 -71px;\n  background: #fff;\n  filter: contrast(20); }\n\n.gooey .dot {\n  position: absolute;\n  width: 16px;\n  height: 16px;\n  top: 12px;\n  left: 15px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%;\n  transform: translateX(0);\n  animation: dot 2.8s infinite; }\n\n.gooey .dots {\n  transform: translateX(0);\n  margin-top: 12px;\n  margin-left: 31px;\n  animation: dots 2.8s infinite; }\n\n.gooey .dots span {\n  display: block;\n  float: left;\n  width: 16px;\n  height: 16px;\n  margin-left: 16px;\n  filter: blur(4px);\n  background: #000;\n  border-radius: 50%; }\n\n@-moz-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-webkit-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-o-keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@keyframes dot {\n  50% {\n    transform: translateX(96px); } }\n\n@-moz-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-webkit-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@-o-keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\n@keyframes dots {\n  50% {\n    transform: translateX(-31px); } }\n\nbody {\n  font-family: \"Courier New\"; }\n\n.form__nickname {\n  width: 400px; }\n\n.form-nickname__group {\n  display: flex;\n  align-items: center;\n  flex-direction: column; }\n  .form-nickname__group input[type=\"submit\"] {\n    width: 150px;\n    margin-top: 10px; }\n\n.d-flex-col {\n  display: flex;\n  flex-direction: column; }\n\n.dashboard__btn {\n  width: 250px;\n  margin: 15px; }\n\n.nickname__input {\n  width: 200px; }\n\n.dashboard__menu {\n  align-items: center;\n  margin-top: 50px; }\n\n.input__label {\n  font-weight: 900;\n  text-transform: uppercase; }\n\n.room__management {\n  padding: 42px 42px;\n  width: 250px;\n  height: 100%;\n  background: #eceded;\n  justify-content: space-between;\n  flex-direction: column;\n  display: flex; }\n\n.game__field {\n  min-width: 400px;\n  width: 400px;\n  border: 2px solid black; }\n\n.game__link {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .game__link span {\n    background: #fff;\n    border: 3px solid black;\n    font-weight: 900;\n    padding: 12px 15px; }\n\nbutton {\n  font-weight: 900; }\n\n.container {\n  width: 100%; }\n\n.d-flex {\n  display: flex; }\n\n.flex_centered {\n  width: 100%;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center; }\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap; }\n\n.row .col-6 {\n  flex: 1 0 50%; }\n\n.row .col {\n  flex: 0 1 100%; }\n\n.centered {\n  text-align: center; }\n\n.left {\n  text-align: left; }\n\n.right {\n  text-align: right; }\n\n.label {\n  font-weight: 900; }\n\n.text-uppercase {\n  text-transform: uppercase; }\n\n.future-block {\n  display: flex;\n  justify-content: center; }\n  .future-block .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 120px;\n    height: 100px;\n    box-shadow: inset 0 0 0 1px #dedede; }\n    .future-block .field .cell {\n      width: 20px;\n      height: 20px; }\n\n.room-management__btns {\n  text-align: center; }\n\n.field {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  width: 30vw;\n  max-width: 500px;\n  box-shadow: inset 0 0 0 1px black; }\n  .field .cell {\n    width: 3vw;\n    height: 3vw;\n    max-width: 50px;\n    max-height: 50px;\n    box-shadow: inset 0 0 0 1px #00000005; }\n    .field .cell.filled-for-type-I {\n      background: rgba(80, 227, 230, 0.8);\n      border-bottom: rgba(80, 227, 230, 0.1);\n      border-right: #50e3e6;\n      border-top: #50e3e6;\n      border-left: rgba(80, 227, 230, 0.3); }\n    .field .cell.filled-for-type-O {\n      background: rgba(223, 217, 36, 0.8);\n      border-bottom: rgba(223, 217, 36, 0.1);\n      border-right: #dfd924;\n      border-top: #dfd924;\n      border-left: rgba(223, 217, 36, 0.3); }\n    .field .cell.filled-for-type-T {\n      background: rgba(132, 61, 198, 0.8);\n      border-bottom: rgba(132, 61, 198, 0.1);\n      border-right: #843dc6;\n      border-top: #843dc6;\n      border-left: rgba(132, 61, 198, 0.3); }\n    .field .cell.filled-for-type-J {\n      background: rgba(36, 95, 223, 0.8);\n      border-bottom: rgba(36, 95, 223, 0.1);\n      border-right: #245fdf;\n      border-top: #245fdf;\n      border-left: rgba(36, 95, 223, 0.3); }\n    .field .cell.filled-for-type-L {\n      background: rgba(223, 173, 36, 0.8);\n      border-bottom: rgba(223, 173, 36, 0.1);\n      border-right: #dfad24;\n      border-top: #dfad24;\n      border-left: rgba(223, 173, 36, 0.3); }\n    .field .cell.filled-for-type-S {\n      background: rgba(48, 211, 56, 0.8);\n      border-bottom: rgba(48, 211, 56, 0.1);\n      border-right: #30d338;\n      border-top: #30d338;\n      border-left: rgba(48, 211, 56, 0.3); }\n    .field .cell.filled-for-type-Z {\n      background: rgba(227, 78, 78, 0.8);\n      border-bottom: rgba(227, 78, 78, 0.1);\n      border-right: #e34e4e;\n      border-top: #e34e4e;\n      border-left: rgba(227, 78, 78, 0.3); }\n\n@media (max-height: 900px) and (min-width: 1280px) {\n  .field {\n    width: 45vh;\n    height: 90vh; }\n    .field .cell {\n      width: 4.5vh;\n      height: 4.5vh; } }\n\n@media (max-width: 992px) {\n  .game__container {\n    height: calc(100vh - 150px);\n    order: 1;\n    display: flex;\n    justify-content: center;\n    flex-direction: row;\n    align-items: center;\n    width: 100%; }\n  .room-management__container {\n    display: flex;\n    order: 2;\n    width: 100%; }\n  .room__management {\n    position: absolute;\n    bottom: 0;\n    padding: 10px 15px;\n    width: 100%;\n    height: 150px;\n    background: #eceded;\n    justify-content: space-between;\n    flex-direction: row;\n    display: flex;\n    align-items: center; }\n    .room__management label {\n      font-size: 13px; }\n  .game__link span {\n    padding: 8px 10px;\n    width: 80px;\n    font-size: 10px; }\n  .invite-cpy__btn {\n    width: 40px;\n    height: 40px;\n    font-size: 14px; }\n  .future-block .field {\n    width: 60px;\n    height: 50px; }\n    .future-block .field .cell {\n      width: 10px;\n      height: 10px; }\n  .room-management__btns {\n    display: flex;\n    flex-direction: column;\n    font-size: 12px; }\n  .game-field__wrap {\n    height: 100%;\n    padding: 10px; } }\n\n@media (min-width: 992px) {\n  .game__container {\n    height: 100vh;\n    flex: 0 1 calc(100% - 250px); } }\n\n@media (max-width: 576px) {\n  .game__container {\n    height: calc(100vh - 80px); }\n  .room__management {\n    height: 80px; }\n  .game-link__label {\n    display: none; }\n  .field {\n    width: 40vw; }\n    .field .cell {\n      width: 4vw;\n      height: 4vw; }\n  .room-management__btns button {\n    width: 70px;\n    margin: 0;\n    padding: 0;\n    font-size: 10px; } }\n\n.game-field__area {\n  width: 90%; }\n\n.game-field__body {\n  display: flex;\n  justify-content: space-between;\n  align-items: start; }\n\n.game-stats__btns {\n  padding: 10vh 0;\n  display: flex;\n  flex-direction: column; }\n\n.game-stats__btn span {\n  text-transform: uppercase;\n  font-weight: 900; }\n\n.room-management__btns button:first-child {\n  margin-bottom: 12px; }\n\n.field__border {\n  border: 3px solid #000; }\n\n.game__players {\n  margin-top: 30px;\n  display: inline-block; }\n\n.game-link__wrap {\n  display: inline-block;\n  position: relative; }\n\n.game-players__title {\n  margin-bottom: 10px; }\n\n@media (max-width: 992px) {\n  .game__players {\n    margin-top: 0;\n    margin-left: 30px; }\n  .game-players__title {\n    margin-bottom: 0;\n    display: none; } }\n\n.form__error {\n  color: red;\n  font-weight: 900; }\n\n.game-field__col .enemy-field {\n  margin-top: 15px; }\n  .game-field__col .enemy-field .field {\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    width: 20vw;\n    height: unset;\n    max-width: 300px;\n    box-shadow: inset 0 0 0 1px black; }\n    .game-field__col .enemy-field .field .cell {\n      width: 2vw;\n      height: 2vw;\n      max-width: 30px;\n      max-height: 30px;\n      box-shadow: inset 0 0 0 1px #00000005; }\n\n.dashboard-actions {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end;\n  width: 100%;\n  position: absolute;\n  top: 3rem;\n  right: 3rem; }\n\n.music {\n  display: flex;\n  flex-direction: row;\n  justify-content: flex-end; }\n  .music button {\n    cursor: pointer !important; }\n\n.score__container {\n  margin: 150px 10vw; }\n\n.score__table-wrap {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.score__head {\n  font-size: 24px;\n  font-weight: 900;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 50px; }\n\n@media (max-width: 786px) {\n  .score__head {\n    font-size: 16px; } }\n\n@media (max-width: 968px) {\n  .score__head {\n    font-size: 18px; } }\n\n.score__table {\n  width: 100%;\n  background: #eceded;\n  border-radius: 15px; }\n\n.score__row {\n  display: flex;\n  justify-content: space-between;\n  padding: 15px 30px; }\n\n.score-table__head {\n  font-weight: 900; }\n\n.score__table .score__row:not(:first-child) {\n  border-top: 1px solid #808080; }\n\n.score-table {\n  width: -moz-available;\n  /* WebKit-based browsers will ignore this. */\n  width: -webkit-fill-available;\n  /* Mozilla-based browsers will ignore this. */\n  width: fill-available; }\n\n.paginator {\n  padding-top: 50px;\n  display: flex;\n  justify-content: center; }\n\n.paginator__row {\n  display: flex;\n  min-width: 300px;\n  justify-content: space-around; }\n\n.paginator__row .pagination__page-btn:not(:last-child) {\n  margin-right: 15px; }\n\n.player {\n  display: flex;\n  justify-content: center;\n  align-items: center; }\n  .player__rank {\n    display: flex;\n    align-items: center;\n    margin-left: 10px; }\n\n.application__actions {\n  position: absolute;\n  top: 20px;\n  left: 20px; }\n\n.bottom__menu {\n  display: flex;\n  justify-content: center;\n  margin-top: 30px; }\n\n.not-found__msg {\n  text-align: center; }\n  .not-found__msg span {\n    font-size: 18px;\n    font-weight: bold; }\n\n.not-found__section {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  margin: 30% 5vw 0 5vw;\n  flex-direction: column; }\n\n.not-found__head {\n  margin-bottom: 15px; }\n\n.paginator div {\n  margin: 0 9px; }\n\n.room-dialog__btns {\n  text-align: center; }\n", ""]);
 
 
 /***/ }),
@@ -75071,6 +75038,38 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/redux-devtools-extension/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/redux-devtools-extension/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var compose = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js").compose;
+
+exports.__esModule = true;
+exports.composeWithDevTools = (
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
+    function() {
+      if (arguments.length === 0) return undefined;
+      if (typeof arguments[0] === 'object') return compose;
+      return compose.apply(null, arguments);
+    }
+);
+
+exports.devToolsEnhancer = (
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION__ :
+    function() { return function(noop) { return noop; } }
+);
+
+
+/***/ }),
+
 /***/ "./node_modules/redux-thunk/es/index.js":
 /*!**********************************************!*\
   !*** ./node_modules/redux-thunk/es/index.js ***!
@@ -82895,9 +82894,12 @@ var initSocketConnection = function initSocketConnection() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+/* harmony import */ var _reducers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../reducers */ "./reducers/index.js");
 /* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
-/* harmony import */ var _reducers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reducers */ "./reducers/index.js");
+/* harmony import */ var redux_devtools_extension__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! redux-devtools-extension */ "./node_modules/redux-devtools-extension/index.js");
+/* harmony import */ var redux_devtools_extension__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(redux_devtools_extension__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+
 
 
 
@@ -82933,8 +82935,7 @@ var loadFromLocalStorage = function loadFromLocalStorage() {
 };
 
 var persistedState = loadFromLocalStorage();
-var store = Object(redux__WEBPACK_IMPORTED_MODULE_0__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_2__["default"], persistedState, Object(redux__WEBPACK_IMPORTED_MODULE_0__["compose"])(redux__WEBPACK_IMPORTED_MODULE_0__["applyMiddleware"].apply(void 0, middleware) //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-));
+var store = Object(redux__WEBPACK_IMPORTED_MODULE_3__["createStore"])(_reducers__WEBPACK_IMPORTED_MODULE_0__["default"], persistedState, Object(redux_devtools_extension__WEBPACK_IMPORTED_MODULE_2__["composeWithDevTools"])(redux__WEBPACK_IMPORTED_MODULE_3__["applyMiddleware"].apply(void 0, middleware)));
 store.subscribe(function () {
   saveNicknameToLocalStorage(store.getState());
 });
@@ -83131,38 +83132,10 @@ var piecesDebug = function piecesDebug(pieces) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "musicLibrary", function() { return musicLibrary; });
-/* harmony import */ var _serverProtocol__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./serverProtocol */ "./utils/serverProtocol.js");
-/* harmony import */ var _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../music/tetris_effect_ost_boscage.mp3 */ "./music/tetris_effect_ost_boscage.mp3");
-/* harmony import */ var _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../music/tetris_effect_ost_new_beginings.mp3 */ "./music/tetris_effect_ost_new_beginings.mp3");
-/* harmony import */ var _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../music/halr_life_ost.mp3 */ "./music/halr_life_ost.mp3");
-/* harmony import */ var _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3__);
-
-
-
-
 var musicLibrary = {
-  boscage: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1___default.a),
-  newBeginnings: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2___default.a),
-  halfLife: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3___default.a)
-};
-
-/***/ }),
-
-/***/ "./utils/serverProtocol.js":
-/*!*********************************!*\
-  !*** ./utils/serverProtocol.js ***!
-  \*********************************/
-/*! exports provided: buildUrl */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buildUrl", function() { return buildUrl; });
-var FOLDER = '/js/';
-var buildUrl = function buildUrl() {
-  return "http" + '://' + "localhost" + ':' + "3000" + FOLDER;
+  boscage: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_boscage.mp3'),
+  newBeginnings: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_new_beginings.mp3'),
+  halfLife: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/halr_life_ost.mp3')
 };
 
 /***/ }),
