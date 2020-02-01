@@ -83177,9 +83177,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var musicLibrary = {
-  boscage: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1___default.a),
-  newBeginnings: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2___default.a),
-  halfLife: new Audio(Object(_serverProtocol__WEBPACK_IMPORTED_MODULE_0__["buildUrl"])() + _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3___default.a)
+  boscage: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_boscage.mp3'),
+  newBeginnings: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_new_beginings.mp3'),
+  halfLife: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/halr_life_ost.mp3')
 };
 
 /***/ }),
