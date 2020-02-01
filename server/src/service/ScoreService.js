@@ -1,7 +1,6 @@
 import Score from '../model/Score';
 
 class ScoreService {
-
     static async addScoreResult({nickname, score}) {
         const filter = {nickname: nickname};
         const update = {score: score};
@@ -58,7 +57,7 @@ class ScoreService {
             const result = await Score.findOne({nickname: nickname});
 
             if (result === null) {
-                return {msg: 'noGamesYet'}
+                return {msg: 'noGamesYet'};
             }
 
             const position = await Score.mapReduce(
@@ -66,24 +65,18 @@ class ScoreService {
                     emit(null, this.nickname);
                 },
                 (key, values) => {
-                    // console.log("KEY", key);
-                    // console.log("VALUES", values);
-                    // return values.indexOf(nickname) + 1;
                 },
                 {
-                    "sort": {"score": -1},
-                    "out": {"inline": 1}
+                    'sort': {'score': -1},
+                    'out': {'inline': 1}
                 }
             );
-
-            console.log("POSITION", position);
 
             return {
                 msg: 'found',
                 score: result.score,
-            }
-        }
-        catch {
+            };
+        } catch (e) {
             console.log(e);
             return false;
         }
