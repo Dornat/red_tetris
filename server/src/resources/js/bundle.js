@@ -3045,39 +3045,6 @@ if (document.getElementById('app')) {
 
 /***/ }),
 
-/***/ "./music/halr_life_ost.mp3":
-/*!*********************************!*\
-  !*** ./music/halr_life_ost.mp3 ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/0c0e600f2fe65ea511876fa53191247f.mp3";
-
-/***/ }),
-
-/***/ "./music/tetris_effect_ost_boscage.mp3":
-/*!*********************************************!*\
-  !*** ./music/tetris_effect_ost_boscage.mp3 ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/7386e9e91d5ddb13eecd50c7e0ca815b.mp3";
-
-/***/ }),
-
-/***/ "./music/tetris_effect_ost_new_beginings.mp3":
-/*!***************************************************!*\
-  !*** ./music/tetris_effect_ost_new_beginings.mp3 ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "music/e21aff0df3db7167ba9aea34b2216e63.mp3";
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/arrayWithHoles.js":
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/arrayWithHoles.js ***!
@@ -83165,38 +83132,10 @@ var piecesDebug = function piecesDebug(pieces) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "musicLibrary", function() { return musicLibrary; });
-/* harmony import */ var _serverProtocol__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./serverProtocol */ "./utils/serverProtocol.js");
-/* harmony import */ var _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../music/tetris_effect_ost_boscage.mp3 */ "./music/tetris_effect_ost_boscage.mp3");
-/* harmony import */ var _music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_music_tetris_effect_ost_boscage_mp3__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../music/tetris_effect_ost_new_beginings.mp3 */ "./music/tetris_effect_ost_new_beginings.mp3");
-/* harmony import */ var _music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_music_tetris_effect_ost_new_beginings_mp3__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../music/halr_life_ost.mp3 */ "./music/halr_life_ost.mp3");
-/* harmony import */ var _music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_music_halr_life_ost_mp3__WEBPACK_IMPORTED_MODULE_3__);
-
-
-
-
 var musicLibrary = {
   boscage: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_boscage.mp3'),
   newBeginnings: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/tetris_effect_ost_new_beginings.mp3'),
   halfLife: new Audio('https://red-tetris.s3.eu-central-1.amazonaws.com/halr_life_ost.mp3')
-};
-
-/***/ }),
-
-/***/ "./utils/serverProtocol.js":
-/*!*********************************!*\
-  !*** ./utils/serverProtocol.js ***!
-  \*********************************/
-/*! exports provided: buildUrl */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buildUrl", function() { return buildUrl; });
-var FOLDER = '/js/';
-var buildUrl = function buildUrl() {
-  return "http" + '://' + "localhost" + ':' + "3000" + FOLDER;
 };
 
 /***/ }),
