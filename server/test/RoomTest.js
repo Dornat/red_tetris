@@ -17,7 +17,7 @@ describe('Room Tests', function () {
         room.instantiateAGame();
 
         assert.notEqual(room.id, room.game.id);
-        assert.instanceOf(room.game, Game, 'The created game in a room is actually a Game!')
+        assert.instanceOf(room.game, Game, 'The created game in a room is actually a Game!');
     });
 
     it('should get player properly', function () {
@@ -75,7 +75,7 @@ describe('Room Tests', function () {
         room.removePlayer(foo);
 
         assert.deepEqual(room.players, room.game.players);
-        assert.deepEqual(room.leader, bar)
+        assert.deepEqual(room.leader, bar);
     });
 
     it('should remove last player in game', function () {

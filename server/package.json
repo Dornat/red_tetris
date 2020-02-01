@@ -7,7 +7,7 @@
     "build": "rm -rf dist && webpack --mode production",
     "dev": "nodemon --exec babel-node src/index.js",
     "start": "node dist/server.js",
-    "test": "nyc mocha --require @babel/register"
+    "coverage": "nyc -r text -r text-summary mocha --require @babel/register"
   },
   "author": "ymarchys & dpolosuk",
   "license": "ISC",
