@@ -772,14 +772,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/gameFieldHelpers */ "./utils/gameFieldHelpers.js");
-/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
-/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
-/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
-/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
-/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../store */ "./store/index.js");
+/* harmony import */ var _utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/gameFieldHelpers */ "./utils/gameFieldHelpers.js");
+/* harmony import */ var _utils_checkCollision__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/checkCollision */ "./utils/checkCollision.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _utils_createField__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../utils/createField */ "./utils/createField.js");
+/* harmony import */ var _hooks_useField__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../hooks/useField */ "./hooks/useField.js");
+/* harmony import */ var _hooks_useInterval__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../hooks/useInterval */ "./hooks/useInterval.js");
+/* harmony import */ var _hooks_usePiece__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../hooks/usePiece */ "./hooks/usePiece.js");
+/* harmony import */ var _actions_gameActions__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../actions/gameActions */ "./actions/gameActions.js");
+
 
 
 
@@ -834,7 +836,7 @@ var GameField = function GameField(props) {
       gameOver = _useState10[0],
       setGameOver = _useState10[1];
 
-  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_17__["usePiece"])(0),
+  var _usePiece = Object(_hooks_usePiece__WEBPACK_IMPORTED_MODULE_18__["usePiece"])(0),
       _usePiece2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_usePiece, 5),
       piece = _usePiece2[0],
       updatePiecePosition = _usePiece2[1],
@@ -842,19 +844,19 @@ var GameField = function GameField(props) {
       pieceRotate = _usePiece2[3],
       setPiece = _usePiece2[4];
 
-  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_15__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction),
+  var _useField = Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_16__["useField"])(piece, resetPiece, pieces, piecesBuffer, setPieces, props.setNextPieceAction),
       _useField2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useField, 3),
       field = _useField2[0],
       setField = _useField2[1],
       rowsCleared = _useField2[2];
 
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_9__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_14__["createField"])()),
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_9__["useState"])(Object(_utils_createField__WEBPACK_IMPORTED_MODULE_15__["createField"])()),
       _useState12 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default()(_useState11, 2),
       opponentField = _useState12[0],
       setOpponentField = _useState12[1];
 
   var movePiece = function movePiece(direction) {
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_12__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_13__["checkCollision"])(piece, field, {
       x: direction,
       y: 0
     })) {
@@ -873,7 +875,7 @@ var GameField = function GameField(props) {
   var drop = function drop() {
     var y = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_12__["checkCollision"])(piece, field, {
+    if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_13__["checkCollision"])(piece, field, {
       x: 0,
       y: y ? y : 1
     })) {
@@ -901,7 +903,7 @@ var GameField = function GameField(props) {
           collided: true
         }); // Maybe we need to move this two lines outside of else statement.
 
-        var coords = Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_11__["assembleCoordinatesForFillingFieldOnServer"])(piece);
+        var coords = Object(_utils_gameFieldHelpers__WEBPACK_IMPORTED_MODULE_12__["assembleCoordinatesForFillingFieldOnServer"])(piece);
         props.socket.emit('updatePlayerField', {
           roomId: props.roomId,
           nickname: props.user,
@@ -925,20 +927,22 @@ var GameField = function GameField(props) {
   };
 
   var dropPieceInAvailableSpot = function dropPieceInAvailableSpot() {
-    var y = 1;
+    if (isGameStarted) {
+      var y = 1;
 
-    for (;;) {
-      if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_12__["checkCollision"])(piece, field, {
-        x: 0,
-        y: y
-      })) {
-        y++;
-      } else {
-        break;
+      for (;;) {
+        if (!Object(_utils_checkCollision__WEBPACK_IMPORTED_MODULE_13__["checkCollision"])(piece, field, {
+          x: 0,
+          y: y
+        })) {
+          y++;
+        } else {
+          break;
+        }
       }
-    }
 
-    drop(y - 1);
+      drop(y - 1);
+    }
   };
 
   var move = function move(e) {
@@ -1005,11 +1009,13 @@ var GameField = function GameField(props) {
      */
 
     props.socket.on('sendUpdatedGameData', function (data) {
-      if (data.myNickName === props.user) {
+      var currPlayerNickname = _store__WEBPACK_IMPORTED_MODULE_11__["default"].getState().user.nickname;
+
+      if (data.myNickName === currPlayerNickname) {
         props.setScoreAction(data.score);
       }
 
-      if (data.myNickName !== props.user) {
+      if (data.myNickName !== currPlayerNickname) {
         redrawOpponentField(data.field);
       }
 
@@ -1021,7 +1027,9 @@ var GameField = function GameField(props) {
       setDropTime(null);
     });
     props.socket.on('reduceOpponentField', function (nickname, rowsCleared) {
-      if (props.user !== nickname) {
+      var currPlayerNickname = _store__WEBPACK_IMPORTED_MODULE_11__["default"].getState().user.nickname;
+
+      if (currPlayerNickname !== nickname) {
         props.reduceRowsAmountAction(rowsCleared);
       }
     });
@@ -1043,7 +1051,7 @@ var GameField = function GameField(props) {
     var rows = newField.length - props.rowsAmount;
     newField = lodash__WEBPACK_IMPORTED_MODULE_10___default.a.drop(newField, rows);
 
-    while (!Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_15__["isPieceCanBePlaced"])(piece, newField)) {
+    while (!Object(_hooks_useField__WEBPACK_IMPORTED_MODULE_16__["isPieceCanBePlaced"])(piece, newField)) {
       piece.position.y = piece.position.y - 1;
       setPiece(piece);
     }
@@ -1057,7 +1065,7 @@ var GameField = function GameField(props) {
   }, [gameOver]);
 
   var redrawOpponentField = function redrawOpponentField(matrix) {
-    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_14__["createField"])(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
+    var newField = Object(_utils_createField__WEBPACK_IMPORTED_MODULE_15__["createField"])(matrix.length); // matrix.length is needed for dynamic rowsAmount changing.
 
     for (var i = 0; i < matrix.length; i++) {
       for (var j = 0; j < matrix[i].length; j++) {
@@ -1068,7 +1076,7 @@ var GameField = function GameField(props) {
     setOpponentField(newField);
   };
 
-  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_16__["useInterval"])(function () {
+  Object(_hooks_useInterval__WEBPACK_IMPORTED_MODULE_17__["useInterval"])(function () {
     drop();
   }, dropTime);
 
@@ -1134,30 +1142,30 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     createGameAction: function createGameAction(id) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["createGameAction"])(id));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["createGameAction"])(id));
     },
     startGameAction: function startGameAction() {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["startGameAction"])());
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["startGameAction"])());
     },
     setScoreAction: function setScoreAction(score) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["setScoreAction"])(score));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["setScoreAction"])(score));
     },
     setNextPieceAction: function setNextPieceAction(nextPiece) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["setNextPieceAction"])(nextPiece));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["setNextPieceAction"])(nextPiece));
     },
     setLevelAction: function setLevelAction(level) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["setLevelAction"])(level));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["setLevelAction"])(level));
     },
     reduceRowsAmountAction: function reduceRowsAmountAction(reductionAmount) {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["reduceRowsAmountAction"])(reductionAmount));
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["reduceRowsAmountAction"])(reductionAmount));
     },
     resetRowsAmountAction: function resetRowsAmountAction() {
-      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_18__["resetRowsAmountAction"])());
+      dispatch(Object(_actions_gameActions__WEBPACK_IMPORTED_MODULE_19__["resetRowsAmountAction"])());
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_13__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_14__["connect"])(mapStateToProps, mapDispatchToProps)(GameField));
 GameField.propTypes = {
   roomId: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.string,
   user: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.string,
@@ -1865,19 +1873,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js");
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _RoomManagement__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./RoomManagement */ "./components/RoomManagement.js");
-/* harmony import */ var _GameField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./GameField */ "./components/GameField.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Loader */ "./components/Loader.js");
-/* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
-/* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _Form_JoinGame__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Form/JoinGame */ "./components/Form/JoinGame.js");
-/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
+/* harmony import */ var _GameField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./GameField */ "./components/GameField.js");
+/* harmony import */ var _Form_JoinGame__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Form/JoinGame */ "./components/Form/JoinGame.js");
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Loader */ "./components/Loader.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js");
+/* harmony import */ var react_modal__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_modal__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _RoomManagement__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./RoomManagement */ "./components/RoomManagement.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../store */ "./store/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _actions_roomActions__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../actions/roomActions */ "./actions/roomActions.js");
+
 
 
 
@@ -1902,7 +1912,7 @@ var modalStyles = {
     border: 'solid'
   }
 };
-react_modal__WEBPACK_IMPORTED_MODULE_10___default.a.setAppElement('#app');
+react_modal__WEBPACK_IMPORTED_MODULE_8___default.a.setAppElement('#app');
 
 var Room = function Room(props) {
   var MODAL_NO_ROOM = 1;
@@ -1916,22 +1926,22 @@ var Room = function Room(props) {
   var ERROR_ROOM_NOT_FOUND = 4;
   var ERROR_NO_SPACE_AVAILABLE = 5;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(false),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState, 2),
       isRoomExists = _useState2[0],
       setRoomExists = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState3, 2),
       isModalOpened = _useState4[0],
       setIsModalOpened = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_3__["useState"])(null),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(null),
       _useState6 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default()(_useState5, 2),
       modal = _useState6[0],
       setModal = _useState6[1];
 
-  var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_3__["useRef"])(null);
+  var gameFieldRef = Object(react__WEBPACK_IMPORTED_MODULE_7__["useRef"])(null);
   /**
    * Checks if somebody can join the room.
    *
@@ -2023,7 +2033,7 @@ var Room = function Room(props) {
     };
   }();
 
-  Object(react__WEBPACK_IMPORTED_MODULE_3__["useEffect"])(function () {
+  Object(react__WEBPACK_IMPORTED_MODULE_7__["useEffect"])(function () {
     var handleJoining =
     /*#__PURE__*/
     function () {
@@ -2181,13 +2191,16 @@ var Room = function Room(props) {
       console.warn(reason);
     });
     props.socket.on('playerJoined', function (players) {
+      var currPlayerNickname = _store__WEBPACK_IMPORTED_MODULE_10__["default"].getState().user.nickname;
       var opponent = Object.values(players).find(function (player) {
-        return player.nickname !== props.user;
+        return player.nickname !== currPlayerNickname;
       });
       props.setOpponentAction(opponent);
     });
     props.socket.on('leftGame', function (response) {
-      if (response.player === props.user) {
+      var currPlayerNickname = _store__WEBPACK_IMPORTED_MODULE_10__["default"].getState().user.nickname;
+
+      if (response.player === currPlayerNickname) {
         props.socket.emit('disconnect');
         props.history.push('/');
       } else {
@@ -2231,39 +2244,39 @@ var Room = function Room(props) {
 
   var renderModalContent = function renderModalContent() {
     if (modal === MODAL_ROOM_JOINED) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Form_JoinGame__WEBPACK_IMPORTED_MODULE_11__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_Form_JoinGame__WEBPACK_IMPORTED_MODULE_4__["default"], {
         onClick: closeModalAndEnrollNewPlayerIntoTheGame
       }));
     } else if (modal === MODAL_NO_ROOM) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No such room"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "No such room"), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "room-dialog__btns"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "nes-btn",
         onClick: straightToDashboard
       }, "To Dashboard")));
     } else if (modal === MODAL_GAME_PAUSED) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game is paused"));
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "Game is paused"));
     } else if (modal === MODAL_NO_SPACE) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "No space in room"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "No space in room"), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "room-dialog__btns"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "nes-btn",
         onClick: straightToDashboard
       }, "To Dashboard")));
     } else if (modal === MODAL_GAME_OVER) {
-      return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "nes-dialog"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("h2", null, "Game Over!"), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "Game Over!"), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "room-dialog__btns"
-      }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
+      }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "nes-btn",
         onClick: toDashBoard
       }, "To Dashboard")));
@@ -2271,26 +2284,26 @@ var Room = function Room(props) {
   };
 
   var renderOnGame = function renderOnGame() {
-    return react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    return react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: "row"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(react_modal__WEBPACK_IMPORTED_MODULE_10___default.a, {
+    }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react_modal__WEBPACK_IMPORTED_MODULE_8___default.a, {
       isOpen: isModalOpened,
       style: modalStyles,
       contentLabel: "Example Modal"
-    }, renderModalContent()), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    }, renderModalContent()), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: "game__container"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_GameField__WEBPACK_IMPORTED_MODULE_3__["default"], {
       socket: props.socket,
       gameFieldRef: gameFieldRef
-    })), react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
+    })), react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: "room-management__container"
-    }, react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    }, react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_RoomManagement__WEBPACK_IMPORTED_MODULE_9__["default"], {
       socket: props.socket,
       gameFieldRef: gameFieldRef
     })));
   };
 
-  return isRoomExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_9__["default"], null);
+  return isRoomExists ? renderOnGame() : react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_Loader__WEBPACK_IMPORTED_MODULE_5__["default"], null);
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -2305,41 +2318,41 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     joinRoomAction: function joinRoomAction(roomId, isLeader) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["joinRoomAction"])(roomId, isLeader));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["joinRoomAction"])(roomId, isLeader));
     },
     setRoomAction: function setRoomAction(roomId) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["setRoomAction"])(roomId));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["setRoomAction"])(roomId));
     },
     setLeaderAction: function setLeaderAction(isLeader) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["setLeaderAction"])(isLeader));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["setLeaderAction"])(isLeader));
     },
     setOpponentAction: function setOpponentAction(opponent) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["setOpponentAction"])(opponent));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["setOpponentAction"])(opponent));
     },
     removeOpponentAction: function removeOpponentAction() {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["removeOpponentAction"])());
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["removeOpponentAction"])());
     },
     setMusicTrackAction: function setMusicTrackAction(musicTrackName) {
-      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_12__["setMusicTrackAction"])(musicTrackName));
+      dispatch(Object(_actions_roomActions__WEBPACK_IMPORTED_MODULE_13__["setMusicTrackAction"])(musicTrackName));
     }
   };
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_7__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_8__["withRouter"])(Room)));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_11__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_12__["withRouter"])(Room)));
 Room.propTypes = {
-  roomId: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string,
-  user: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.string,
-  isLeader: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.bool,
-  socket: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  history: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  match: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  location: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.object,
-  joinRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  setRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  setLeaderAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  setOpponentAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  setMusicTrackAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func,
-  removeOpponentAction: prop_types__WEBPACK_IMPORTED_MODULE_4___default.a.func
+  roomId: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
+  user: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.string,
+  isLeader: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.bool,
+  socket: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
+  history: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
+  match: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
+  location: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.object,
+  joinRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  setRoomAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  setLeaderAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  setOpponentAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  setMusicTrackAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func,
+  removeOpponentAction: prop_types__WEBPACK_IMPORTED_MODULE_6___default.a.func
 };
 
 /***/ }),

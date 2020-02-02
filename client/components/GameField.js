@@ -7,6 +7,7 @@ import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
 import _ from 'lodash';
+import store from '../store';
 import {assembleCoordinatesForFillingFieldOnServer, fieldDebug, piecesDebug} from '../utils/gameFieldHelpers';
 import {checkCollision} from '../utils/checkCollision';
 import {connect} from 'react-redux';
@@ -84,15 +85,17 @@ const GameField = (props) => {
     };
 
     const dropPieceInAvailableSpot = () => {
-        let y = 1;
-        for (; ;) {
-            if (!checkCollision(piece, field, {x: 0, y: y})) {
-                y++;
-            } else {
-                break;
+        if (isGameStarted) {
+            let y = 1;
+            for (; ;) {
+                if (!checkCollision(piece, field, {x: 0, y: y})) {
+                    y++;
+                } else {
+                    break;
+                }
             }
+            drop(y - 1);
         }
-        drop(y - 1);
     };
 
     const move = (e) => {
@@ -155,10 +158,11 @@ const GameField = (props) => {
          * method handles proper update of score, level and opponent field.
          */
         props.socket.on('sendUpdatedGameData', (data) => {
-            if (data.myNickName === props.user) {
+            const currPlayerNickname = store.getState().user.nickname;
+            if (data.myNickName === currPlayerNickname) {
                 props.setScoreAction(data.score);
             }
-            if (data.myNickName !== props.user) {
+            if (data.myNickName !== currPlayerNickname) {
                 redrawOpponentField(data.field);
             }
             props.setLevelAction(data.level);
@@ -171,7 +175,8 @@ const GameField = (props) => {
         });
 
         props.socket.on('reduceOpponentField', (nickname, rowsCleared) => {
-            if (props.user !== nickname) {
+            const currPlayerNickname = store.getState().user.nickname;
+            if (currPlayerNickname !== nickname) {
                 props.reduceRowsAmountAction(rowsCleared);
             }
         });
@@ -222,8 +227,12 @@ const GameField = (props) => {
         drop();
     }, dropTime);
 
-    const handleSwipe = (e) => { move(e); };
-    const handleTap = () => { move({tap: true}); };
+    const handleSwipe = (e) => {
+        move(e);
+    };
+    const handleTap = () => {
+        move({tap: true});
+    };
 
     const hammerOptions = {
         recognizers: {

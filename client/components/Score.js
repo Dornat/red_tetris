@@ -47,7 +47,6 @@ const Score = (props) => {
     }, []);
 
     const onPageClick = (page) => {
-
         props.socket.emit('getScoreResults', {
             count: SCORES_AMOUNT,
             page: page
