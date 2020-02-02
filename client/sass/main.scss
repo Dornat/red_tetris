@@ -444,6 +444,16 @@ button {
   right: 3rem;
 }
 
+.dashboard {
+  &__section {
+    .col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+
 .music {
   display: flex;
   flex-direction: row;
