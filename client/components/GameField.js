@@ -1,6 +1,8 @@
 import EnemyField from './EnemyField';
 import Field from './Field';
 import GameStats from './GameStats';
+import Hammer from 'hammerjs';
+import HammerReact from 'react-hammerjs';
 import NextPieceField from './NextPieceField';
 import PropTypes from 'prop-types';
 import React, {useState, useEffect} from 'react';
@@ -95,15 +97,15 @@ const GameField = (props) => {
 
     const move = (e) => {
         if (!gameOver) {
-            if (e.keyCode === 72 || e.keyCode === 37) {
+            if (e.keyCode === 72 || e.keyCode === 37 || e.direction === Hammer.DIRECTION_LEFT) {
                 movePiece(-1);
-            } else if (e.keyCode === 76 || e.keyCode === 39) {
+            } else if (e.keyCode === 76 || e.keyCode === 39 || e.direction === Hammer.DIRECTION_RIGHT) {
                 movePiece(1);
             } else if (e.keyCode === 74 || e.keyCode === 40) {
                 dropPiece();
-            } else if (e.keyCode === 38 || e.keyCode === 75) {
+            } else if (e.keyCode === 38 || e.keyCode === 75 || e.tap) {
                 pieceRotate(field, 1);
-            } else if (e.keyCode === 32) {
+            } else if (e.keyCode === 32 || e.direction === Hammer.DIRECTION_DOWN) {
                 dropPieceInAvailableSpot();
             }
         }
@@ -220,26 +222,40 @@ const GameField = (props) => {
         drop();
     }, dropTime);
 
+    const handleSwipe = (e) => { move(e); };
+    const handleTap = () => { move({tap: true}); };
+
+    const hammerOptions = {
+        recognizers: {
+            swipe: {
+                enable: true,
+                direction: Hammer.DIRECTION_ALL
+            }
+        }
+    };
+
     return (
         <div tabIndex="0" className="game-field__wrap flex_centered" onKeyDown={e => move(e)} onKeyUp={keyReleased}
              ref={props.gameFieldRef}>
-            <div className="game-field__area">
-                <div className="game-field__body">
-                    <div className="game-field__col">
-                        {isGameStarted ? <GameStats/> : ''}
-                    </div>
-                    <div className="game-field__col field__border">
-                        <Field field={field}/>
-                    </div>
-                    <div className="game-field__col">
-                        <NextPieceField/>
-                        {props.opponent
-                            ? <EnemyField field={opponentField}/>
-                            : ''
-                        }
+            <HammerReact onSwipe={handleSwipe} onTap={handleTap} options={hammerOptions}>
+                <div className="game-field__area">
+                    <div className="game-field__body">
+                        <div className="game-field__col">
+                            {isGameStarted ? <GameStats/> : ''}
+                        </div>
+                        <div className="game-field__col field__border">
+                            <Field field={field}/>
+                        </div>
+                        <div className="game-field__col">
+                            <NextPieceField/>
+                            {props.opponent
+                                ? <EnemyField field={opponentField}/>
+                                : ''
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
+            </HammerReact>
         </div>
     );
 };
