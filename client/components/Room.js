@@ -1,12 +1,13 @@
-import React, {useEffect, useState, useRef} from 'react';
-import PropTypes from 'prop-types';
-import RoomManagement from './RoomManagement';
 import GameField from './GameField';
+import JoinGame from './Form/JoinGame';
+import Loader from './Loader';
+import PropTypes from 'prop-types';
+import React, {useEffect, useState, useRef} from 'react';
+import ReactModal from 'react-modal';
+import RoomManagement from './RoomManagement';
+import store from '../store';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import Loader from './Loader';
-import ReactModal from 'react-modal';
-import JoinGame from './Form/JoinGame';
 import {
     joinRoomAction,
     setRoomAction,
@@ -179,12 +180,14 @@ const Room = (props) => {
         });
 
         props.socket.on('playerJoined', (players) => {
-            const opponent = Object.values(players).find(player => player.nickname !== props.user);
+            const currPlayerNickname = store.getState().user.nickname;
+            const opponent = Object.values(players).find(player => player.nickname !== currPlayerNickname);
             props.setOpponentAction(opponent);
         });
 
         props.socket.on('leftGame', (response) => {
-            if (response.player === props.user) {
+            const currPlayerNickname = store.getState().user.nickname;
+            if (response.player === currPlayerNickname) {
                 props.socket.emit('disconnect');
                 props.history.push('/');
             } else {
