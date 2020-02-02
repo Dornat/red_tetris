@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 const music = path.resolve(__dirname, 'music');
 
@@ -54,14 +55,17 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                PROTOCOL: JSON.stringify(process.env.PROTOCOL),
-                HOST: JSON.stringify(process.env.HOST),
-                IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
-                PORT: JSON.stringify(process.env.PORT),
-                HEROKU: JSON.stringify(process.env.HEROKU),
-            }
+        // new webpack.DefinePlugin({
+        //     'process.env': {
+        //         PROTOCOL: JSON.stringify(process.env.PROTOCOL),
+        //         HOST: JSON.stringify(process.env.HOST),
+        //         IO_SERVER_PORT: JSON.stringify(process.env.IO_SERVER_PORT),
+        //         PORT: JSON.stringify(process.env.PORT),
+        //         HEROKU: JSON.stringify(process.env.HEROKU),
+        //     }
+        // })
+        new Dotenv({
+            systemvars: true
         })
     ]
 };

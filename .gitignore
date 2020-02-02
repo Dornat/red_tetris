@@ -10,7 +10,7 @@ node_modules
 .vscode
 bundle.js.map
 server/.nyc_output/*
-server/src/resources/js/music/*
+server/src/resources/js/*
 dist/*.js
 dist/*.js.map
 dist/resources/js/*
